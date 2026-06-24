@@ -38,10 +38,12 @@ header img {
   border-radius: 50%;
   width: 240px;
   height: 240px;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center center;
   display: block;
   margin: 0 0 18px 0;
-  background: #f3f3f3;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
 }
 
 /* Main content typography */
