@@ -16,17 +16,17 @@
     }
 
     .page {
-      max-width: 1080px;
+      max-width: 1120px;
       margin: 0 auto;
       display: grid;
       grid-template-columns: 300px 1fr;
-      gap: 70px;
-      padding: 60px 30px 80px;
+      gap: 72px;
+      padding: 58px 32px 82px;
     }
 
     .sidebar {
       position: sticky;
-      top: 50px;
+      top: 48px;
       height: fit-content;
     }
 
@@ -43,8 +43,8 @@
       height: 245px;
       border-radius: 50%;
       overflow: hidden;
-      background: #ffffff;
       margin-bottom: 22px;
+      background: #ffffff;
       border: 1px solid #eeeeee;
       display: flex;
       align-items: center;
@@ -71,7 +71,7 @@
     a { color: #267CB9; text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    main { max-width: 700px; }
+    main { max-width: 735px; }
 
     h2 {
       margin: 0 0 18px;
@@ -90,7 +90,7 @@
     }
 
     h4 {
-      margin: 24px 0 10px;
+      margin: 22px 0 10px;
       color: #222222;
       font-size: 17px;
       font-weight: 800;
@@ -109,13 +109,14 @@
 
     .version-check {
       display: inline-block;
-      margin-bottom: 20px;
-      padding: 4px 9px;
-      border: 1px solid #d8dee4;
+      margin-bottom: 18px;
+      padding: 5px 11px;
+      border: 1px solid #1f883d;
       border-radius: 999px;
-      color: #57606a;
+      color: #1f883d;
       font-size: 12px;
-      background: #f6f8fa;
+      font-weight: 700;
+      background: #dafbe1;
     }
 
     .soft-skills, .badges, .buttons {
@@ -154,11 +155,12 @@
     }
 
     .project {
-      margin-bottom: 48px;
-      padding-bottom: 30px;
+      margin-bottom: 50px;
+      padding-bottom: 34px;
       border-bottom: 1px solid #eaeaea;
     }
 
+    .project:last-child { border-bottom: 0; }
     .badges { margin: 14px 0 18px; }
 
     .badge {
@@ -177,10 +179,10 @@
     .project-media {
       margin: 18px 0 22px;
       border: 1px solid #e5e5e5;
-      border-radius: 10px;
+      border-radius: 12px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
     }
 
     .project-media video {
@@ -190,9 +192,17 @@
     }
 
     .media-caption {
-      margin-top: -10px;
+      margin-top: -8px;
       color: #666666;
       font-size: 13px;
+    }
+
+    .playlist-status {
+      padding: 8px 12px;
+      border-top: 1px solid #e5e5e5;
+      color: #57606a;
+      font-size: 12px;
+      background: #f6f8fa;
     }
 
     .footer {
@@ -217,7 +227,7 @@
     <aside class="sidebar">
       <h1>Juan Diego Pérez</h1>
       <div class="photo-frame">
-        <img src="CV.png?v=2" alt="Juan Diego Pérez profile photo" />
+        <img src="CV.png?v=3" alt="Juan Diego Pérez profile photo" />
       </div>
       <p>Data Analyst Portfolio</p>
       <p><a href="https://github.com/juanperez238421-cpu">View My GitHub Profile</a></p>
@@ -225,7 +235,7 @@
     </aside>
 
     <main>
-      <span class="version-check">Portfolio v2 · animations enabled</span>
+      <span class="version-check">Portfolio v3 · consolidated reels enabled</span>
 
       <section>
         <h2>About Me</h2>
@@ -264,57 +274,40 @@
         <h2>Selected Projects</h2>
 
         <article class="project">
-          <h3>Commercial Performance Dashboard</h3>
-          <p>This project analyzes the commercial performance of a retail business using key metrics such as <strong>revenue, net profit, profit margin, number of orders, average ticket, product category, customer segment, and country</strong>.</p>
+          <h3>Power BI Commercial Dashboard Reel</h3>
+          <p>This consolidated reel presents the executive overview, filter interaction, and detailed commercial analysis of a Power BI dashboard focused on business performance, profitability, and stakeholder reporting.</p>
           <div class="project-media">
-            <video autoplay muted loop playsinline preload="metadata" controls>
-              <source src="OverviewEjecutivoProgrammaticAnimation.mp4?v=2" type="video/mp4" />
+            <video id="powerbi-reel" autoplay muted playsinline controls preload="metadata">
+              <source src="OverviewEjecutivoProgrammaticAnimation.mp4?v=3" type="video/mp4" />
             </video>
+            <div id="powerbi-status" class="playlist-status">Power BI reel · Scene 1 of 3 · Executive overview</div>
           </div>
-          <p class="media-caption">Animated overview of the executive dashboard and main KPI structure.</p>
+          <p class="media-caption">One consolidated project reel using the three Power BI animations as a professional sequence.</p>
           <h4>Tools and Project Type</h4>
           <div class="badges">
             <span class="badge">Power BI</span>
             <span class="badge">DAX</span>
-            <span class="badge">Business Intelligence</span>
-            <span class="badge">Dashboard</span>
-          </div>
-          <p><strong>Main insight:</strong> The business showed solid overall performance, but profitability varied by product and category.</p>
-        </article>
-
-        <article class="project">
-          <h3>Executive Dashboard Filter Interaction</h3>
-          <p>This animation shows how interactive filters modify the executive view and support stakeholder exploration of key business metrics.</p>
-          <div class="project-media">
-            <video autoplay muted loop playsinline preload="metadata" controls>
-              <source src="OverviewEjecutivoFilterVariationAnimation.mp4?v=2" type="video/mp4" />
-            </video>
-          </div>
-          <p class="media-caption">Animated filter variation for dashboard storytelling and stakeholder review.</p>
-          <h4>Tools and Project Type</h4>
-          <div class="badges">
-            <span class="badge">Power BI</span>
-            <span class="badge">Filters</span>
             <span class="badge">Dashboard UX</span>
-            <span class="badge">Business Reporting</span>
+            <span class="badge">Business Intelligence</span>
           </div>
+          <p><strong>Main insight:</strong> The dashboard connects executive KPIs, filter-driven exploration, and detailed commercial analysis into a single business storytelling workflow.</p>
         </article>
 
         <article class="project">
-          <h3>Detailed Commercial Analysis</h3>
-          <p>This project section focuses on a more detailed analytical view, supporting deeper inspection of commercial performance and operational drivers.</p>
+          <h3>SQL Skills Animation</h3>
+          <p>This animation highlights SQL skills applied to data analysis workflows, including query logic, structured thinking, and analytical communication.</p>
           <div class="project-media">
-            <video autoplay muted loop playsinline preload="metadata" controls>
-              <source src="AnalisisDetalladoProgrammaticAnimation.mp4?v=2" type="video/mp4" />
+            <video autoplay muted loop playsinline controls preload="metadata">
+              <source src="P1.mp4?v=3" type="video/mp4" />
             </video>
           </div>
-          <p class="media-caption">Detailed animated analysis view for commercial performance exploration.</p>
+          <p class="media-caption">SQL-oriented animation for portfolio evidence and technical storytelling.</p>
           <h4>Tools and Project Type</h4>
           <div class="badges">
-            <span class="badge">Power BI</span>
-            <span class="badge">Commercial Analysis</span>
-            <span class="badge">KPIs</span>
-            <span class="badge">Storytelling</span>
+            <span class="badge">SQL</span>
+            <span class="badge">Queries</span>
+            <span class="badge">Data Analysis</span>
+            <span class="badge">Portfolio Animation</span>
           </div>
         </article>
 
@@ -346,5 +339,38 @@
       </section>
     </main>
   </div>
+
+  <script>
+    const powerBiScenes = [
+      {
+        src: "OverviewEjecutivoProgrammaticAnimation.mp4?v=3",
+        label: "Power BI reel · Scene 1 of 3 · Executive overview"
+      },
+      {
+        src: "OverviewEjecutivoFilterVariationAnimation.mp4?v=3",
+        label: "Power BI reel · Scene 2 of 3 · Filter interaction"
+      },
+      {
+        src: "AnalisisDetalladoProgrammaticAnimation.mp4?v=3",
+        label: "Power BI reel · Scene 3 of 3 · Detailed commercial analysis"
+      }
+    ];
+
+    const powerBiVideo = document.getElementById("powerbi-reel");
+    const powerBiStatus = document.getElementById("powerbi-status");
+    let sceneIndex = 0;
+
+    function loadPowerBiScene(index) {
+      sceneIndex = index % powerBiScenes.length;
+      powerBiVideo.src = powerBiScenes[sceneIndex].src;
+      powerBiStatus.textContent = powerBiScenes[sceneIndex].label;
+      powerBiVideo.load();
+      powerBiVideo.play().catch(() => {});
+    }
+
+    powerBiVideo.addEventListener("ended", () => {
+      loadPowerBiScene(sceneIndex + 1);
+    });
+  </script>
 </body>
 </html>
