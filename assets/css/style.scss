@@ -36,14 +36,16 @@ header p {
 
 header img {
   border-radius: 50%;
-  width: 240px;
-  height: 240px;
+  width: 220px;
+  height: 220px;
   object-fit: contain;
   object-position: center center;
   display: block;
   margin: 0 0 18px 0;
   background: #ffffff;
   border: 1px solid #eeeeee;
+  padding: 12px;
+  box-sizing: border-box;
 }
 
 /* Main content typography */
@@ -118,6 +120,7 @@ footer {
   header img {
     width: 190px;
     height: 190px;
+    padding: 10px;
   }
 }
 
@@ -129,6 +132,7 @@ footer {
   header img {
     width: 170px;
     height: 170px;
+    padding: 8px;
   }
 
   section h1 {
