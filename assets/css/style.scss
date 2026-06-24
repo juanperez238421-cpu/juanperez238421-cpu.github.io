@@ -1,0 +1,135 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+/* Global clean white portfolio layout */
+body {
+  background: #ffffff;
+  color: #24292f;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+.wrapper {
+  background: #ffffff;
+  width: 960px;
+}
+
+section {
+  background: #ffffff;
+}
+
+/* Left profile column */
+header h1 {
+  color: #267CB9;
+  font-size: 30px;
+  line-height: 1.05;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+header p {
+  color: #555555;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+header img {
+  border-radius: 50%;
+  width: 240px;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+  margin: 0 0 18px 0;
+  background: #f3f3f3;
+}
+
+/* Main content typography */
+section h1 {
+  color: #111111;
+  font-size: 30px;
+  font-weight: 700;
+  margin-top: 0;
+}
+
+section h2 {
+  color: #111111;
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 28px;
+}
+
+section h3 {
+  color: #111111;
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 24px;
+}
+
+section p,
+section li {
+  color: #444444;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+strong {
+  color: #111111;
+  font-weight: 700;
+}
+
+a {
+  color: #267CB9;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #0056a3;
+  text-decoration: underline;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #e5e5e5;
+  margin: 28px 0;
+}
+
+/* Badge spacing */
+p img {
+  margin: 2px 2px 6px 0;
+}
+
+/* Footer */
+footer {
+  color: #777777;
+  font-size: 12px;
+}
+
+/* Responsive behavior */
+@media print, screen and (max-width: 960px) {
+  .wrapper {
+    width: auto;
+    margin: 0;
+  }
+
+  header img {
+    width: 190px;
+    height: 190px;
+  }
+}
+
+@media print, screen and (max-width: 720px) {
+  header {
+    padding-right: 0;
+  }
+
+  header img {
+    width: 170px;
+    height: 170px;
+  }
+
+  section h1 {
+    font-size: 26px;
+  }
+}
