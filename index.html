@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Juan Diego Pérez | Data Analyst Portfolio</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       background: #ffffff;
@@ -16,22 +13,19 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       line-height: 1.6;
     }
-
     .page {
-      max-width: 980px;
+      max-width: 1050px;
       margin: 0 auto;
       display: grid;
       grid-template-columns: 300px 1fr;
       gap: 70px;
       padding: 60px 30px 80px;
     }
-
     .sidebar {
       position: sticky;
       top: 50px;
       height: fit-content;
     }
-
     .sidebar h1 {
       margin: 0 0 24px;
       color: #267CB9;
@@ -39,19 +33,14 @@
       line-height: 1.05;
       font-weight: 800;
     }
-
     .photo-frame {
       width: 245px;
       height: 245px;
       border-radius: 50%;
       overflow: hidden;
       background: #f6f8fa;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       margin-bottom: 22px;
     }
-
     .photo-frame img {
       width: 100%;
       height: 100%;
@@ -59,27 +48,15 @@
       object-position: center 38%;
       display: block;
     }
-
     .sidebar p {
       margin: 0 0 20px;
       max-width: 250px;
       color: #666666;
       font-size: 15px;
     }
-
-    a {
-      color: #267CB9;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    main {
-      max-width: 620px;
-    }
-
+    a { color: #267CB9; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    main { max-width: 680px; }
     h2 {
       margin: 0 0 18px;
       color: #111111;
@@ -87,7 +64,6 @@
       line-height: 1.15;
       font-weight: 800;
     }
-
     h3 {
       margin: 34px 0 14px;
       color: #111111;
@@ -95,38 +71,27 @@
       line-height: 1.25;
       font-weight: 800;
     }
-
     h4 {
-      margin: 28px 0 12px;
+      margin: 24px 0 10px;
       color: #222222;
-      font-size: 18px;
-      line-height: 1.3;
+      font-size: 17px;
       font-weight: 800;
     }
-
-    p, li {
-      color: #3f3f3f;
-      font-size: 15px;
+    p, li { color: #3f3f3f; font-size: 15px; }
+    strong { color: #111111; font-weight: 800; }
+    ul { padding-left: 24px; }
+    hr {
+      border: 0;
+      height: 1px;
+      background: #e5e5e5;
+      margin: 36px 0;
     }
-
-    strong {
-      color: #111111;
-      font-weight: 800;
-    }
-
-    ul {
-      padding-left: 24px;
-    }
-
-    .soft-skills {
+    .soft-skills, .badges, .buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin: 10px 0 16px;
     }
-
-    .soft-skills span,
-    .badge {
+    .soft-skills span {
       display: inline-block;
       border: 1px solid #d8dee4;
       border-radius: 999px;
@@ -135,14 +100,7 @@
       font-size: 13px;
       background: #ffffff;
     }
-
-    .buttons {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin: 18px 0 34px;
-    }
-
+    .buttons { margin: 18px 0 34px; }
     .button {
       display: inline-block;
       background: #295F98;
@@ -152,64 +110,61 @@
       font-weight: 800;
       letter-spacing: 1px;
       text-transform: uppercase;
-      border-radius: 0;
     }
-
     .button:hover {
       color: #ffffff;
       text-decoration: none;
       background: #1f4e7e;
     }
-
-    hr {
-      border: 0;
-      height: 1px;
-      background: #e5e5e5;
-      margin: 36px 0;
-    }
-
     .project {
-      margin-bottom: 42px;
+      margin-bottom: 48px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid #eaeaea;
     }
-
-    .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin: 14px 0 18px;
-    }
-
+    .badges { margin: 14px 0 18px; }
     .badge {
+      display: inline-block;
       border-radius: 3px;
       background: #295F98;
       color: #ffffff;
-      border-color: #295F98;
+      border: 1px solid #295F98;
+      padding: 5px 10px;
       font-size: 11px;
       font-weight: 800;
       letter-spacing: 0.8px;
       text-transform: uppercase;
     }
-
+    .project-media {
+      margin: 18px 0 22px;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+    .project-media video {
+      width: 100%;
+      display: block;
+      background: #ffffff;
+    }
+    .media-caption {
+      margin-top: -10px;
+      color: #666666;
+      font-size: 13px;
+    }
     .footer {
       margin-top: 70px;
       color: #777777;
       font-size: 12px;
     }
-
     @media (max-width: 850px) {
       .page {
         grid-template-columns: 1fr;
         gap: 34px;
         padding: 36px 24px 60px;
       }
-
-      .sidebar {
-        position: static;
-      }
-
-      main {
-        max-width: 100%;
-      }
+      .sidebar { position: static; }
+      main { max-width: 100%; }
     }
   </style>
 </head>
@@ -265,7 +220,12 @@
         <article class="project">
           <h3>Commercial Performance Dashboard</h3>
           <p>This project analyzes the commercial performance of a retail business using key metrics such as <strong>revenue, net profit, profit margin, number of orders, average ticket, product category, customer segment, and country</strong>.</p>
-          <p>The objective was to build an executive dashboard in Power BI to help stakeholders identify business performance, profitability opportunities, and commercial trends.</p>
+          <div class="project-media">
+            <video autoplay muted loop playsinline preload="metadata">
+              <source src="OverviewEjecutivoProgrammaticAnimation.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <p class="media-caption">Animated overview of the executive dashboard and main KPI structure.</p>
           <h4>Tools and Project Type</h4>
           <div class="badges">
             <span class="badge">Power BI</span>
@@ -273,21 +233,48 @@
             <span class="badge">Business Intelligence</span>
             <span class="badge">Dashboard</span>
           </div>
-          <h4>Methodology</h4>
-          <ul>
-            <li>Data validation and preparation</li>
-            <li>Data modeling in Power BI</li>
-            <li>KPI creation using DAX</li>
-            <li>Dashboard design with filters, cards, and business visuals</li>
-            <li>Executive summary with business recommendations</li>
-          </ul>
-          <p><strong>Main insight:</strong> The business showed solid overall performance, but profitability varied by product and category. Some products generated strong revenue and profit, while others required a review of pricing, costs, or commercial strategy.</p>
+          <p><strong>Main insight:</strong> The business showed solid overall performance, but profitability varied by product and category.</p>
+        </article>
+
+        <article class="project">
+          <h3>Executive Dashboard Filter Interaction</h3>
+          <p>This animation shows how interactive filters modify the executive view and support stakeholder exploration of key business metrics.</p>
+          <div class="project-media">
+            <video autoplay muted loop playsinline preload="metadata">
+              <source src="OverviewEjecutivoFilterVariationAnimation.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <p class="media-caption">Animated filter variation for dashboard storytelling and stakeholder review.</p>
+          <h4>Tools and Project Type</h4>
+          <div class="badges">
+            <span class="badge">Power BI</span>
+            <span class="badge">Filters</span>
+            <span class="badge">Dashboard UX</span>
+            <span class="badge">Business Reporting</span>
+          </div>
+        </article>
+
+        <article class="project">
+          <h3>Detailed Commercial Analysis</h3>
+          <p>This project section focuses on a more detailed analytical view, supporting deeper inspection of commercial performance and operational drivers.</p>
+          <div class="project-media">
+            <video autoplay muted loop playsinline preload="metadata">
+              <source src="AnalisisDetalladoProgrammaticAnimation.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <p class="media-caption">Detailed animated analysis view for commercial performance exploration.</p>
+          <h4>Tools and Project Type</h4>
+          <div class="badges">
+            <span class="badge">Power BI</span>
+            <span class="badge">Commercial Analysis</span>
+            <span class="badge">KPIs</span>
+            <span class="badge">Storytelling</span>
+          </div>
         </article>
 
         <article class="project">
           <h3>A/B Testing Analysis</h3>
           <p>This project evaluates an A/B experiment to compare the conversion rate between a control group and a treatment group.</p>
-          <p>The objective was to determine whether the new version produced a statistically significant improvement in conversion.</p>
           <h4>Tools and Project Type</h4>
           <div class="badges">
             <span class="badge">Python</span>
@@ -295,21 +282,12 @@
             <span class="badge">Statistics</span>
             <span class="badge">A/B Testing</span>
           </div>
-          <h4>Methodology</h4>
-          <ul>
-            <li>Data loading and validation</li>
-            <li>Conversion rate calculation</li>
-            <li>Hypothesis definition</li>
-            <li>Statistical test for proportions</li>
-            <li>Business conclusion based on p-value and observed effect</li>
-          </ul>
           <p><strong>Main insight:</strong> The treatment group showed a slightly higher conversion rate, but the statistical test did not provide enough evidence to confirm a significant improvement.</p>
         </article>
 
         <article class="project">
           <h3>Funnel and Cohort Retention Analysis</h3>
           <p>This project analyzes user behavior through a conversion funnel and weekly cohort retention.</p>
-          <p>The objective was to identify where users drop off in the journey and evaluate how retention behaves over time.</p>
           <h4>Tools and Project Type</h4>
           <div class="badges">
             <span class="badge">SQL</span>
@@ -317,37 +295,7 @@
             <span class="badge">Power BI</span>
             <span class="badge">Cohort Analysis</span>
           </div>
-          <h4>Methodology</h4>
-          <ul>
-            <li>User journey definition</li>
-            <li>Funnel construction by event stage</li>
-            <li>Drop-off calculation</li>
-            <li>Cohort grouping by registration month</li>
-            <li>Weekly retention rate calculation</li>
-          </ul>
           <p><strong>Main insight:</strong> The funnel revealed relevant user loss before purchase, while cohort retention remained relatively stable across weeks.</p>
-        </article>
-
-        <article class="project">
-          <h3>Financial KPI Analysis with SQL</h3>
-          <p>This project focuses on financial performance analysis using SQL queries over a relational database.</p>
-          <p>The objective was to calculate and communicate business KPIs such as <strong>revenue, cost, gross profit, margin, and campaign performance</strong>.</p>
-          <h4>Tools and Project Type</h4>
-          <div class="badges">
-            <span class="badge">SQL</span>
-            <span class="badge">KPIs</span>
-            <span class="badge">Financial Analysis</span>
-            <span class="badge">Business Reporting</span>
-          </div>
-          <h4>Methodology</h4>
-          <ul>
-            <li>Database schema exploration</li>
-            <li>Table inspection and relationship identification</li>
-            <li>SQL data cleaning</li>
-            <li>KPI calculation with aggregations and joins</li>
-            <li>Executive summary preparation</li>
-          </ul>
-          <p><strong>Main insight:</strong> SQL made it possible to extract reliable business metrics directly from the database and support executive reporting.</p>
         </article>
       </section>
     </main>
