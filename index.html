@@ -6,6 +6,7 @@
   <title>Juan Diego Pérez | Data Analyst Portfolio</title>
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       background: #ffffff;
@@ -13,19 +14,22 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       line-height: 1.6;
     }
+
     .page {
-      max-width: 1050px;
+      max-width: 1080px;
       margin: 0 auto;
       display: grid;
       grid-template-columns: 300px 1fr;
       gap: 70px;
       padding: 60px 30px 80px;
     }
+
     .sidebar {
       position: sticky;
       top: 50px;
       height: fit-content;
     }
+
     .sidebar h1 {
       margin: 0 0 24px;
       color: #267CB9;
@@ -33,30 +37,42 @@
       line-height: 1.05;
       font-weight: 800;
     }
+
     .photo-frame {
       width: 245px;
       height: 245px;
       border-radius: 50%;
       overflow: hidden;
-      background: #f6f8fa;
+      background: #ffffff;
       margin-bottom: 22px;
+      border: 1px solid #eeeeee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
     .photo-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 38%;
+      width: 92%;
+      height: 92%;
+      object-fit: contain;
+      object-position: center center;
       display: block;
+      border-radius: 50%;
+      background: #ffffff;
     }
+
     .sidebar p {
       margin: 0 0 20px;
       max-width: 250px;
       color: #666666;
       font-size: 15px;
     }
+
     a { color: #267CB9; text-decoration: none; }
     a:hover { text-decoration: underline; }
-    main { max-width: 680px; }
+
+    main { max-width: 700px; }
+
     h2 {
       margin: 0 0 18px;
       color: #111111;
@@ -64,6 +80,7 @@
       line-height: 1.15;
       font-weight: 800;
     }
+
     h3 {
       margin: 34px 0 14px;
       color: #111111;
@@ -71,26 +88,42 @@
       line-height: 1.25;
       font-weight: 800;
     }
+
     h4 {
       margin: 24px 0 10px;
       color: #222222;
       font-size: 17px;
       font-weight: 800;
     }
+
     p, li { color: #3f3f3f; font-size: 15px; }
     strong { color: #111111; font-weight: 800; }
     ul { padding-left: 24px; }
+
     hr {
       border: 0;
       height: 1px;
       background: #e5e5e5;
       margin: 36px 0;
     }
+
+    .version-check {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 4px 9px;
+      border: 1px solid #d8dee4;
+      border-radius: 999px;
+      color: #57606a;
+      font-size: 12px;
+      background: #f6f8fa;
+    }
+
     .soft-skills, .badges, .buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
     }
+
     .soft-skills span {
       display: inline-block;
       border: 1px solid #d8dee4;
@@ -100,7 +133,9 @@
       font-size: 13px;
       background: #ffffff;
     }
+
     .buttons { margin: 18px 0 34px; }
+
     .button {
       display: inline-block;
       background: #295F98;
@@ -111,17 +146,21 @@
       letter-spacing: 1px;
       text-transform: uppercase;
     }
+
     .button:hover {
       color: #ffffff;
       text-decoration: none;
       background: #1f4e7e;
     }
+
     .project {
       margin-bottom: 48px;
       padding-bottom: 30px;
       border-bottom: 1px solid #eaeaea;
     }
+
     .badges { margin: 14px 0 18px; }
+
     .badge {
       display: inline-block;
       border-radius: 3px;
@@ -134,6 +173,7 @@
       letter-spacing: 0.8px;
       text-transform: uppercase;
     }
+
     .project-media {
       margin: 18px 0 22px;
       border: 1px solid #e5e5e5;
@@ -142,21 +182,25 @@
       background: #ffffff;
       box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     }
+
     .project-media video {
       width: 100%;
       display: block;
       background: #ffffff;
     }
+
     .media-caption {
       margin-top: -10px;
       color: #666666;
       font-size: 13px;
     }
+
     .footer {
       margin-top: 70px;
       color: #777777;
       font-size: 12px;
     }
+
     @media (max-width: 850px) {
       .page {
         grid-template-columns: 1fr;
@@ -173,7 +217,7 @@
     <aside class="sidebar">
       <h1>Juan Diego Pérez</h1>
       <div class="photo-frame">
-        <img src="CV.png" alt="Juan Diego Pérez profile photo" />
+        <img src="CV.png?v=2" alt="Juan Diego Pérez profile photo" />
       </div>
       <p>Data Analyst Portfolio</p>
       <p><a href="https://github.com/juanperez238421-cpu">View My GitHub Profile</a></p>
@@ -181,6 +225,8 @@
     </aside>
 
     <main>
+      <span class="version-check">Portfolio v2 · animations enabled</span>
+
       <section>
         <h2>About Me</h2>
         <p>I am <strong>Juan Diego Pérez</strong>, a Data Analyst in training with practical experience in <strong>SQL, Python, Power BI, statistics, A/B testing, cohort analysis, dashboards, and business reporting</strong>.</p>
@@ -221,8 +267,8 @@
           <h3>Commercial Performance Dashboard</h3>
           <p>This project analyzes the commercial performance of a retail business using key metrics such as <strong>revenue, net profit, profit margin, number of orders, average ticket, product category, customer segment, and country</strong>.</p>
           <div class="project-media">
-            <video autoplay muted loop playsinline preload="metadata">
-              <source src="OverviewEjecutivoProgrammaticAnimation.mp4" type="video/mp4" />
+            <video autoplay muted loop playsinline preload="metadata" controls>
+              <source src="OverviewEjecutivoProgrammaticAnimation.mp4?v=2" type="video/mp4" />
             </video>
           </div>
           <p class="media-caption">Animated overview of the executive dashboard and main KPI structure.</p>
@@ -240,8 +286,8 @@
           <h3>Executive Dashboard Filter Interaction</h3>
           <p>This animation shows how interactive filters modify the executive view and support stakeholder exploration of key business metrics.</p>
           <div class="project-media">
-            <video autoplay muted loop playsinline preload="metadata">
-              <source src="OverviewEjecutivoFilterVariationAnimation.mp4" type="video/mp4" />
+            <video autoplay muted loop playsinline preload="metadata" controls>
+              <source src="OverviewEjecutivoFilterVariationAnimation.mp4?v=2" type="video/mp4" />
             </video>
           </div>
           <p class="media-caption">Animated filter variation for dashboard storytelling and stakeholder review.</p>
@@ -258,8 +304,8 @@
           <h3>Detailed Commercial Analysis</h3>
           <p>This project section focuses on a more detailed analytical view, supporting deeper inspection of commercial performance and operational drivers.</p>
           <div class="project-media">
-            <video autoplay muted loop playsinline preload="metadata">
-              <source src="AnalisisDetalladoProgrammaticAnimation.mp4" type="video/mp4" />
+            <video autoplay muted loop playsinline preload="metadata" controls>
+              <source src="AnalisisDetalladoProgrammaticAnimation.mp4?v=2" type="video/mp4" />
             </video>
           </div>
           <p class="media-caption">Detailed animated analysis view for commercial performance exploration.</p>
