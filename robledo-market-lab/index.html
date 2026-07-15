@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aplicación local de comercio educativo: catálogo, carrito, validación, persistencia y recibo.">
+  <title>Robledo Market Lab | Proyecto final senior</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <div>
+        <p class="eyebrow">Seminario de Programación · Entrega de referencia</p>
+        <h1>Robledo Market Lab</h1>
+        <p class="header-copy">Aplicación web local con HTML, CSS y JavaScript: catálogo, carrito, validaciones, estado, persistencia y comprobante.</p>
+      </div>
+      <div class="header-actions" aria-label="Acciones generales">
+        <span class="status-badge">Versión 1.0.0 · referencia 2026</span>
+        <span class="status-badge" id="storageStatus">Estado local activo</span>
+        <a class="button button-secondary" href="https://github.com/juanperez238421-cpu/juanperez238421-cpu.github.io/tree/main/robledo-market-lab" target="_blank" rel="noopener noreferrer">Ver código en GitHub</a>
+        <button class="button button-secondary" id="resetAppButton" type="button">Reiniciar aplicación</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="shell page-layout">
+    <section class="catalog-column" aria-labelledby="catalogTitle">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">1. Entrada y selección</p>
+          <h2 id="catalogTitle">Catálogo de productos</h2>
+          <p>Busca, filtra y agrega productos. El catálogo se construye dinámicamente desde un arreglo de objetos.</p>
+        </div>
+        <span class="count-pill" id="productCount">0 productos</span>
+      </div>
+
+      <section class="toolbar card" aria-label="Filtros del catálogo">
+        <div class="field-group grow">
+          <label for="searchInput">Buscar producto</label>
+          <input id="searchInput" type="search" placeholder="Ej.: calculadora, regla..." autocomplete="off">
+        </div>
+        <div class="field-group">
+          <label for="categorySelect">Categoría</label>
+          <select id="categorySelect">
+            <option value="all">Todas</option>
+          </select>
+        </div>
+      </section>
+
+      <div id="catalogGrid" class="catalog-grid" aria-live="polite"></div>
+      <p id="emptyCatalogMessage" class="empty-state" hidden>No hay productos que coincidan con el filtro.</p>
+    </section>
+
+    <aside class="checkout-column" aria-labelledby="cartTitle">
+      <section class="card sticky-card">
+        <div class="section-heading compact">
+          <div>
+            <p class="section-kicker">2. Estado y procesamiento</p>
+            <h2 id="cartTitle">Carrito</h2>
+          </div>
+          <span class="count-pill" id="cartCount">0 ítems</span>
+        </div>
+
+        <div id="cartItems" class="cart-items" aria-live="polite"></div>
+        <p id="emptyCartMessage" class="empty-state">El carrito está vacío.</p>
+
+        <div class="summary-block" aria-label="Resumen económico">
+          <div class="summary-row"><span>Subtotal</span><strong id="subtotalValue">$0</strong></div>
+          <div class="summary-row discount-row"><span>Descuento</span><strong id="discountValue">-$0</strong></div>
+          <div class="summary-row"><span>Domicilio</span><strong id="deliveryValue">$0</strong></div>
+          <div class="summary-row total-row"><span>Total</span><strong id="totalValue">$0</strong></div>
+        </div>
+
+        <div class="coupon-row">
+          <div class="field-group grow">
+            <label for="couponInput">Cupón de demostración</label>
+            <input id="couponInput" type="text" placeholder="ROBLEDO10" maxlength="20" autocomplete="off">
+          </div>
+          <button class="button button-secondary" id="applyCouponButton" type="button">Aplicar</button>
+        </div>
+        <p id="couponMessage" class="helper-text" aria-live="polite">Usa ROBLEDO10 para aplicar 10% de descuento.</p>
+
+        <hr>
+
+        <form id="checkoutForm" novalidate>
+          <div class="section-heading compact form-title">
+            <div>
+              <p class="section-kicker">3. Validación y salida</p>
+              <h2>Datos de la orden</h2>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="customerName">Nombre completo <span aria-hidden="true">*</span></label>
+            <input id="customerName" name="customerName" type="text" autocomplete="name" minlength="3" maxlength="80" required>
+            <small class="field-error" id="customerNameError"></small>
+          </div>
+
+          <div class="field-group">
+            <label for="customerEmail">Correo <span aria-hidden="true">*</span></label>
+            <input id="customerEmail" name="customerEmail" type="email" autocomplete="email" maxlength="120" required>
+            <small class="field-error" id="customerEmailError"></small>
+          </div>
+
+          <fieldset class="delivery-options">
+            <legend>Método de entrega</legend>
+            <label class="radio-card">
+              <input type="radio" name="deliveryMethod" value="pickup" checked>
+              <span><strong>Recoger en el aula</strong><small>Sin costo adicional</small></span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="deliveryMethod" value="delivery">
+              <span><strong>Domicilio pedagógico</strong><small>Costo fijo de $6.000</small></span>
+            </label>
+          </fieldset>
+
+          <div class="field-group" id="addressGroup" hidden>
+            <label for="deliveryAddress">Dirección <span aria-hidden="true">*</span></label>
+            <input id="deliveryAddress" name="deliveryAddress" type="text" autocomplete="street-address" maxlength="140">
+            <small class="field-error" id="deliveryAddressError"></small>
+          </div>
+
+          <label class="checkbox-row">
+            <input id="termsInput" type="checkbox" required>
+            <span>Confirmo que revisé productos, cantidades y total.</span>
+          </label>
+          <small class="field-error" id="termsError"></small>
+
+          <div id="formMessage" class="form-message" role="alert" hidden></div>
+
+          <button class="button button-primary button-full" id="checkoutButton" type="submit">Generar comprobante</button>
+          <button class="button button-ghost button-full" id="clearCartButton" type="button">Vaciar carrito</button>
+        </form>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <p><strong>Proyecto educativo de referencia.</strong> Funciona en GitHub Pages o en un servidor local; no procesa pagos reales ni envía datos a internet.</p>
+      <div class="badges" aria-label="Conceptos incluidos">
+        <span class="badge">DOM</span>
+        <span class="badge">Eventos</span>
+        <span class="badge">Objetos</span>
+        <span class="badge">Clases</span>
+        <span class="badge">localStorage</span>
+        <span class="badge">Validación</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
