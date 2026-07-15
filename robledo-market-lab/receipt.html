@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Comprobante local de Robledo Market Lab.">
+  <title>Comprobante | Robledo Market Lab</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/receipt.js"></script>
+</head>
+<body class="receipt-page">
+  <main class="receipt-shell">
+    <section class="receipt-card" id="receiptCard" aria-labelledby="receiptTitle">
+      <header class="receipt-header">
+        <div>
+          <p class="eyebrow">Comprobante local</p>
+          <h1 id="receiptTitle">Robledo Market Lab</h1>
+          <p>Resumen de la operación generada en el navegador.</p>
+        </div>
+        <span class="status-badge success">Orden confirmada</span>
+      </header>
+
+      <div id="missingOrder" class="empty-state large" hidden>
+        <h2>No hay una orden disponible</h2>
+        <p>Regresa a la tienda y genera una nueva operación.</p>
+      </div>
+
+      <div id="receiptContent" hidden>
+        <section class="receipt-meta" aria-label="Datos de la orden">
+          <div><span>Orden</span><strong id="orderId"></strong></div>
+          <div><span>Fecha</span><strong id="orderDate"></strong></div>
+          <div><span>Cliente</span><strong id="orderCustomer"></strong></div>
+          <div><span>Entrega</span><strong id="orderDelivery"></strong></div>
+        </section>
+
+        <section aria-labelledby="itemsTitle">
+          <div class="section-heading compact">
+            <div>
+              <p class="section-kicker">Detalle</p>
+              <h2 id="itemsTitle">Productos</h2>
+            </div>
+          </div>
+          <div class="receipt-table-wrapper">
+            <table class="receipt-table">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Cantidad</th>
+                  <th>Precio</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody id="receiptItems"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="receipt-totals" aria-label="Totales">
+          <div><span>Subtotal</span><strong id="receiptSubtotal"></strong></div>
+          <div><span>Descuento</span><strong id="receiptDiscount"></strong></div>
+          <div><span>Domicilio</span><strong id="receiptDeliveryFee"></strong></div>
+          <div class="grand-total"><span>Total</span><strong id="receiptTotal"></strong></div>
+        </section>
+
+        <section class="receipt-note">
+          <h2>Qué demuestra este proyecto</h2>
+          <p>La orden fue creada a partir del estado del carrito, validada, serializada en <code>localStorage</code>, recuperada en otra página y renderizada dinámicamente.</p>
+        </section>
+      </div>
+    </section>
+
+    <div class="receipt-actions no-print">
+      <button class="button button-primary" id="printButton" type="button">Imprimir / Guardar PDF</button>
+      <a class="button button-secondary" href="index.html">Volver a la tienda</a>
+      <button class="button button-ghost" id="newOrderButton" type="button">Nueva orden</button>
+    </div>
+  </main>
+</body>
+</html>
