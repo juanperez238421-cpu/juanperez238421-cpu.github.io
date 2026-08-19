@@ -5,32 +5,150 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Encuesta Seminario 11°</title>
   <style>
-    body{font-family:Arial,sans-serif;background:#f5f7fa;margin:0;color:#1f2937}
-    .wrap{max-width:700px;margin:60px auto;padding:20px}
-    .card{background:#fff;border:1px solid #d8dee4;border-radius:14px;padding:32px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
-    h1{margin-top:0;font-size:2rem}
-    p{line-height:1.6}
-    ul{line-height:1.8}
-    .btn{display:inline-block;margin-top:16px;background:#0969da;color:#fff;text-decoration:none;font-weight:700;padding:13px 20px;border-radius:9px}
-    .small{margin-top:18px;color:#57606a;font-size:.95rem}
+    *{box-sizing:border-box}
+    body{margin:0;background:#f4f6f8;color:#1f2937;font-family:Arial,sans-serif}
+    main{max-width:680px;margin:40px auto;padding:16px}
+    .card{background:#fff;border:1px solid #d8dee4;border-radius:12px;padding:28px}
+    h1{margin:0 0 8px;font-size:1.8rem}
+    .intro{margin:0 0 24px;color:#57606a;line-height:1.5}
+    label.title{display:block;font-weight:700;margin:20px 0 8px}
+    input[type=text],select,textarea{width:100%;padding:11px 12px;border:1px solid #c9d1d9;border-radius:8px;font:inherit;background:#fff}
+    textarea{min-height:90px;resize:vertical}
+    .option{display:flex;gap:9px;align-items:flex-start;margin:9px 0;line-height:1.35}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .hint{font-size:.9rem;color:#6e7781;margin-top:5px}
+    #partnerBlock{display:none}
+    button{width:100%;margin-top:24px;padding:13px;border:0;border-radius:8px;background:#0969da;color:#fff;font-size:1rem;font-weight:700;cursor:pointer}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .message{display:none;margin-top:18px;padding:12px;border-radius:8px;line-height:1.45}
+    .success{display:block;background:#dafbe1;color:#116329;border:1px solid #aceebb}
+    .error{display:block;background:#ffebe9;color:#cf222e;border:1px solid #ff8182}
+    @media(max-width:560px){.row{grid-template-columns:1fr}.card{padding:20px}}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>Encuesta — Seminario de Programación 11°</h1>
-      <p>Esta encuesta es para organizar los proyectos del tercer periodo.</p>
-      <p><strong>Solo te preguntaremos:</strong></p>
-      <ul>
-        <li>tu nombre y grupo;</li>
-        <li>qué temáticas te interesan (puedes elegir varias);</li>
-        <li>si trabajarás individualmente o en pareja;</li>
-        <li>el nombre de tu pareja, si aplica;</li>
-        <li>una idea de proyecto opcional.</li>
-      </ul>
-      <a class="btn" href="https://github.com/juanperez238421-cpu/IJR---Seminario/issues/new?template=encuesta-seminario-p3.yml">Responder encuesta</a>
-      <div class="small">Necesitas iniciar sesión en GitHub para enviar la respuesta.</div>
+<main>
+  <form class="card" id="surveyForm">
+    <h1>Encuesta — Seminario de Programación 11°</h1>
+    <p class="intro">Registro simple para organizar los proyectos del tercer periodo. Puedes seleccionar varias temáticas.</p>
+
+    <label class="title" for="fullName">Nombre completo</label>
+    <input id="fullName" name="fullName" type="text" maxlength="120" required>
+
+    <label class="title" for="groupCode">Grupo</label>
+    <select id="groupCode" name="groupCode" required>
+      <option value="">Selecciona tu grupo</option>
+      <option>11-A</option>
+      <option>11-B</option>
+      <option>11-C</option>
+    </select>
+
+    <label class="title">Temáticas que te interesan</label>
+    <div class="hint">Marca una o varias opciones.</div>
+    <label class="option"><input type="checkbox" name="topics" value="Desarrollo web"> <span>Desarrollo web</span></label>
+    <label class="option"><input type="checkbox" name="topics" value="Python y ciencia de datos"> <span>Python y ciencia de datos</span></label>
+    <label class="option"><input type="checkbox" name="topics" value="Ciberseguridad defensiva"> <span>Ciberseguridad defensiva</span></label>
+    <label class="option"><input type="checkbox" name="topics" value="Diseño 3D y programación"> <span>Diseño 3D y programación</span></label>
+    <label class="option"><input type="checkbox" name="topics" value="Robótica y automatización"> <span>Robótica y automatización</span></label>
+    <label class="option"><input type="checkbox" name="topics" value="Otra propuesta"> <span>Otra propuesta</span></label>
+
+    <label class="title">¿Cómo quieres trabajar?</label>
+    <div class="row">
+      <label class="option"><input type="radio" name="workMode" value="Individual" required> <span>Individual</span></label>
+      <label class="option"><input type="radio" name="workMode" value="Pareja" required> <span>En pareja</span></label>
     </div>
-  </div>
+
+    <div id="partnerBlock">
+      <label class="title" for="partnerName">Nombre de tu pareja</label>
+      <input id="partnerName" name="partnerName" type="text" maxlength="120">
+    </div>
+
+    <label class="title" for="projectIdea">Idea de proyecto <span class="hint">(opcional)</span></label>
+    <textarea id="projectIdea" name="projectIdea" maxlength="1000" placeholder="Escribe una idea breve si ya tienes una."></textarea>
+
+    <button id="submitBtn" type="submit">Enviar registro</button>
+    <div id="message" class="message" role="status"></div>
+  </form>
+</main>
+
+<script>
+  const SUPABASE_URL = 'https://rlfxnjbqxbozjdzkbwlz.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_rmVOQ3Orx49KpW_4uMqYew_c2HpcA87';
+  const form = document.getElementById('surveyForm');
+  const partnerBlock = document.getElementById('partnerBlock');
+  const partnerName = document.getElementById('partnerName');
+  const message = document.getElementById('message');
+  const submitBtn = document.getElementById('submitBtn');
+
+  document.querySelectorAll('input[name="workMode"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const pair = radio.checked && radio.value === 'Pareja';
+      if (pair) {
+        partnerBlock.style.display = 'block';
+        partnerName.required = true;
+      } else if (radio.checked) {
+        partnerBlock.style.display = 'none';
+        partnerName.required = false;
+        partnerName.value = '';
+      }
+    });
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    message.className = 'message';
+    message.textContent = '';
+
+    const topics = [...document.querySelectorAll('input[name="topics"]:checked')].map(x => x.value);
+    if (!topics.length) {
+      message.className = 'message error';
+      message.textContent = 'Selecciona al menos una temática.';
+      return;
+    }
+
+    const workMode = document.querySelector('input[name="workMode"]:checked')?.value;
+    const payload = {
+      full_name: document.getElementById('fullName').value.trim(),
+      group_code: document.getElementById('groupCode').value,
+      topics,
+      work_mode: workMode,
+      partner_name: workMode === 'Pareja' ? partnerName.value.trim() : null,
+      project_idea: document.getElementById('projectIdea').value.trim() || null
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/seminar11_simple_survey`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const detail = await response.text();
+        throw new Error(detail || `Error ${response.status}`);
+      }
+
+      form.reset();
+      partnerBlock.style.display = 'none';
+      partnerName.required = false;
+      message.className = 'message success';
+      message.textContent = 'Registro enviado correctamente. Gracias.';
+    } catch (error) {
+      console.error(error);
+      message.className = 'message error';
+      message.textContent = 'No fue posible enviar el registro. Intenta nuevamente.';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Enviar registro';
+    }
+  });
+</script>
 </body>
 </html>
