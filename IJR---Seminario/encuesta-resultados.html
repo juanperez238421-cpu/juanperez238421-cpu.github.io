@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resultados — Encuesta Seminario 11°</title>
+  <style>
+    :root{--bg:#f6f8fa;--card:#fff;--text:#1f2328;--muted:#59636e;--line:#d0d7de;--accent:#0969da;--ok:#1a7f37}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{max-width:1180px;margin:0 auto;padding:32px 18px 60px} h1{margin:0 0 8px;font-size:2rem} h2{margin-top:0}
+    .lead{color:var(--muted);margin:0 0 24px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 24px}
+    button,a.button{border:1px solid var(--line);background:var(--card);color:var(--text);padding:9px 14px;border-radius:8px;text-decoration:none;font-weight:600;cursor:pointer}
+    button.primary,a.primary{background:var(--accent);border-color:var(--accent);color:#fff}.status{color:var(--muted);font-size:.92rem;margin:8px 0 18px}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:20px}.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+    .big{font-size:2rem;font-weight:700;margin:4px 0}.muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}.bar-row{display:grid;grid-template-columns:minmax(140px,1fr) 3fr 42px;gap:10px;align-items:center;margin:10px 0}.bar{height:12px;background:#eaeef2;border-radius:999px;overflow:hidden}.bar>span{display:block;height:100%;background:var(--accent)}
+    .table-wrap{overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;min-width:900px}th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#f6f8fa;position:sticky;top:0}tr:last-child td{border-bottom:0}.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#ddf4ff;margin:2px 4px 2px 0;font-size:.85rem}.empty{padding:28px;color:var(--muted);text-align:center}.error{background:#ffebe9;border:1px solid #ff8182;color:#cf222e;padding:12px;border-radius:8px;margin:12px 0}.ok{color:var(--ok);font-weight:600}
+  </style>
+</head>
+<body>
+<main>
+  <h1>Resultados — Seminario de Programación 11°</h1>
+  <p class="lead">Panel docente para revisar qué temáticas eligieron los estudiantes, su primera opción y si trabajarán individualmente o en pareja.</p>
+
+  <div class="toolbar">
+    <button class="primary" id="refresh">Actualizar resultados</button>
+    <a class="button" href="https://github.com/juanperez238421-cpu/IJR---Seminario/issues?q=is%3Aissue+in%3Atitle+%22%5BEncuesta+P3%5D%22" target="_blank" rel="noopener">Ver respuestas en GitHub Issues</a>
+    <a class="button" href="https://github.com/juanperez238421-cpu/IJR---Seminario/issues/new?template=encuesta-seminario-p3.yml" target="_blank" rel="noopener">Abrir encuesta estudiante</a>
+  </div>
+
+  <div id="status" class="status">Cargando…</div>
+  <div id="error"></div>
+
+  <section class="cards">
+    <div class="card"><div class="muted">Respuestas</div><div class="big" id="total">0</div></div>
+    <div class="card"><div class="muted">Individual</div><div class="big" id="individual">0</div></div>
+    <div class="card"><div class="muted">En pareja</div><div class="big" id="pair">0</div></div>
+  </section>
+
+  <section class="grid">
+    <div class="card"><h2>Temáticas seleccionadas</h2><div id="topics"></div></div>
+    <div class="card"><h2>Primera opción</h2><div id="firstChoices"></div></div>
+  </section>
+
+  <section>
+    <h2>Detalle por estudiante</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Estudiante</th><th>Grupo</th><th>Temáticas</th><th>Primera opción</th><th>Modalidad</th><th>Pareja</th><th>Idea / comentario</th><th>GitHub</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="8" class="empty">Cargando respuestas…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<script>
+const API='https://api.github.com/repos/juanperez238421-cpu/IJR---Seminario/issues?state=all&per_page=100';
+const FALLBACK='https://github.com/juanperez238421-cpu/IJR---Seminario/issues?q=is%3Aissue+in%3Atitle+%22%5BEncuesta+P3%5D%22';
+
+function section(body,label){
+  if(!body) return '';
+  const escaped=label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const re=new RegExp('###\\s+'+escaped+'\\s*\\n([\\s\\S]*?)(?=\\n###\\s+|$)','i');
+  const m=body.match(re);
+  return m?m[1].trim():'';
+}
+function clean(v){return (v||'').replace(/^_No response_$/i,'').trim();}
+function checked(v){
+  return (v||'').split('\n').map(x=>x.trim()).filter(x=>/^- \[[xX]\]/.test(x)).map(x=>x.replace(/^- \[[xX]\]\s*/,'').trim());
+}
+function parseIssue(issue){
+  const b=issue.body||'';
+  return {
+    name: clean(section(b,'Nombre completo')),
+    group: clean(section(b,'Grupo')),
+    topics: checked(section(b,'Temáticas que te interesan')),
+    first: clean(section(b,'Primera opción')),
+    mode: clean(section(b,'Modalidad de trabajo')),
+    partner: clean(section(b,'Si escogiste pareja, escribe el nombre de tu compañero(a)')),
+    idea: clean(section(b,'Idea de proyecto o comentario')),
+    url: issue.html_url,
+    number: issue.number,
+    created: issue.created_at
+  };
+}
+function count(items,keyFn){const m={};items.forEach(x=>{const k=keyFn(x);if(k)m[k]=(m[k]||0)+1});return m}
+function bars(target,data,total){
+  const el=document.getElementById(target);el.innerHTML='';
+  const entries=Object.entries(data).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){el.innerHTML='<div class="muted">Sin datos todavía.</div>';return}
+  entries.forEach(([name,n])=>{
+    const row=document.createElement('div');row.className='bar-row';
+    const pct=total?Math.round((n/total)*100):0;
+    row.innerHTML=`<div>${name}</div><div class="bar"><span style="width:${pct}%"></span></div><strong>${n}</strong>`;
+    el.appendChild(row);
+  });
+}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+async function load(){
+  const status=document.getElementById('status'), error=document.getElementById('error'), rows=document.getElementById('rows');
+  status.textContent='Actualizando…'; error.innerHTML='';
+  try{
+    const r=await fetch(API,{headers:{Accept:'application/vnd.github+json'}});
+    if(!r.ok) throw new Error(`GitHub API respondió ${r.status}`);
+    const issues=await r.json();
+    const survey=issues.filter(i=>!i.pull_request && ((i.title||'').startsWith('[Encuesta P3]') || (i.body||'').includes('### Temáticas que te interesan'))).map(parseIssue);
+    document.getElementById('total').textContent=survey.length;
+    document.getElementById('individual').textContent=survey.filter(x=>x.mode==='Individual').length;
+    document.getElementById('pair').textContent=survey.filter(x=>x.mode==='En pareja').length;
+
+    const topicCounts={}; survey.forEach(x=>x.topics.forEach(t=>topicCounts[t]=(topicCounts[t]||0)+1));
+    bars('topics',topicCounts,survey.length);
+    bars('firstChoices',count(survey,x=>x.first),survey.length);
+
+    rows.innerHTML='';
+    if(!survey.length){rows.innerHTML='<tr><td colspan="8" class="empty">Aún no hay respuestas de la encuesta.</td></tr>'}
+    else survey.sort((a,b)=>(a.group+a.name).localeCompare(b.group+b.name,'es')).forEach(x=>{
+      const tr=document.createElement('tr');
+      const topicHtml=x.topics.length?x.topics.map(t=>`<span class="pill">${esc(t)}</span>`).join(''):'—';
+      tr.innerHTML=`<td><strong>${esc(x.name||'Sin nombre')}</strong></td><td>${esc(x.group||'—')}</td><td>${topicHtml}</td><td>${esc(x.first||'—')}</td><td>${esc(x.mode||'—')}</td><td>${esc(x.partner||'—')}</td><td>${esc(x.idea||'—')}</td><td><a href="${x.url}" target="_blank" rel="noopener">#${x.number}</a></td>`;
+      rows.appendChild(tr);
+    });
+    status.innerHTML=`<span class="ok">Actualizado</span> · ${new Date().toLocaleString('es-CO')}`;
+  }catch(e){
+    status.textContent='No fue posible actualizar automáticamente.';
+    error.innerHTML=`<div class="error">${esc(e.message)}. Puedes revisar las respuestas directamente en <a href="${FALLBACK}" target="_blank" rel="noopener">GitHub Issues</a>.</div>`;
+    rows.innerHTML='<tr><td colspan="8" class="empty">Usa el enlace de GitHub Issues mientras se restablece la consulta.</td></tr>';
+  }
+}
+document.getElementById('refresh').addEventListener('click',load); load();
+</script>
+</body>
+</html>
