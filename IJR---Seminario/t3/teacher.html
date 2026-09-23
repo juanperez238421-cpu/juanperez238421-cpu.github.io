@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Seminario 11 · Panel docente T3</title>
+  <link rel="stylesheet" href="css/teacher.css?v=20260819-t3v1">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="config.js?v=20260819-t3v1"></script>
+  <script type="module" src="js/teacher.js?v=20260819-t3v1"></script>
+</head>
+<body>
+<main class="shell">
+  <header class="topbar">
+    <div><div class="eyebrow">Instituto Jorge Robledo · Seminario de Programación 11°</div><h1>Curso T3 · Registro maestro</h1><p>Python + Java · progreso, nota y ayudas en vivo.</p></div>
+    <nav><a href="./">Curso</a></nav>
+  </header>
+
+  <section id="loginPanel" class="panel login-panel">
+    <div><span class="kicker">ACCESO DOCENTE</span><h2>Panel del curso interactivo</h2><p>Cuenta institucional @ijr.edu.co y segundo factor TOTP obligatorios.</p></div>
+    <form id="loginForm"><input id="teacherEmail" type="email" autocomplete="username" placeholder="docente@ijr.edu.co" required><input id="teacherPassword" type="password" autocomplete="current-password" placeholder="Contraseña institucional" required><button>Continuar</button></form>
+    <div id="mfaPanel" class="hidden"><p id="mfaHelp">Escribe el código de seis dígitos de tu aplicación autenticadora.</p><img id="mfaQr" class="hidden" alt="Código QR para configurar MFA"><input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="Código MFA"><button id="mfaButton" type="button">Verificar MFA</button></div>
+    <div id="loginStatus" class="status"></div>
+  </section>
+
+  <section id="dashboardPanel" class="hidden">
+    <div class="toolbar panel">
+      <div><strong>Actividad en vivo</strong><span id="updatedAt"></span></div>
+      <div class="filters">
+        <select id="groupFilter"><option value="">11-A · 11-B · 11-C</option><option>11-A</option><option>11-B</option><option>11-C</option></select>
+        <select id="languageFilter"><option value="">Python + Java</option><option value="python">Python</option><option value="java">Java</option></select>
+        <input id="searchInput" placeholder="Buscar integrante">
+        <button id="refreshButton" class="secondary">Actualizar</button>
+        <button id="logoutButton" class="secondary">Salir</button>
+      </div>
+    </div>
+    <div id="metrics" class="metrics"></div>
+    <section class="panel table-panel">
+      <div class="table-head"><div><h2>Equipos y progreso</h2><p>La nota mostrada es proyección mientras el equipo está activo y definitiva cuando completa 16 módulos.</p></div><span id="backendState" class="backend-state">Supabase</span></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Grupo</th><th>Equipo / integrantes</th><th>Ruta</th><th>Estado</th><th>Progreso</th><th>Nota</th><th>Ayudas</th><th>Errores</th><th>Revela</th><th>Omite</th><th>Salidas</th><th>Última actividad</th></tr></thead>
+        <tbody id="courseBody"></tbody>
+      </table></div>
+    </section>
+  </section>
+
+  <section id="localQaPanel" class="panel local-qa">
+    <div><span class="kicker">QA LOCAL</span><h2>Este navegador</h2><p>Útil para comprobar la interfaz aun si el backend no está disponible. No sustituye el registro maestro de toda la clase.</p></div>
+    <div id="localAttempt">Sin sesión local.</div>
+  </section>
+</main>
+</body>
+</html>
