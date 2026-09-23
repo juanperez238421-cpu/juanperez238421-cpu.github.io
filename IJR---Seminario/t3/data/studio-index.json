@@ -1,0 +1,90 @@
+{
+  "studio": {
+    "slug": "seminar11-software-engineering-studio-2026",
+    "title": "SEMINARIO 11 — Software Engineering Studio",
+    "hour1": "OOP + UML for everyone",
+    "hour2": "Specialized Project Studio",
+    "weeklyRule": "design → model → implement → test → document → defend",
+    "commonCore": [
+      {"week":1,"title":"Class, object and instance","oop":"Class vs object vs instance; identity and state","uml":"UML class box: name, attributes, operations","existing":"m08","evidence":"One class, two instances and UML V1"},
+      {"week":2,"title":"State and behavior","oop":"Attributes, methods and state changes","uml":"Attributes and operations with types","existing":"m08","evidence":"Object state trace + updated UML"},
+      {"week":3,"title":"Constructors","oop":"Valid initial state and constructor parameters","uml":"Constructor and object initialization","existing":"m09","evidence":"Constructor + three valid objects"},
+      {"week":4,"title":"Encapsulation","oop":"Protect state; controlled access","uml":"Visibility + / - and public operations","existing":"m10","evidence":"Encapsulated class + justification"},
+      {"week":5,"title":"Object relationships","oop":"Association, aggregation and composition","uml":"Relationship lines and multiplicity","existing":"m12","evidence":"Three collaborating classes"},
+      {"week":6,"title":"Inheritance","oop":"Generalization with a real is-a relationship","uml":"Generalization arrow","existing":"m11","evidence":"Parent/child model + overridden behavior"},
+      {"week":7,"title":"Polymorphism and abstraction","oop":"Common contract, multiple behaviors","uml":"Abstract class/interface representation","existing":"m11-m12","evidence":"Common operation implemented in two types"},
+      {"week":8,"title":"Architecture","oop":"Responsibilities and separation of concerns","uml":"Complete class diagram V2","existing":"m14","evidence":"Architecture before feature coding"},
+      {"week":9,"title":"Debugging and refactoring","oop":"Find defects; improve names, cohesion and duplication","uml":"Synchronize diagram with refactored code","existing":"m13-m14","evidence":"Before/after commit + UML V3"},
+      {"week":10,"title":"Architecture defense","oop":"Explain state, flow, relationships and design decisions","uml":"Final diagram","existing":"m15-m16","evidence":"Live explanation + small modification"}
+    ],
+    "tracks": [
+      {
+        "slug":"web","title":"Web Development","stack":["HTML","CSS","JavaScript","DOM","Fetch / localStorage"],"project":"Web Management System","examples":["Inventory","Reservations","Orders","Library","Events","Tasks"],
+        "sprints":[
+          {"n":1,"title":"Problem + MVP","goal":"Define user, problem, input/process/output and minimum useful feature.","deliverable":"README problem statement + backlog"},
+          {"n":2,"title":"Data model + UML V1","goal":"Model domain objects before interface logic.","deliverable":"UML V1 + object examples"},
+          {"n":3,"title":"Interface prototype","goal":"Build semantic HTML and responsive layout.","deliverable":"Navigable UI shell"},
+          {"n":4,"title":"OOP integration","goal":"Implement domain classes and connect them to DOM events.","deliverable":"Working class-based feature"},
+          {"n":5,"title":"Persistence + validation","goal":"Validate inputs and persist meaningful state.","deliverable":"localStorage/JSON flow + invalid case"},
+          {"n":6,"title":"Testing","goal":"Test valid, invalid and boundary scenarios.","deliverable":"Test checklist + fixes"},
+          {"n":7,"title":"Refactor + accessibility","goal":"Improve structure, naming, reuse and UI states.","deliverable":"Refactor commit + UML V2"},
+          {"n":8,"title":"Release + defense","goal":"Publish MVP and defend architecture live.","deliverable":"Release URL + final UML + defense"}
+        ]
+      },
+      {
+        "slug":"data-science","title":"Python & Data Science","stack":["Python","CSV","Pandas","Matplotlib","descriptive statistics"],"project":"Data Analysis Studio","examples":["School data","Mobility","Environment","Sports","Public open data","Surveys"],
+        "sprints":[
+          {"n":1,"title":"Question + dataset","goal":"Define one answerable question and obtain a suitable dataset.","deliverable":"Question + data dictionary"},
+          {"n":2,"title":"Pipeline + UML V1","goal":"Model Dataset, Cleaner, Analyzer and Report responsibilities.","deliverable":"UML V1 + pipeline sketch"},
+          {"n":3,"title":"Load + inspect","goal":"Read data, identify types, nulls and quality issues.","deliverable":"Reproducible notebook/script"},
+          {"n":4,"title":"OOP analysis layer","goal":"Move reusable analysis behavior into classes.","deliverable":"Dataset/Analyzer classes"},
+          {"n":5,"title":"Statistics + visualization","goal":"Calculate descriptive measures and create justified plots.","deliverable":"Evidence table + charts"},
+          {"n":6,"title":"Validation","goal":"Check assumptions, edge cases and reproducibility.","deliverable":"Validation cells/tests"},
+          {"n":7,"title":"Refactor + report","goal":"Separate data, analysis and presentation responsibilities.","deliverable":"UML V2 + concise findings"},
+          {"n":8,"title":"Release + defense","goal":"Present evidence-based conclusions and defend code architecture.","deliverable":"Final notebook/app + UML + defense"}
+        ]
+      },
+      {
+        "slug":"cybersecurity","title":"Defensive Cybersecurity","stack":["Python/Web","input validation","authentication concepts","logging","threat modeling"],"project":"Secure Application / Security Audit Simulator","examples":["Role-based portal","Secure form","Audit log viewer","Password-policy simulator","Threat-model dashboard"],
+        "sprints":[
+          {"n":1,"title":"Asset + threat scope","goal":"Define what is protected and only defensive, authorized scenarios.","deliverable":"Asset list + threat model"},
+          {"n":2,"title":"Security objects + UML V1","goal":"Model User, Role, Session, Validator and AuditLog.","deliverable":"UML V1 + trust boundaries"},
+          {"n":3,"title":"Validation layer","goal":"Implement allow-list validation and safe error handling.","deliverable":"Valid/invalid input tests"},
+          {"n":4,"title":"OOP security services","goal":"Separate authentication/authorization simulation from UI.","deliverable":"Service classes + policy rules"},
+          {"n":5,"title":"Logging + least privilege","goal":"Record security-relevant events and enforce role boundaries.","deliverable":"Audit trail + access matrix"},
+          {"n":6,"title":"Defensive testing","goal":"Test expected misuse without attacking external systems.","deliverable":"Authorized test cases + fixes"},
+          {"n":7,"title":"Hardening + refactor","goal":"Reduce exposed state, duplicate checks and ambiguous privileges.","deliverable":"Hardening commit + UML V2"},
+          {"n":8,"title":"Security review + defense","goal":"Explain risks, mitigations and residual limitations.","deliverable":"Security report + final UML + defense"}
+        ]
+      },
+      {
+        "slug":"3d-programming","title":"3D Design + Programming","stack":["Python/Three.js/CAD scripting","coordinates","parametric geometry","transformations","assemblies"],"project":"Parametric 3D Generator","examples":["Mechanical part","Room","Furniture","Structure","Geometric solid system"],
+        "sprints":[
+          {"n":1,"title":"Geometry requirement","goal":"Define dimensions, parameters and expected generated object.","deliverable":"Dimension sheet + MVP"},
+          {"n":2,"title":"Geometry objects + UML V1","goal":"Model Shape, Solid, Transform and Assembly.","deliverable":"UML V1 + coordinate convention"},
+          {"n":3,"title":"Primitive generator","goal":"Create parameter-driven base geometry.","deliverable":"First generated model"},
+          {"n":4,"title":"OOP transformations","goal":"Encapsulate translation, rotation, scale or extrusion behavior.","deliverable":"Reusable geometry classes"},
+          {"n":5,"title":"Composition","goal":"Build a larger object from reusable parts.","deliverable":"Assembly model + UML relation"},
+          {"n":6,"title":"Validation","goal":"Reject invalid dimensions and verify geometric constraints.","deliverable":"Boundary tests"},
+          {"n":7,"title":"Refactor + export","goal":"Improve reuse and create a consistent export/render flow.","deliverable":"UML V2 + exported artifact"},
+          {"n":8,"title":"Demo + defense","goal":"Change a parameter live and explain architecture.","deliverable":"Final model + UML + live modification"}
+        ]
+      },
+      {
+        "slug":"robotics","title":"Robotics & Automation","stack":["Python/MicroPython/Arduino","sensors","actuators","state machines","control logic"],"project":"Automation System","examples":["Traffic light","Greenhouse","Parking system","Environmental control","Educational robot"],
+        "sprints":[
+          {"n":1,"title":"System requirement","goal":"Define sensor input, decision logic, actuator output and safety state.","deliverable":"I/O table + state sketch"},
+          {"n":2,"title":"Automation objects + UML V1","goal":"Model Sensor, Controller, Actuator and System.","deliverable":"UML V1 + state diagram"},
+          {"n":3,"title":"Simulation","goal":"Simulate sensor readings and deterministic outputs before hardware.","deliverable":"Runnable simulation"},
+          {"n":4,"title":"OOP control layer","goal":"Implement object responsibilities and controller behavior.","deliverable":"Class-based controller"},
+          {"n":5,"title":"State machine + fail-safe","goal":"Handle transitions, invalid readings and safe fallback.","deliverable":"State tests + fail-safe evidence"},
+          {"n":6,"title":"Integration testing","goal":"Test multiple input sequences and expected actuator responses.","deliverable":"Test matrix + fixes"},
+          {"n":7,"title":"Hardware/advanced simulation","goal":"Connect target hardware when available or strengthen simulation.","deliverable":"Integrated prototype + UML V2"},
+          {"n":8,"title":"Demo + defense","goal":"Run scenario live and defend object/state architecture.","deliverable":"Final prototype + UML + defense"}
+        ]
+      }
+    ],
+    "assessment": {"commonCore":30,"projectFunctional":40,"gitDocumentation":15,"liveDefense":15},
+    "finalEvidence":["Problem statement","UML class diagram V1","GitHub repository","Functional MVP","Final UML class diagram","Individual defense + live modification"]
+  }
+}
