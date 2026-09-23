@@ -1,0 +1,97 @@
+name: Sync Seminar 11 T3
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-seminar-11-t3
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout public site
+        uses: actions/checkout@v6
+        with:
+          path: site
+
+      - name: Checkout canonical Seminar source
+        uses: actions/checkout@v6
+        with:
+          repository: juanperez238421-cpu/IJR---Seminario
+          ref: main
+          path: seminar
+
+      - name: Validate canonical source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s seminar/t3/index.html
+          test -s seminar/t3/css/course.css
+          test -s seminar/t3/js/course.js
+          test -s seminar/t3/data/course-index.json
+          test -s seminar/t3/oop-uml/index.html
+          test -s seminar/t3/studio/index.html
+          test -s seminar/t3/tracks/index.html
+
+      - name: Mirror T3 into the live user site
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf site/IJR---Seminario/t3
+          mkdir -p site/IJR---Seminario
+          cp -R seminar/t3 site/IJR---Seminario/t3
+
+          cat > site/IJR---Seminario/index.html <<'HTML'
+          <!doctype html>
+          <html lang="es">
+          <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <meta http-equiv="refresh" content="0; url=t3/">
+          <link rel="canonical" href="t3/">
+          <title>Seminario 11 · Instituto Jorge Robledo</title>
+          </head>
+          <body>
+          <p>Abriendo <a href="t3/">Seminario 11 · Third Period Coding Studio</a>…</p>
+          </body>
+          </html>
+          HTML
+
+          cat > site/IJR---Seminario/monitor.html <<'HTML'
+          <!doctype html>
+          <html lang="es">
+          <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <meta http-equiv="refresh" content="0; url=t3/teacher.html">
+          <meta name="robots" content="noindex,nofollow">
+          <link rel="canonical" href="t3/teacher.html">
+          <title>Seminario 11 · Teacher</title>
+          </head>
+          <body>
+          <p>Ruta administrativa actualizada. <a href="t3/teacher.html">Abrir acceso docente protegido</a>.</p>
+          </body>
+          </html>
+          HTML
+
+      - name: Commit only when source changed
+        shell: bash
+        working-directory: site
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add IJR---Seminario/t3 IJR---Seminario/index.html IJR---Seminario/monitor.html
+          if git diff --cached --quiet; then
+            echo "Seminar mirror already up to date."
+            exit 0
+          fi
+          git commit -m "Sync Seminar 11 T3 from canonical repository"
+          git push
