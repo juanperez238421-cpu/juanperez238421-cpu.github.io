@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Seminar 11 OOP + UML Learning Hub with Supabase-backed classroom progress and dedicated theory/workshop routes.">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Seminar 11 · OOP + UML Learning Hub</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://rlfxnjbqxbozjdzkbwlz.supabase.co" crossorigin>
+  <link rel="stylesheet" href="styles.css?v=20260831-v1">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="../config.js?v=20260824-1"></script>
+  <script defer src="course-data.js?v=20260831-v1"></script>
+  <script type="module" src="hub.js?v=20260831-v1"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../" aria-label="Back to Seminar T3">
+      <span class="brand-mark">IJR</span>
+      <span><small>Instituto Jorge Robledo · Seminar 11</small><strong>OOP + UML Learning Hub</strong></span>
+    </a>
+    <div class="top-actions">
+      <span id="sessionBadge" class="session-badge hidden">Not registered</span>
+      <button id="switchButton" class="button button-light hidden" type="button">Switch registration</button>
+      <a class="button button-dark" href="../oop-logic-01/">Open OOP Colab Lab</a>
+    </div>
+  </header>
+
+  <section id="registrationPanel" class="registration-screen">
+    <div class="registration-card">
+      <p class="eyebrow">SOFTWARE ENGINEERING STUDIO · COMMON CORE</p>
+      <h1>Model first. Code second.</h1>
+      <p class="registration-lead">Register the student or exact classroom team using this computer. The Common Core connects <strong>Object-Oriented Programming</strong> with <strong>UML class diagrams</strong> and reuses the live Seminar T3 Supabase progress backend.</p>
+
+      <div class="sequence-rule">
+        <strong>10-session progression</strong>
+        <span>Objects → State → Constructors → Encapsulation → Relationships → Inheritance → Polymorphism → Architecture → Refactoring → Defense</span>
+        <small>Every session has a dedicated Theory page and a Workshop route. Python and Java share the same design language.</small>
+      </div>
+
+      <form id="registrationForm" class="hub-registration-form">
+        <div class="registration-grid">
+          <label>Language <small>· Lenguaje</small>
+            <select id="language" required><option value="python">Python</option><option value="java">Java</option></select>
+          </label>
+          <label>Registration mode <small>· Modalidad</small>
+            <select id="registrationMode" required><option value="individual">Individual · 1 student</option><option value="team">Team · 2–3 students</option></select>
+          </label>
+          <label>Group <small>· Grupo</small>
+            <select id="groupCode" required><option value="">Select…</option><option>11-A</option><option>11-B</option><option>11-C</option></select>
+          </label>
+          <label id="teamSizeWrap" class="hidden">Students at this computer
+            <select id="teamSize"><option value="2">2 students</option><option value="3">3 students</option></select>
+          </label>
+        </div>
+        <fieldset class="member-fieldset">
+          <legend>Students <small>· Integrantes</small></legend>
+          <div class="member-grid">
+            <label>Student 1<input id="memberName1" required autocomplete="name" placeholder="Full name"></label>
+            <label id="member2Wrap" class="hidden">Student 2<input id="memberName2" autocomplete="name" placeholder="Full name"></label>
+            <label id="member3Wrap" class="hidden">Student 3<input id="memberName3" autocomplete="name" placeholder="Full name"></label>
+          </div>
+        </fieldset>
+        <div class="sequence-rule">
+          <strong>Automatic saving</strong>
+          <span>Workshop/module completion is synchronized through the existing Seminar T3 Supabase RPC backend when available.</span>
+          <small>The browser keeps a local recovery copy. A different team should always use <strong>Switch registration</strong> before working.</small>
+        </div>
+        <div class="registration-actions">
+          <div><strong>Common Core rule</strong><span>predict → model → implement → test → explain. A program that only runs is not sufficient evidence of mastery.</span></div>
+          <button id="registerButton" class="button button-dark" type="submit">Enter OOP + UML Hub</button>
+        </div>
+        <p id="registrationStatus" class="inline-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <main id="hubPanel" class="hub-shell hidden">
+    <section class="hub-overview">
+      <div>
+        <p class="eyebrow">SEMINAR 11 · HOUR 1 · COMMON CORE</p>
+        <h1>Understand the object. Draw the design. Defend the code.</h1>
+        <p id="identitySummary">Registered learning path</p>
+        <p>The course is organized as ten design sessions. Each topic separates <strong>Theory</strong> from <strong>Workshop</strong>, while the workshop links to the proven Python/Java laboratory modules already tracked by Supabase.</p>
+        <div class="sequence-rule compact"><strong>Mastery evidence</strong><span>Concept + UML + executable code + modification + explanation.</span><small>UML is treated as an engineering model, not decoration added after coding.</small></div>
+      </div>
+      <div class="global-progress-card">
+        <span>Common Core progress</span><strong id="globalPercent">0%</strong>
+        <div class="progress-track"><span id="globalProgressBar"></span></div>
+        <small id="globalProgressCopy">0 of 10 sessions evidenced</small>
+      </div>
+    </section>
+
+    <section class="language-strip" aria-label="Current implementation language">
+      <div><span class="mini-label">CURRENT LANGUAGE</span><strong id="languageLabel">Python</strong></div>
+      <div><span class="mini-label">COMMON DESIGN LANGUAGE</span><strong>UML Class Diagram</strong></div>
+      <div><span class="mini-label">ENGINEERING LOOP</span><strong>design → model → implement → test → defend</strong></div>
+    </section>
+
+    <section class="topic-grid-heading">
+      <p class="eyebrow">LEARN BY DESIGN SESSION</p>
+      <h2>One topic · two dedicated pages</h2>
+      <p>Study the conceptual model first. Then move to the guided workshop and produce evidence that connects UML with running code.</p>
+    </section>
+    <section id="topicGrid" class="hub-topic-grid" aria-live="polite"></section>
+
+    <section class="architecture-banner">
+      <div><p class="eyebrow">FINAL COMMON-CORE DELIVERABLE</p><h2>Architecture before features.</h2><p>By Session 10, each project should have a defendable class diagram synchronized with the implementation: responsibilities, attributes, operations, visibility, relationships and inheritance only where justified.</p></div>
+      <a class="button button-dark" href="../studio/">Continue to Project Studio</a>
+    </section>
+
+    <footer class="footer"><span>Instituto Jorge Robledo · Seminar 11 · Third Period 2026</span><a href="../">Seminar T3 home</a></footer>
+  </main>
+</body>
+</html>
