@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Elige tu Proyecto · Seminario 11</title>
+  <link rel="stylesheet" href="../css/course.css?v=20260923-2">
+  <link rel="stylesheet" href="projects.css?v=20260923-4">
+  <script defer src="../config.js?v=20260824-1"></script>
+  <script type="module" src="projects.js?v=20260923-4"></script>
+  <script src="../access-gate.js?v=20260923-email-v12"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">P</div>
+    <div>
+      <div class="eyebrow">Instituto Jorge Robledo · Seminario 11°</div>
+      <h1>Project Decision Center</h1>
+    </div>
+  </div>
+  <nav class="top-actions">
+    <a href="../index.html" class="button ghost">Seminar Home</a>
+    <a href="../studio/" class="button ghost">Project Studio</a>
+  </nav>
+</header>
+
+<main class="project-shell">
+  <section class="project-intro">
+    <div class="hero-kicker">FINAL PROJECT DECISION</div>
+    <h2>Elige, modifica y confirma tu proyecto.</h2>
+    <p>Abre tu perfil y revisa tu estado. Si ya tienes un proyecto propuesto, puedes ajustarlo. Si aún no está definido, elige una opción entre las rutas disponibles o plantea tu propia idea y concrétala antes de confirmar.</p>
+  </section>
+
+  <section id="accessPanel" class="access-card">
+    <div>
+      <div class="section-label">STUDENT ACCESS</div>
+      <h3>Abre tu perfil</h3>
+      <p>Usa exactamente el correo institucional <strong>@ijr.edu.co</strong> que aparece en el registro del estudiante. No se aceptan correos institucionales distintos al asociado a tu registro.</p>
+    </div>
+    <form id="accessForm" class="access-form">
+      <label for="institutionalEmail">Correo institucional</label>
+      <div class="email-row">
+        <input id="institutionalEmail" type="email" autocomplete="email" inputmode="email" placeholder="nombre.apellido@ijr.edu.co" required>
+        <button class="button primary" type="submit">Abrir mis opciones</button>
+      </div>
+      <div id="accessStatus" class="access-status" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <section id="projectPanel" class="hidden">
+    <section class="student-project-head">
+      <div>
+        <div class="project-badges">
+          <span id="groupBadge" class="route-badge"></span>
+          <span id="registeredEmailBadge" class="route-badge email-badge"></span>
+          <span id="trackBadge" class="route-badge soft"></span>
+          <span id="modeBadge" class="route-badge mode"></span>
+          <span id="decisionBadgeTop" class="decision-badge"></span>
+        </div>
+        <div id="currentProjectLabel" class="section-label">CURRENT PROJECT</div>
+        <h2 id="studentName"></h2>
+        <h3 id="projectTitle"></h3>
+        <p id="projectSummary" class="project-lead"></p>
+        <p id="revisionMeta" class="revision-meta"></p>
+      </div>
+      <button id="changeEmail" class="button ghost" type="button">Cambiar correo</button>
+    </section>
+
+    <section class="decision-center">
+      <div class="decision-heading">
+        <div>
+          <div class="section-label">STEP 1 · CHOOSE A BASE</div>
+          <h3>¿Qué proyecto vas a realizar?</h3>
+          <p id="decisionLead">Selecciona una opción. La tarjeta solo carga una base: en el paso 2 puedes modificarla antes de guardarla.</p>
+        </div>
+        <span id="selectionBadge" class="selection-badge">Sin seleccionar</span>
+      </div>
+      <div id="optionGrid" class="option-grid" role="radiogroup" aria-label="Opciones de proyecto"></div>
+    </section>
+
+    <section class="editor-card">
+      <div class="editor-heading">
+        <div>
+          <div class="section-label">STEP 2 · MAKE IT YOURS</div>
+          <h3>Edita tu versión final</h3>
+          <p>Debes cambiar lo que haga falta para que el proyecto sea realmente tuyo y tenga un alcance claro.</p>
+        </div>
+        <button id="restoreCurrent" class="button ghost small" type="button">Recuperar lo guardado</button>
+      </div>
+
+      <form id="decisionForm" class="decision-form">
+        <input id="choiceKey" type="hidden">
+
+        <label id="trackField" class="field full">
+          <span>Ruta técnica</span>
+          <select id="trackSlugInput" required>
+            <option value="">Selecciona una ruta</option>
+            <option value="web">Web Development</option>
+            <option value="data-science">Python / Data Analyst</option>
+            <option value="cybersecurity">Defensive Cybersecurity</option>
+            <option value="3d-programming">3D + Printing</option>
+            <option value="robotics">Robotics</option>
+          </select>
+          <small>Al elegir una opción sugerida la ruta queda definida automáticamente. Si eliges “Mi propia idea”, selecciona aquí la ruta que corresponde.</small>
+        </label>
+
+        <label class="field full">
+          <span>Título del proyecto</span>
+          <input id="projectTitleInput" maxlength="180" required>
+          <small>Nombre concreto del producto que vas a construir.</small>
+        </label>
+
+        <label class="field full">
+          <span>¿Qué vas a construir?</span>
+          <textarea id="projectSummaryInput" rows="4" maxlength="1600" required></textarea>
+          <small>Explica el producto, usuario o problema y el alcance principal.</small>
+        </label>
+
+        <label class="field full">
+          <span>Objetivo verificable</span>
+          <textarea id="objectiveInput" rows="3" maxlength="1200" required></textarea>
+          <small>Debe poder demostrarse al final con un producto funcional, pruebas o evidencia.</small>
+        </label>
+
+        <label class="field full">
+          <span>Herramientas / stack</span>
+          <input id="stackInput" maxlength="700" placeholder="Python, Pandas, Matplotlib...">
+          <small>Separa las herramientas con comas. Máximo 12.</small>
+        </label>
+
+        <label class="field full">
+          <span>Nota para el docente <em>(opcional)</em></span>
+          <textarea id="studentNote" rows="2" maxlength="1200" placeholder="Ej.: cambié el enfoque porque quiero trabajar con..."></textarea>
+        </label>
+
+        <div class="authorization-box">
+          <div>
+            <strong>Confirmación de identidad para guardar</strong>
+            <p id="authHelp">Si ya usaste Project Studio en este equipo, intentaremos validar esa sesión. Si no, escribe tu código de estudiante ST…</p>
+          </div>
+          <label class="field code-field">
+            <span>Código ST…</span>
+            <input id="studentCode" autocomplete="off" spellcheck="false" maxlength="64" placeholder="ST…">
+          </label>
+        </div>
+
+        <label class="confirm-row">
+          <input id="finalConfirm" type="checkbox" required>
+          <span>Confirmo que esta será mi decisión de proyecto. Entiendo que puedo modificarla después, pero cada cambio quedará registrado como una nueva revisión.</span>
+        </label>
+
+        <div class="save-row">
+          <button id="saveDecision" class="button primary save-button" type="submit">Guardar y confirmar proyecto</button>
+          <div id="decisionStatus" class="decision-status" aria-live="polite"></div>
+        </div>
+      </form>
+    </section>
+
+    <section id="defineToday" class="define-card">
+      <div class="define-heading">
+        <div>
+          <div class="section-label">CHECK BEFORE CONFIRMING</div>
+          <h3 id="defineTitle">Preguntas para cerrar el alcance</h3>
+        </div>
+        <span id="decisionBadge" class="decision-badge"></span>
+      </div>
+      <p id="decisionNote" class="define-copy"></p>
+      <ol id="definitionQuestions" class="question-list"></ol>
+    </section>
+
+    <section class="project-grid">
+      <article class="project-card">
+        <div class="section-label">OBJECTIVE</div>
+        <h3>Objetivo actualmente guardado</h3>
+        <p id="objective"></p>
+      </article>
+      <article class="project-card">
+        <div class="section-label">TECH STACK</div>
+        <h3>Herramientas actualmente guardadas</h3>
+        <div id="stack" class="stack-list"></div>
+      </article>
+    </section>
+
+    <section id="safetyPanel" class="safety-card hidden">
+      <div class="section-label">SCOPE / SAFETY</div>
+      <p id="safetyScope"></p>
+    </section>
+
+    <section id="contentPanel" class="content-panel hidden">
+      <div class="section-label">PROJECT PLAYBOOK</div>
+      <h3>Contenido para empezar a construir</h3>
+      <p class="roadmap-copy">Este contenido es específico de tu ruta/proyecto. Úsalo como guía de trabajo: qué construir, qué probar y qué evidencia debes conservar.</p>
+      <div id="contentGrid" class="content-grid"></div>
+    </section>
+
+    <section id="roadmapPanel" class="roadmap-panel">
+      <div class="section-label">8-SPRINT ROADMAP</div>
+      <h3>Desarrollo paso a paso</h3>
+      <p class="roadmap-copy">Esta es la ruta base del proyecto. Después de confirmar tu decisión, úsala para construir evidencias verificables y ajusta el detalle con el docente cuando el alcance lo requiera.</p>
+      <div id="sprintGrid" class="sprint-grid"></div>
+    </section>
+
+    <section class="final-evidence">
+      <div>
+        <div class="section-label">FINAL DEFENSE</div>
+        <h3>Al final debes poder demostrar</h3>
+      </div>
+      <div class="evidence-grid">
+        <span>Problema y alcance</span>
+        <span>Diseño / UML</span>
+        <span>Repositorio GitHub</span>
+        <span>MVP funcional</span>
+        <span>Pruebas y QA</span>
+        <span>Defensa individual</span>
+      </div>
+    </section>
+  </section>
+</main>
+
+<footer class="course-footer">
+  <span>Seminario de Programación · Third Period 2026</span>
+  <span>Project Decision Center · student choice + revision history</span>
+</footer>
+</body>
+</html>
