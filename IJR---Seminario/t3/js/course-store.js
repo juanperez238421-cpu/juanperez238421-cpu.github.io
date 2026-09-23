@@ -63,6 +63,7 @@ export class CourseStore{
         const s=JSON.parse(sessionRaw);
         const data=await this.rpc(this.cfg.rpc.resume,{p_attempt_id:s.attemptId,p_attempt_token:s.token});
         const attempt=this._fromBackend(data.snapshot||data,s.token);
+        if(s.email)attempt.email=String(s.email).trim().toLowerCase();
         this.backend='supabase';
         this._saveLocal(attempt);
         return this.current();
@@ -105,6 +106,26 @@ export class CourseStore{
       restrictionEvents:Number(snapshot.restriction_events||0),
       records
     };
+  }
+
+  async startWithEmail({email,language='python'}){
+    email=String(email||'').trim().toLowerCase();
+    if(!/^[^\\s@]+@ijr\\.edu\\.co$/i.test(email))throw new Error('institutional_email_required');
+    if(!['python','java'].includes(language))throw new Error('invalid_language');
+    if(!this.sb || this.cfg.backendMode==='local')throw new Error('El registro institucional requiere conexión con Supabase.');
+
+    const data=await this.rpc('seminar_oop_uml_start_email_v8',{
+      p_institutional_email:email,
+      p_language:language,
+      p_session_id:uuid(),
+      p_user_agent:navigator.userAgent
+    });
+    sessionStorage.setItem(this.cfg.sessionKey,JSON.stringify({attemptId:data.attempt_id,token:data.attempt_token,email}));
+    const attempt=this._fromBackend(data.snapshot,data.attempt_token);
+    attempt.email=email;
+    this.backend='supabase';
+    this._saveLocal(attempt);
+    return this.current();
   }
 
   async start({language,group,names}){
