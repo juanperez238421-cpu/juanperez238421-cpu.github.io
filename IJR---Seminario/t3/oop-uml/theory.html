@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="light"><meta name="robots" content="noindex,nofollow">
+  <title>Seminar 11 · OOP + UML Theory</title>
+  <link rel="stylesheet" href="styles.css?v=20260831-v1"><script defer src="course-data.js?v=20260831-v1"></script>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="./"><span class="brand-mark">IJR</span><span><small>Seminar 11 · Common Core</small><strong>OOP + UML Theory</strong></span></a><div class="top-actions"><a class="button button-light" href="./">Learning Hub</a><a id="workshopTop" class="button button-dark" href="workshop.html">Open Workshop</a></div></header>
+<main class="page-shell">
+  <div class="crumbs"><a href="./">OOP + UML Hub</a><span>→</span><span id="crumbTopic">Theory</span></div>
+  <section class="page-hero"><p class="eyebrow" id="sessionLabel">COMMON CORE · THEORY</p><h1 id="title">Loading…</h1><p id="lead"></p></section>
+  <section class="content-grid">
+    <article class="panel"><p class="eyebrow">MENTAL MODEL</p><h2>What the design means</h2><div id="concepts" class="concept-list"></div></article>
+    <aside class="panel soft"><p class="eyebrow">UML CLASS VIEW</p><div class="uml-card"><div id="umlName" class="uml-title">Class</div><div id="umlAttrs" class="uml-section"></div><div id="umlOps" class="uml-section"></div></div><p class="callout">UML is a compact engineering language: <strong>name → state → behavior</strong>, extended with visibility and relationships when the model requires them.</p></aside>
+  </section>
+  <section class="content-grid">
+    <article class="panel"><p class="eyebrow">IMPLEMENTATION BRIDGE</p><h2 id="codeHeading">From UML to code</h2><div class="code-card"><pre id="codeExample"></pre></div><p>The code example is deliberately small. The goal is to see how a UML responsibility becomes a class, attribute/field, method and relationship in the selected language.</p></article>
+    <aside class="panel"><p class="eyebrow">COMMON DESIGN FAILURES</p><h2>What to avoid</h2><ul id="mistakes" class="mistake-list"></ul></aside>
+  </section>
+  <section class="panel" style="margin-top:18px"><p class="eyebrow">MASTERY EVIDENCE</p><h2>What should exist before leaving this topic</h2><ul id="evidence" class="evidence-list"></ul><div class="page-actions"><a class="button button-light" href="./">Back to Hub</a><a id="workshopBottom" class="button button-dark" href="workshop.html">Continue to Workshop</a></div></section>
+</main>
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ const p=new URLSearchParams(location.search),slug=p.get('topic')||'object-model',lang=p.get('lang')==='java'?'java':'python';
+ const t=(window.IJR_OOP_UML_DATA?.topics||[]).find(x=>x.slug===slug)||window.IJR_OOP_UML_DATA.topics[0];
+ const $=id=>document.getElementById(id), esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ $('sessionLabel').textContent=`SESSION ${String(t.n).padStart(2,'0')} · THEORY · ${lang.toUpperCase()}`;$('title').textContent=t.title;$('lead').textContent=t.lead;$('crumbTopic').textContent=t.title;
+ $('concepts').innerHTML=t.concepts.map((c,i)=>`<div class="concept-item"><strong>${String(i+1).padStart(2,'0')} · Core idea</strong><span>${esc(c)}</span></div>`).join('');
+ $('umlName').textContent=t.uml.name;$('umlAttrs').innerHTML=t.uml.attrs.length?t.uml.attrs.map(x=>`<div>${esc(x)}</div>`).join(''):'<div><em>No attributes required in this abstraction.</em></div>';$('umlOps').innerHTML=t.uml.ops.map(x=>`<div>${esc(x)}</div>`).join('');
+ $('mistakes').innerHTML=t.mistakes.map(x=>`<li>${esc(x)}</li>`).join('');$('evidence').innerHTML=t.evidence.map(x=>`<li>${esc(x)}</li>`).join('');
+ const code=lang==='python'?`class ${t.uml.name}:\n    def __init__(self):\n        # translate UML state into attributes\n        pass\n\n    def behavior(self):\n        # translate one UML operation into behavior\n        pass\n\n# Build an object, execute behavior, observe state.`:`public class ${t.uml.name} {\n    // translate UML state into fields\n\n    public ${t.uml.name}() {\n        // establish valid initial state\n    }\n\n    public void behavior() {\n        // translate one UML operation into behavior\n    }\n}`;
+ $('codeExample').textContent=code;$('codeHeading').textContent=`From UML to ${lang==='python'?'Python':'Java'}`;
+ const q=`workshop.html?topic=${encodeURIComponent(t.slug)}&lang=${lang}`;$('workshopTop').href=q;$('workshopBottom').href=q;
+});
+</script>
+</body></html>

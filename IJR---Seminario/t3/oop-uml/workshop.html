@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="light"><meta name="robots" content="noindex,nofollow">
+  <title>Seminar 11 · OOP + UML Workshop</title>
+  <link rel="stylesheet" href="styles.css?v=20260831-v1"><script defer src="course-data.js?v=20260831-v1"></script>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="./"><span class="brand-mark">IJR</span><span><small>Seminar 11 · Common Core</small><strong>OOP + UML Workshop</strong></span></a><div class="top-actions"><a id="theoryTop" class="button button-light" href="theory.html">Review Theory</a><a class="button button-dark" href="../oop-logic-01/">OOP Colab Lab</a></div></header>
+<main class="page-shell">
+  <div class="crumbs"><a href="./">OOP + UML Hub</a><span>→</span><span id="crumbTopic">Workshop</span></div>
+  <section class="page-hero"><p class="eyebrow" id="sessionLabel">COMMON CORE · WORKSHOP</p><h1 id="title">Loading…</h1><p id="lead"></p></section>
+  <section class="panel" style="margin-top:28px"><p class="eyebrow">WORKFLOW</p><h2>Do not jump directly to code.</h2><div class="workshop-steps"><div class="workshop-step"><span>STEP 01</span><strong>Predict</strong><p>State what objects, responsibilities and state you expect before running anything.</p></div><div class="workshop-step"><span>STEP 02</span><strong>Model</strong><p>Draw or update the UML class view before implementation.</p></div><div class="workshop-step"><span>STEP 03</span><strong>Implement</strong><p>Use the guided Seminar module and keep the code synchronized with the model.</p></div><div class="workshop-step"><span>STEP 04</span><strong>Test</strong><p>Create at least one concrete object scenario and verify behavior.</p></div><div class="workshop-step"><span>STEP 05</span><strong>Modify</strong><p>Change one requirement and propagate it through UML and code.</p></div><div class="workshop-step"><span>STEP 06</span><strong>Explain</strong><p>Defend why the class structure and relationships make sense.</p></div></div></section>
+  <section class="content-grid">
+    <article class="panel"><p class="eyebrow">GUIDED LAB ROUTE</p><h2>Open the tracked implementation module</h2><p>These modules use the existing Seminar T3 progress system. When Supabase is available, completion is synchronized by the current secure RPC backend.</p><div id="moduleLauncher" class="module-launcher"></div></article>
+    <aside class="panel soft"><p class="eyebrow">UML TARGET</p><div class="uml-card"><div id="umlName" class="uml-title">Class</div><div id="umlAttrs" class="uml-section"></div><div id="umlOps" class="uml-section"></div></div><p class="callout">Your diagram does not have to look identical to this example. It must express the same kind of responsibility accurately and match your implementation.</p></aside>
+  </section>
+  <section class="content-grid">
+    <article class="panel"><p class="eyebrow">STUDENT EVIDENCE</p><h2>Complete before you call the session finished</h2><div id="checklist" class="checklist"></div></article>
+    <aside class="panel"><p class="eyebrow">LIVE DEFENSE QUESTIONS</p><h2>Be ready to answer</h2><ol class="evidence-list"><li>Which object owns the state that changes?</li><li>Why is this behavior a method of this class?</li><li>What would break if this relationship changed?</li><li>Where is the same design decision visible in UML and code?</li><li>Can you make one small change without copying a finished solution?</li></ol></aside>
+  </section>
+  <div class="page-actions"><a class="button button-light" href="./">Back to Hub</a><a id="theoryBottom" class="button button-light" href="theory.html">Review Theory</a><a class="button button-dark" href="../studio/">Project Studio</a></div>
+</main>
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ const p=new URLSearchParams(location.search),slug=p.get('topic')||'object-model',lang=p.get('lang')==='java'?'java':'python';
+ const t=(window.IJR_OOP_UML_DATA?.topics||[]).find(x=>x.slug===slug)||window.IJR_OOP_UML_DATA.topics[0];
+ const $=id=>document.getElementById(id),esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ $('sessionLabel').textContent=`SESSION ${String(t.n).padStart(2,'0')} · WORKSHOP · ${lang.toUpperCase()}`;$('title').textContent=t.title;$('lead').textContent=t.lead;$('crumbTopic').textContent=t.title;
+ $('umlName').textContent=t.uml.name;$('umlAttrs').innerHTML=t.uml.attrs.length?t.uml.attrs.map(x=>`<div>${esc(x)}</div>`).join(''):'<div><em>No attributes required in this abstraction.</em></div>';$('umlOps').innerHTML=t.uml.ops.map(x=>`<div>${esc(x)}</div>`).join('');
+ $('checklist').innerHTML=t.evidence.map((x,i)=>`<label><input type="checkbox"><span><strong>Evidence ${i+1}</strong><br>${esc(x)}</span></label>`).join('');
+ $('moduleLauncher').innerHTML=t.modules.map(m=>`<div class="module-row"><div><strong>${m.toUpperCase()} · ${esc(t.title)}</strong><p>Tracked ${lang==='python'?'Python':'Java'} laboratory module. Open it, complete the guided evidence, then return to the Hub.</p></div><a class="button button-dark" href="../lab.html?language=${lang}&module=${m}">Open ${m.toUpperCase()}</a></div>`).join('');
+ if(t.n<=3)$('moduleLauncher').insertAdjacentHTML('beforeend','<div class="module-row"><div><strong>Python OOP Colab Lab 01</strong><p>12-stage browser Python lab focused on class/object reasoning, state, methods and OOP design.</p></div><a class="button button-light" href="../oop-logic-01/">Open Colab-style lab</a></div>');
+ const q=`theory.html?topic=${encodeURIComponent(t.slug)}&lang=${lang}`;$('theoryTop').href=q;$('theoryBottom').href=q;
+});
+</script>
+</body></html>
