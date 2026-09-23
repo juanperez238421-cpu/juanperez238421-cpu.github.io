@@ -1,6 +1,6 @@
 const cfg=window.IJR_SEMINAR_T3_CONFIG,$=id=>document.getElementById(id);
-const sb=globalThis.supabase?globalThis.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
-let snapshot=null,timer=null,loading=false,pendingFactorId='',pendingChallengeId='',lastSuccessAt=0;
+const sb=globalThis.supabase?globalThis.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}}):null;
+let token=sessionStorage.getItem(cfg.teacherSessionKey)||'',snapshot=null,timer=null,loading=false,lastSuccessAt=0;
 const VISIBLE_MS=12000,HIDDEN_MS=45000;
 function esc(v=''){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function fmt(v,d=2){const n=Number(v);return Number.isFinite(n)?n.toFixed(d):'—';}
@@ -9,18 +9,10 @@ function bogotaDay(v){if(!v)return'';try{return new Intl.DateTimeFormat('en-CA',
 function isToday(v){return !!v&&bogotaDay(v)===bogotaDay(new Date().toISOString())}
 function lastActivity(s){const values=[s.course?.last_activity_at,s.studio?.last_student_activity_at,s.diagnostic?.completed_at,s.diagnostic?.updated_at,...(s.oop_uml||[]).map(x=>x.updated_at),...(s.oop_labs||[]).map(x=>x.last_activity_at)].filter(Boolean).map(x=>new Date(x).getTime()).filter(Number.isFinite);return values.length?new Date(Math.max(...values)).toISOString():null}
 function hasDigital(s){return !!(s.course||s.studio||s.diagnostic||(s.oop_uml||[]).length||(s.oop_labs||[]).length)}
-function setLive(mode,text){const el=$('liveStatus');el.className='live-status '+mode;el.textContent=text}
-function schedule(){clearTimeout(timer);timer=setTimeout(load,document.hidden?HIDDEN_MS:VISIBLE_MS)}
-async function gateway(operation,args={}){const {data,error}=await sb.functions.invoke('teacher-auth-gateway',{body:{operation,args}});if(error)throw new Error(error.message||'Teacher gateway error');if(data?.error)throw new Error(data.error);return data?.data}
-async function beginMfa(){
-  const {data:aal,error:aalError}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();if(aalError)throw aalError;
-  if(aal?.currentLevel==='aal2'){$('mfaPanel').classList.add('hidden');await load(true);return}
-  const {data:factors,error:factorsError}=await sb.auth.mfa.listFactors();if(factorsError)throw factorsError;
-  let factor=(factors?.totp||[]).find(x=>x.status==='verified');
-  if(!factor){const {data:enrolled,error}=await sb.auth.mfa.enroll({factorType:'totp',friendlyName:'Seminario 11 Master'});if(error)throw error;factor=enrolled;$('mfaQr').src=enrolled.totp.qr_code;$('mfaQr').classList.remove('hidden');$('mfaHelp').textContent='Escanea el QR y escribe el código de seis dígitos.'}
-  else{$('mfaQr').classList.add('hidden');$('mfaHelp').textContent='Escribe el código de seis dígitos de tu aplicación autenticadora.'}
-  pendingFactorId=factor.id;const {data:challenge,error}=await sb.auth.mfa.challenge({factorId:factor.id});if(error)throw error;pendingChallengeId=challenge.id;$('mfaPanel').classList.remove('hidden');$('mfaCode').focus();
-}
+function setLive(mode,text){const el=$('liveStatus');if(!el)return;el.className='live-status '+mode;el.textContent=text}
+function schedule(){clearTimeout(timer);if(token)timer=setTimeout(load,document.hidden?HIDDEN_MS:VISIBLE_MS)}
+function isAuthError(err){return /sesión docente|session|invalid|expired|expirada/i.test(String(err?.message||err))}
+async function rpc(name,args={}){const {data,error}=await sb.rpc(name,args);if(error)throw new Error(error.message||'Backend error');return data}
 function filteredStudents(){
   const group=$('groupFilter').value,q=$('searchInput').value.trim().toLowerCase(),state=$('stateFilter').value,track=$('trackFilter').value;
   return (snapshot?.students||[]).filter(s=>{
@@ -120,19 +112,62 @@ function openDetail(id){
   $('studentDialog').showModal();
 }
 async function load(force=false){
-  if(loading)return;loading=true;if(force)setLive('syncing','Refreshing…');
+  if(!token||loading)return;
+  loading=true;if(force)setLive('syncing','Refreshing…');
   try{
-    snapshot=await gateway(cfg.rpc.masterGatewayOperation||'seminar_master_dashboard_v2');
-    lastSuccessAt=Date.now();$('loginPanel').classList.add('hidden');$('dashboardPanel').classList.remove('hidden');setLive('live','LIVE · official roster');render();
+    snapshot=await rpc(cfg.rpc.masterCodeDashboard||'seminar_master_code_v1',{p_teacher_token:token});
+    lastSuccessAt=Date.now();
+    $('loginPanel').classList.add('hidden');
+    $('dashboardPanel').classList.remove('hidden');
+    $('loginStatus').textContent='';
+    setLive('live','LIVE · code session · official roster');
+    render();
   }catch(err){
-    const age=lastSuccessAt?Math.round((Date.now()-lastSuccessAt)/1000):null;setLive(snapshot?'stale':'error',snapshot?'Saved view · '+age+'s':'Could not load master data');$('loginStatus').textContent='Master backend: '+err.message;
+    if(isAuthError(err)){
+      token='';snapshot=null;clearTimeout(timer);sessionStorage.removeItem(cfg.teacherSessionKey);
+      $('dashboardPanel').classList.add('hidden');$('loginPanel').classList.remove('hidden');
+      $('loginStatus').textContent='Sesión finalizada. Ingresa nuevamente el código maestro.';
+    }else{
+      const age=lastSuccessAt?Math.round((Date.now()-lastSuccessAt)/1000):null;
+      setLive(snapshot?'stale':'error',snapshot?'Saved view · '+age+'s':'Could not load master data');
+      $('loginStatus').textContent='Master backend: '+err.message;
+    }
   }finally{loading=false;schedule()}
 }
-$('loginForm').addEventListener('submit',async e=>{e.preventDefault();const email=$('teacherEmail').value.trim().toLowerCase();if(!email.endsWith('@ijr.edu.co')){$('loginStatus').textContent='Usa la cuenta institucional docente @ijr.edu.co.';return}$('loginStatus').textContent='Verificando cuenta institucional…';try{const {error}=await sb.auth.signInWithPassword({email,password:$('teacherPassword').value});if(error)throw error;$('teacherPassword').value='';await beginMfa()}catch(err){$('loginStatus').textContent='No fue posible ingresar: '+err.message}});
-$('mfaButton').addEventListener('click',async()=>{const code=$('mfaCode').value.trim();if(!pendingFactorId||!pendingChallengeId||!/^[0-9]{6}$/.test(code)){$('loginStatus').textContent='Escribe un código MFA válido.';return}try{const {error}=await sb.auth.mfa.verify({factorId:pendingFactorId,challengeId:pendingChallengeId,code});if(error)throw error;$('mfaCode').value='';await beginMfa()}catch(err){$('loginStatus').textContent='MFA no verificado: '+err.message}});
-$('logoutButton').addEventListener('click',async()=>{clearTimeout(timer);await sb.auth.signOut({scope:'local'});snapshot=null;$('dashboardPanel').classList.add('hidden');$('loginPanel').classList.remove('hidden');setLive('syncing','Disconnected')});
-$('refreshButton').addEventListener('click',()=>load(true));['groupFilter','stateFilter','trackFilter'].forEach(id=>$(id).addEventListener('change',render));$('searchInput').addEventListener('input',render);$('closeDialog').addEventListener('click',()=>$('studentDialog').close());
+$('loginForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!sb){$('loginStatus').textContent='Supabase client unavailable.';return}
+  const code=$('teacherCode').value;
+  if(!code.trim()){$('loginStatus').textContent='Ingresa el código maestro.';return}
+  $('loginStatus').textContent='Verificando código…';
+  try{
+    const data=await rpc(cfg.rpc.teacherLogin||'teacher_code_login',{p_code:code,p_user_agent:navigator.userAgent});
+    token=data?.teacher_token||'';
+    if(!token)throw new Error('No se recibió una sesión docente.');
+    sessionStorage.setItem(cfg.teacherSessionKey,token);
+    $('teacherCode').value='';
+    $('loginStatus').textContent='';
+    await load(true);
+  }catch(err){
+    token='';sessionStorage.removeItem(cfg.teacherSessionKey);
+    $('loginStatus').textContent='No fue posible ingresar: '+err.message;
+  }
+});
+$('logoutButton').addEventListener('click',async()=>{
+  clearTimeout(timer);
+  try{if(token)await rpc(cfg.rpc.teacherLogout||'teacher_code_logout',{p_teacher_token:token})}catch{}
+  token='';snapshot=null;sessionStorage.removeItem(cfg.teacherSessionKey);
+  $('dashboardPanel').classList.add('hidden');$('loginPanel').classList.remove('hidden');
+  $('loginStatus').textContent='';setLive('syncing','Disconnected');
+});
+$('refreshButton').addEventListener('click',()=>load(true));
+['groupFilter','stateFilter','trackFilter'].forEach(id=>$(id).addEventListener('change',render));
+$('searchInput').addEventListener('input',render);
+$('closeDialog').addEventListener('click',()=>$('studentDialog').close());
 $('toggleLegacy').addEventListener('click',()=>{const box=$('legacyContent'),hidden=box.classList.toggle('hidden');$('toggleLegacy').textContent=hidden?'Mostrar detalle':'Ocultar detalle'});
-document.addEventListener('visibilitychange',()=>{clearTimeout(timer);if(!document.hidden&&snapshot)load(true);else schedule()});
-window.addEventListener('online',()=>load(true));
-(async()=>{if(!sb){$('loginStatus').textContent='Supabase client unavailable.';return}const {data:{session}}=await sb.auth.getSession();if(session)try{await beginMfa()}catch(err){$('loginStatus').textContent='Acceso pendiente: '+err.message}})();
+document.addEventListener('visibilitychange',()=>{clearTimeout(timer);if(!document.hidden&&token)load(true);else schedule()});
+window.addEventListener('online',()=>{if(token)load(true)});
+(async()=>{
+  if(!sb){$('loginStatus').textContent='Supabase client unavailable.';return}
+  if(token){$('loginPanel').classList.add('hidden');$('dashboardPanel').classList.remove('hidden');await load(true)}
+})();

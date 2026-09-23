@@ -7,10 +7,10 @@
   <meta name="color-scheme" content="light">
   <title>Seminario 11 · Master panel</title>
   <link rel="preconnect" href="https://rlfxnjbqxbozjdzkbwlz.supabase.co" crossorigin>
-  <link rel="stylesheet" href="css/teacher.css?v=20260923-master-v2">
+  <link rel="stylesheet" href="css/teacher.css?v=20260923-code-only-v3">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script defer src="config.js?v=20260923-master-v2"></script>
-  <script type="module" src="js/teacher.js?v=20260923-master-v2"></script>
+  <script defer src="config.js?v=20260923-code-only-v3"></script>
+  <script type="module" src="js/teacher.js?v=20260923-code-only-v3"></script>
 </head>
 <body>
 <main class="shell">
@@ -29,21 +29,14 @@
 
   <section id="loginPanel" class="panel login-panel">
     <div>
-      <span class="kicker">MASTER ONLY · AAL2</span>
-      <h2>Acceso docente protegido</h2>
-      <p>Cuenta institucional <strong>@ijr.edu.co</strong> y segundo factor TOTP. El roster y la trazabilidad individual nunca se publican en la navegación estudiantil.</p>
+      <span class="kicker">MASTER ONLY · CODE ACCESS</span>
+      <h2>Acceso maestro</h2>
+      <p>Ingresa únicamente el <strong>código maestro docente</strong>. El código no se almacena en el navegador; después de validarlo, Supabase entrega una sesión docente temporal.</p>
     </div>
     <form id="loginForm">
-      <input id="teacherEmail" type="email" autocomplete="username" placeholder="docente@ijr.edu.co" required>
-      <input id="teacherPassword" type="password" autocomplete="current-password" placeholder="Contraseña" required>
-      <button type="submit">Continuar</button>
+      <input id="teacherCode" type="password" autocomplete="current-password" placeholder="Código maestro" required autofocus>
+      <button type="submit">Entrar</button>
     </form>
-    <div id="mfaPanel" class="mfa-panel hidden">
-      <p id="mfaHelp">Escribe el código de seis dígitos de tu aplicación autenticadora.</p>
-      <img id="mfaQr" class="hidden" alt="Código QR para configurar MFA">
-      <input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="Código MFA">
-      <button id="mfaButton" type="button">Verificar MFA</button>
-    </div>
     <div id="loginStatus" class="status"></div>
   </section>
 

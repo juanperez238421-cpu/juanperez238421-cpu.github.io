@@ -15,6 +15,6 @@ window.IJR_SEMINAR_T3_CONFIG = Object.freeze({
     teacherLogin: 'teacher_code_login',
     teacherLogout: 'teacher_code_logout',
     teacherDashboard: 'seminar_course_teacher_dashboard',
-    masterGatewayOperation: 'seminar_master_dashboard_v2'
+    masterCodeDashboard: 'seminar_master_code_v1'
   }
 });
