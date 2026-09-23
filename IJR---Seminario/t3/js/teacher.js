@@ -24,7 +24,14 @@ function filteredStudents(){
   });
 }
 function courseCell(s){const c=s.course;if(!c)return'<span class="pill none">No course record</span>';const grade=c.final_grade??c.projected_grade;const pct=Math.min(100,Number(c.completed_count||0)/16*100);return '<span class="cell-main">'+esc((c.language||'').toUpperCase())+' · '+esc(c.completed_count||0)+'/16</span><span class="cell-sub">'+esc(c.team_label||'')+' · grade '+esc(fmt(grade))+'</span><div class="progress-mini"><i style="width:'+pct+'%"></i></div>'}
-function oopCell(s){const n=(s.oop_uml||[]).length;if(!n)return'<span class="pill none">0 sessions</span>';return'<span class="pill done">'+n+' recorded</span><span class="cell-sub">Common Core evidence</span>'}
+function oopCell(s){
+  const list=s.oop_uml||[];if(!list.length)return'<span class="pill none">0 sessions</span>';
+  const latest=list[0]||{},e=latest.evidence||{};
+  const umlOk=e.uml_mastery===true&&e.uml_visual_mastery===true;
+  const codeOk=e.run_success===true&&e.implement_success===true&&e.test_success===true&&Number(e.successful_run_count||0)>0;
+  return '<span class="pill '+(codeOk?'done':'partial')+'">'+esc((latest.session_key||'session').toUpperCase())+' evidence</span>'+
+    '<span class="cell-sub">'+(umlOk?'UML verified':'UML pending')+' · '+(codeOk?'code validated':'code runtime pending')+'</span>';
+}
 function studioCell(s){const x=s.studio;if(!x)return'<span class="pill none">No profile</span>';return'<span class="cell-main">'+esc(x.track_slug||x.first_choice||'Track')+'</span><span class="cell-sub">Sprint '+esc(x.sprint_current||1)+' · '+esc(x.progress_percent||0)+'% · '+esc(x.role||'primary')+'</span>'}
 function diagCell(s){const d=s.diagnostic;if(!d)return'<span class="pill none">Not taken</span>';return'<span class="pill '+(d.status==='completed'?'done':'active')+'">'+esc(d.status)+'</span><span class="cell-sub">'+esc(fmt(d.knowledge_percent,0))+'% · '+esc(d.level||'—')+'</span>'}
 function labsCell(s){const a=s.oop_labs||[];if(!a.length)return'<span class="pill none">0</span>';const done=a.filter(x=>x.status==='submitted').length;return'<span class="pill blue">'+a.length+' lab'+(a.length===1?'':'s')+'</span><span class="cell-sub">'+done+' submitted</span>'}
@@ -35,7 +42,7 @@ function renderMetrics(){
     ['Digital record',digital],
     ['Activity today',today],
     ['T3 course',all.filter(s=>s.course).length],
-    ['OOP + UML',all.filter(s=>(s.oop_uml||[]).length).length],
+    ['OOP + UML evidence',all.filter(s=>(s.oop_uml||[]).length).length],
     ['Studio',all.filter(s=>s.studio).length],
     ['Diagnostic',all.filter(s=>s.diagnostic).length],
     ['No digital record',all.length-digital]
@@ -104,7 +111,14 @@ function openDetail(id){
     $('detailCourse').innerHTML='<div class="detail-card"><span class="label">Latest team session</span><strong>'+esc((c.language||'').toUpperCase())+' · '+esc(c.completed_count||0)+'/16 · '+esc(c.team_label||'')+'</strong><div class="cell-sub">Projected/final grade: '+esc(fmt(c.final_grade??c.projected_grade))+' · Last activity '+esc(fmtTime(c.last_activity_at))+'</div></div><div class="module-grid">'+
       Array.from({length:16},(_,i)=>{const key='m'+String(i+1).padStart(2,'0'),m=modules.find(x=>x.module_key===key),mode=m?.completion_mode||'pending';return'<div class="module-item '+(mode==='solved'?'done':mode==='revealed'?'revealed':'')+'"><strong>'+key+' · '+esc(mode)+'</strong><span>help '+esc(m?.help_count||0)+' · wrong '+esc(m?.wrong_count||0)+'</span></div>'}).join('')+'</div>';
   }
-  const oop=s.oop_uml||[];$('detailOop').innerHTML=oop.length?'<div class="detail-list">'+oop.map(x=>'<div class="detail-row"><strong>'+esc(x.session_key)+'</strong><span>'+esc(x.status)+' · '+esc(fmtTime(x.completed_at||x.updated_at))+'</span></div>').join('')+'</div>':detailEmpty('No Common Core OOP/UML session recorded.');
+  const oop=s.oop_uml||[];$('detailOop').innerHTML=oop.length?'<div class="detail-list">'+oop.map(x=>{
+    const e=x.evidence||{},uml=e.uml_mastery===true&&e.uml_visual_mastery===true;
+    const code=e.run_success===true&&e.implement_success===true&&e.test_success===true&&Number(e.successful_run_count||0)>0;
+    const umlScore=Number(e.uml_classification_score||0)+'/'+Number(e.uml_classification_total||0);
+    const visualScore=Number(e.uml_visual_score||0)+'/'+Number(e.uml_visual_total||0);
+    const runtime=Number(e.successful_run_count||0)+'/'+Number(e.run_count||0)+' successful runs';
+    return '<div class="detail-row"><div><strong>'+esc((x.session_key||'').toUpperCase())+' · evidence recorded</strong><span class="cell-sub">UML '+esc(umlScore)+' · visual '+esc(visualScore)+' · '+esc(runtime)+'</span></div><span>'+(uml?'UML ✓':'UML pending')+' · '+(code?'code ✓':'code pending')+' · '+esc(fmtTime(x.completed_at||x.updated_at))+'</span></div>';
+  }).join('')+'</div>':detailEmpty('No Common Core OOP/UML session recorded.');
   const st=s.studio;if(!st)$('detailStudio').innerHTML=detailEmpty('No Software Engineering Studio profile.');
   else{let links='';if(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(st.repo_full_name||''))links+='<a target="_blank" rel="noopener" href="https://github.com/'+esc(st.repo_full_name)+'">GitHub repository</a>';if(/^https:\/\//i.test(st.uml_url||''))links+='<a target="_blank" rel="noopener" href="'+esc(st.uml_url)+'">UML evidence</a>';$('detailStudio').innerHTML='<div class="detail-card"><span class="label">Track</span><strong>'+esc(st.track_slug||st.first_choice)+'</strong><div class="cell-sub">'+esc(st.role)+' · '+esc(st.work_mode)+' · Sprint '+esc(st.sprint_current)+' · '+esc(st.progress_percent)+'%</div><div class="cell-sub">Project: '+esc(st.project_title||'—')+' · Next goal: '+esc(st.next_goal||'—')+'</div><div class="detail-links">'+links+'</div></div>'}
   const d=s.diagnostic;$('detailDiagnostic').innerHTML=d?'<div class="detail-card"><span class="label">'+esc(d.track_slug)+' · '+esc(d.bank_version)+'</span><strong>'+esc(d.status)+' · '+esc(fmt(d.knowledge_percent,0))+'% knowledge · '+esc(fmt(d.confidence_percent,0))+'% confidence</strong><div class="cell-sub">Level '+esc(d.level||'—')+' · mastered stage '+esc(d.highest_mastered_stage??'—')+' · recommended '+esc(d.recommended_stage??'—')+'</div></div>':detailEmpty('No track diagnostic linked to this roster student.');
