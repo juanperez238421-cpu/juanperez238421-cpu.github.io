@@ -14,6 +14,40 @@ function schedule(){clearTimeout(timer);if(token)timer=setTimeout(load,document.
 function isAuthError(err){return /sesión docente|session|invalid|expired|expirada/i.test(String(err?.message||err))}
 async function rpc(name,args={}){const {data,error}=await sb.rpc(name,args);if(error)throw new Error(error.message||'Backend error');return data}
 function sessionRecord(s,key){return (s.oop_uml||[]).find(x=>x.session_key===key)||null}
+function oopSessionCatalog(){
+  const topics=window.IJR_OOP_UML_DATA?.topics||[];
+  return topics.map(t=>({
+    key:'s'+String(t.n).padStart(2,'0'),
+    n:Number(t.n),
+    title:String(t.title||'Session '+t.n),
+    slug:String(t.slug||'')
+  }));
+}
+function selectedOopSessionKey(){return $('oopSessionFilter')?.value||''}
+function selectedOopSession(){
+  const key=selectedOopSessionKey();
+  return oopSessionCatalog().find(x=>x.key===key)||null;
+}
+function populateOopSessionFilter(){
+  const el=$('oopSessionFilter');if(!el||!snapshot)return;
+  const current=el.value;
+  const all=snapshot.students||[];
+  const options=oopSessionCatalog().map(t=>{
+    const count=all.filter(s=>sessionRecord(s,t.key)).length;
+    return '<option value="'+esc(t.key)+'">Session '+String(t.n).padStart(2,'0')+' · '+esc(t.title)+' · '+count+' student'+(count===1?'':'s')+'</option>';
+  }).join('');
+  el.innerHTML='<option value="">Todas las sesiones con evidencia</option>'+options;
+  if([...el.options].some(o=>o.value===current))el.value=current;
+  const selected=selectedOopSession();
+  const link=$('oopWorkshopLink');
+  if(selected&&selected.slug){
+    link.href='oop-uml/workshop.html?topic='+encodeURIComponent(selected.slug)+'&lang=python';
+    link.textContent='Abrir Session '+String(selected.n).padStart(2,'0')+' workshop ↗';
+    link.classList.remove('hidden');
+  }else{
+    link.classList.add('hidden');
+  }
+}
 function oopEvidence(record){
   const e=record?.evidence||{};
   return {
@@ -56,11 +90,18 @@ function filteredStudents(){
     if(q&&![s.display_name,s.internal_key,s.institutional_email].some(x=>String(x||'').toLowerCase().includes(q)))return false;
     if(state&& !((state==='today'&&isToday(last))||(state==='registered'&&digital)||(state==='missing'&&!digital)))return false;
     if(activeView==='oop'){
-      const f=$('oopStageFilter').value,r=sessionRecord(s,'s01'),ev=oopEvidence(r);
-      if(f==='s01'&&!r)return false;
+      const key=selectedOopSessionKey(),f=$('oopEvidenceFilter').value;
+      const records=s.oop_uml||[];
+      const r=key?sessionRecord(s,key):latestOopSession(s);
+      const ev=oopEvidence(r);
+      if(key&&f!=='missing'&&!r)return false;
+      if(!key&&f!=='missing'&&!records.length)return false;
       if(f==='uml'&&!ev.uml)return false;
       if(f==='code'&&!ev.code)return false;
-      if(f==='missing'&&(s.oop_uml||[]).length)return false;
+      if(f==='missing'){
+        if(key&&r)return false;
+        if(!key&&records.length)return false;
+      }
     }else if(activeView==='topics'){
       const track=$('trackFilter').value,diag=$('diagnosticFilter').value;
       if(track&&s.studio?.track_slug!==track&&s.diagnostic?.track_slug!==track)return false;
@@ -94,14 +135,16 @@ function renderMetrics(){
   const all=snapshot?.students||[];
   let vals=[];
   if(activeView==='oop'){
-    const s01=all.filter(s=>sessionRecord(s,'s01'));
+    const key=selectedOopSessionKey(),meta=selectedOopSession();
+    const withAny=all.filter(s=>(s.oop_uml||[]).length);
+    const scope=key?all.filter(s=>sessionRecord(s,key)):withAny;
     vals=[
       ['Official roster',snapshot?.roster_count||all.length],
-      ['Stage 1 evidence',s01.length],
-      ['UML verified',s01.filter(s=>oopEvidence(sessionRecord(s,'s01')).uml).length],
-      ['Code validated',s01.filter(s=>oopEvidence(sessionRecord(s,'s01')).code).length],
-      ['Runtime pending',s01.filter(s=>!oopEvidence(sessionRecord(s,'s01')).code).length],
-      ['No POO evidence',all.filter(s=>!(s.oop_uml||[]).length).length]
+      ['Any workshop evidence',withAny.length],
+      [meta?'Session '+String(meta.n).padStart(2,'0')+' evidence':'Sessions evidenced',scope.length],
+      ['UML verified',scope.filter(s=>oopEvidence(key?sessionRecord(s,key):latestOopSession(s)).uml).length],
+      ['Code validated',scope.filter(s=>oopEvidence(key?sessionRecord(s,key):latestOopSession(s)).code).length],
+      [meta?'No Session '+String(meta.n).padStart(2,'0'):'No POO evidence',meta?all.length-scope.length:all.length-withAny.length]
     ];
   }else if(activeView==='topics'){
     vals=[
@@ -165,8 +208,10 @@ function baseCells(s){return '<td><strong>'+esc(s.group_code)+'</strong></td>'+
   '<td><span class="student-name">'+esc(s.display_name)+'</span><span class="student-key">'+esc(s.internal_key)+(s.institutional_email?' · '+esc(s.institutional_email):'')+'</span></td>'+
   '<td><span class="pill verified">✓ Roster verified</span></td>'}
 function oopRow(s){
-  const r=sessionRecord(s,'s01'),ev=oopEvidence(r),latest=latestOopSession(s),last=viewLastActivity(s);
-  const stage=r?'<span class="pill partial">S01 evidence</span><span class="cell-sub">'+esc(fmtTime(r.completed_at||r.updated_at))+'</span>':'<span class="pill none">No S01 evidence</span>';
+  const key=selectedOopSessionKey(),meta=selectedOopSession(),latest=latestOopSession(s);
+  const r=key?sessionRecord(s,key):latest,ev=oopEvidence(r),last=viewLastActivity(s);
+  const sessionName=meta?'Session '+String(meta.n).padStart(2,'0')+' · '+meta.title:(r?String(r.session_key||'').toUpperCase():'Workshop');
+  const stage=r?'<span class="pill partial">'+esc(sessionName)+'</span><span class="cell-sub">Supabase evidence · '+esc(fmtTime(r.completed_at||r.updated_at))+'</span>':'<span class="pill none">No evidence for '+esc(sessionName)+'</span>';
   const uml=r?'<span class="pill '+(ev.uml?'done':'partial')+'">'+(ev.uml?'Verified':'Pending')+'</span><span class="cell-sub">'+ev.umlScore+'/'+ev.umlTotal+' classification · '+ev.visualScore+'/'+ev.visualTotal+' visual</span>':'<span class="pill none">—</span>';
   const code=r?'<span class="pill '+(ev.code?'done':'active')+'">'+(ev.code?'Validated':'Runtime pending')+'</span><span class="cell-sub">'+ev.successfulRuns+'/'+ev.runs+' successful runs</span>':'<span class="pill none">—</span>';
   const labs=s.oop_labs||[];
@@ -207,10 +252,10 @@ function projectRow(s){
 }
 function render(){
   if(!snapshot)return;
-  setViewUi();renderMetrics();renderQuality();
+  setViewUi();populateOopSessionFilter();renderMetrics();renderQuality();
   const rows=filteredStudents();$('shownCount').textContent=rows.length;
   const heads={
-    oop:['Grupo','#','Estudiante','Identidad','Workshop Stage 1','Último stage','UML evidence','Code runtime','OOP labs','Última actividad','Estado',''],
+    oop:['Grupo','#','Estudiante','Identidad','Workshop session','Última sesión','UML evidence','Code runtime','OOP labs','Última actividad','Estado',''],
     topics:['Grupo','#','Estudiante','Identidad','Track','Selección','Diagnóstico','Resultado','Última actividad','Estado',''],
     project:['Grupo','#','Estudiante','Identidad','Proyecto','Sprint','Avance','Repositorio','UML','Siguiente meta','Última actividad','Estado','']
   }[activeView];
@@ -298,7 +343,7 @@ $('logoutButton').addEventListener('click',async()=>{
   $('loginStatus').textContent='';setLive('syncing','Disconnected');
 });
 $('refreshButton').addEventListener('click',()=>load(true));
-['groupFilter','stateFilter','oopStageFilter','trackFilter','diagnosticFilter','projectStateFilter','sprintFilter'].forEach(id=>$(id).addEventListener('change',render));
+['groupFilter','stateFilter','oopSessionFilter','oopEvidenceFilter','trackFilter','diagnosticFilter','projectStateFilter','sprintFilter'].forEach(id=>$(id).addEventListener('change',render));
 document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{activeView=btn.dataset.view;render()}));
 $('searchInput').addEventListener('input',render);
 $('closeDialog').addEventListener('click',()=>$('studentDialog').close());
