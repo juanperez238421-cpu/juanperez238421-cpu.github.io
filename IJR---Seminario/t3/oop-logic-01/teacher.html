@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="color-scheme" content="light">
+  <title>Seminar 11 · Python OOP Master</title>
+  <link rel="preconnect" href="https://rlfxnjbqxbozjdzkbwlz.supabase.co" crossorigin>
+  <link rel="stylesheet" href="teacher.css?v=20260821-oop-colab-v1">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="config.js?v=20260821-oop-colab-v1"></script>
+  <script defer src="teacher.js?v=20260821-oop-colab-v1"></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Instituto Jorge Robledo · Seminar 11</div>
+        <h1>Python OOP Colab · Live Master</h1>
+        <p>Team registrations, randomized packs, Python/OOP progress, projected grades and detailed evidence.</p>
+      </div>
+      <nav><a href="./">Student lab</a><a href="../">Seminar T3</a></nav>
+    </header>
+
+    <section id="loginPanel" class="panel login-panel">
+      <div><span class="kicker">TEACHER ACCESS</span><h2>OOP classroom master</h2><p>Institutional @ijr.edu.co account and TOTP second factor required.</p></div>
+      <form id="loginForm"><input id="teacherEmail" type="email" autocomplete="username" placeholder="teacher@ijr.edu.co" required><input id="teacherPassword" type="password" autocomplete="current-password" placeholder="Institutional password" required><button type="submit">Continue</button></form>
+      <div id="mfaPanel" class="hidden"><p id="mfaHelp">Enter the six-digit code from your authenticator app.</p><img id="mfaQr" class="hidden" alt="QR code to configure MFA"><input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="MFA code"><button id="mfaButton" type="button">Verify MFA</button></div>
+      <div id="loginStatus" class="status"></div>
+    </section>
+
+    <section id="dashboardPanel" class="hidden">
+      <div class="toolbar panel">
+        <div class="live-block"><span id="liveStatus" class="live-status syncing">Connecting…</span><span id="updatedAt"></span></div>
+        <div class="filters">
+          <select id="groupFilter" aria-label="Group filter"><option value="">All groups</option><option>11A</option><option>11B</option><option>11C</option></select>
+          <input id="searchInput" type="search" placeholder="Search email / student">
+          <label class="check"><input id="activeOnly" type="checkbox"> Active only</label>
+          <button id="exportButton" type="button" class="secondary">Export CSV</button>
+          <button id="refreshButton" type="button" class="secondary">Refresh</button>
+          <button id="logoutButton" type="button" class="secondary">Logout</button>
+        </div>
+      </div>
+
+      <section id="metrics" class="metrics" aria-label="Live summary"></section>
+
+      <section class="panel table-panel">
+        <div class="table-head"><div><h2>OOP registrations</h2><p>Each row is one 2–3 student workstation session. Pack remains fixed during the attempt.</p></div><span id="rowCount"></span></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Group</th><th>Students</th><th>Pack</th><th>Status</th><th>Progress</th><th>Grade</th><th>Latest answer</th><th>Support</th><th>Updated</th><th>Actions</th></tr></thead>
+          <tbody id="sessionBody"></tbody>
+        </table></div>
+      </section>
+      <p class="footnote">Use <strong>Inspect</strong> for the complete stage history, expected answers, starter/solution code and activity events. Delete only invalid or QA registrations.</p>
+    </section>
+  </main>
+
+  <dialog id="detailDialog">
+    <div class="dialog-shell">
+      <div class="dialog-head"><div><span class="eyebrow">OOP SESSION</span><h2 id="dialogTitle">Details</h2></div><button id="closeDialogButton" class="secondary">Close</button></div>
+      <div id="dialogStatus" class="muted"></div>
+      <section id="detailSummary" class="detail-summary"></section>
+      <section class="dialog-section"><h3>Stage evidence</h3><div id="detailResponses" class="responses"></div></section>
+      <details class="event-details"><summary>Activity events</summary><div id="detailEvents" class="events"></div></details>
+    </div>
+  </dialog>
+</body>
+</html>

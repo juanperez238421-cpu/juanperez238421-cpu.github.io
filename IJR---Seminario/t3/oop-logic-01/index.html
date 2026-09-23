@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="color-scheme" content="light">
+  <title>Seminar 11 · Python OOP Colab Lab 01</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://rlfxnjbqxbozjdzkbwlz.supabase.co" crossorigin>
+  <link rel="stylesheet" href="styles.css?v=20260821-oop-colab-v1">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"></script>
+  <script defer src="config.js?v=20260821-oop-colab-v1"></script>
+  <script defer src="app.js?v=20260821-oop-colab-v1"></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="app-bar">
+      <div class="brand-block">
+        <span class="brand-mark">IJR</span>
+        <div>
+          <div class="course-label">Instituto Jorge Robledo · Seminar 11</div>
+          <h1>Python OOP · Colab Lab 01</h1>
+        </div>
+      </div>
+      <div class="app-status">
+        <span id="networkBadge" class="mode-badge">Online</span>
+        <span id="runtimeBadge" class="runtime-badge offline"><span class="status-dot"></span>Python runtime</span>
+      </div>
+    </header>
+
+    <section id="setupPanel" class="setup-screen">
+      <div class="setup-card">
+        <div class="setup-kicker">OOP CLASS 01 · 36 GUIDED MIN · ≈ 40 MIN TOTAL</div>
+        <h2>Understand objects by running Python.</h2>
+        <p class="setup-lead">This activity uses a <strong>Google Colab-style workspace</strong> and a real Python runtime in the browser. The goal is not to memorize syntax. Your team will predict object behavior, complete short cells, run them, read the output, and explain what happened.</p>
+        <p class="setup-lead"><strong>Randomized classroom bank:</strong> 36 equivalent workstation packs preserve the same OOP learning sequence while changing values, prompts and answer order. A pack remains fixed for the whole session.</p>
+
+        <div class="setup-points" aria-label="OOP roadmap">
+          <div><strong>01 · OBJECT MODEL</strong><span>class · object · instance · <code>self</code></span></div>
+          <div><strong>02 · STATE & METHODS</strong><span>constructor · attributes · behavior · references</span></div>
+          <div><strong>03 · OOP DESIGN</strong><span>encapsulation · inheritance · polymorphism · composition</span></div>
+        </div>
+
+        <div class="grading-policy">
+          <div class="policy-title">How your grade works <small>· Cómo funciona la nota</small></div>
+          <div class="policy-grid">
+            <div><strong>5.00</strong><span>Your projected maximum starts at 5.00.</span></div>
+            <div><strong>3 helps</strong><span>Three help tokens are shared across all 12 stages.</span></div>
+            <div><strong>Validated error</strong><span>Only an incorrect validated answer reduces the projection.</span></div>
+            <div><strong>Python error</strong><span>Syntax/runtime errors do not reduce the grade.</span></div>
+            <div><strong>Reveal</strong><span>Reveal closes a stage for 25% of its credit.</span></div>
+            <div><strong>Skip</strong><span>Skip closes a stage for 0% credit.</span></div>
+          </div>
+        </div>
+
+        <form id="registrationForm" class="registration-form team-registration">
+          <div class="registration-row registration-meta">
+            <label>Group <small>· Grupo</small>
+              <select id="groupCode" required>
+                <option value="">Select…</option>
+                <option>11A</option><option>11B</option><option>11C</option>
+              </select>
+            </label>
+            <label>Students at this computer <small>· Integrantes</small>
+              <select id="teamSize" required>
+                <option value="3" selected>3 students</option>
+                <option value="2">2 students</option>
+              </select>
+            </label>
+          </div>
+
+          <fieldset class="team-fieldset">
+            <legend>Institutional emails <small>· Correos institucionales</small></legend>
+            <div class="member-grid">
+              <label>Student 1 institutional email
+                <input id="studentEmail1" type="email" autocomplete="email" required placeholder="student1@ijr.edu.co" pattern="[A-Za-z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@ijr\.edu\.co">
+              </label>
+              <label>Student 2 institutional email
+                <input id="studentEmail2" type="email" autocomplete="email" required placeholder="student2@ijr.edu.co" pattern="[A-Za-z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@ijr\.edu\.co">
+              </label>
+              <label id="student3Wrap">Student 3 institutional email
+                <input id="studentEmail3" type="email" autocomplete="email" required placeholder="student3@ijr.edu.co" pattern="[A-Za-z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@ijr\.edu\.co">
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="registration-actions">
+            <div><strong>Before starting:</strong><span>Use the institutional email of every student working at this computer. The backend validates the @ijr.edu.co domain.</span></div>
+            <button id="startButton" type="submit" class="primary-action">Enter OOP Lab</button>
+          </div>
+        </form>
+        <div id="setupStatus" class="inline-status"></div>
+      </div>
+    </section>
+
+    <section id="workspacePanel" class="workspace hidden" aria-live="polite">
+      <div class="workspace-topline">
+        <div class="team-identity"><span id="studentLabel"></span><span class="separator">/</span><span id="stepLabel">Stage 1 of 12</span><span id="packLabel" class="pack-label">Pack —</span></div>
+        <div class="live-metrics">
+          <span id="timeLabel" class="time-badge">00:00 / 40:00</span>
+          <span id="helpBadge" class="help-badge">3 helps</span>
+          <span id="progressText">0 / 12 completed</span>
+          <strong id="gradeLabel">Projected 5.00 / 5.00</strong>
+        </div>
+      </div>
+      <div class="progress-line"><div id="progressBar" class="progress-fill"></div></div>
+      <div id="stepRail" class="step-rail" aria-label="OOP class progress"></div>
+
+      <div class="workspace-grid">
+        <aside class="guide-pane">
+          <div class="guide-scroll">
+            <div class="lesson-meta-row"><div id="lessonTag" class="lesson-tag">OBJECT MODEL</div><div id="lessonTiming" class="lesson-timing">Target: 3 min</div></div>
+            <h2 id="lessonTitle">Loading…</h2>
+            <div id="lessonConcept" class="lesson-copy lesson-intro"></div>
+
+            <div class="guide-section learning-section"><h3>What you will learn</h3><div id="lessonGoal" class="lesson-copy"></div></div>
+            <div class="guide-section guided-section"><h3>Think step by step</h3><ol id="lessonSteps" class="guide-steps"></ol></div>
+            <div class="guide-section task-section"><h3>Stage objective</h3><div id="lessonTask" class="lesson-copy"></div></div>
+            <div class="guide-section explore-section"><h3>After you answer</h3><div id="lessonExplore" class="lesson-copy"></div></div>
+
+            <section class="support-card">
+              <div class="support-head">
+                <div><span class="support-kicker">HELP TOKENS</span><strong id="helpRemainingText">3 of 3 remaining</strong></div>
+                <button id="helpButton" type="button" class="support-button">Use 1 help</button>
+              </div>
+              <div id="helpPanel" class="help-panel hidden"></div>
+              <p class="support-note">Help is progressive and recorded.</p>
+            </section>
+          </div>
+        </aside>
+
+        <section class="notebook-pane">
+          <div class="notebook-toolbar">
+            <div class="kernel-info"><span class="kernel-dot"></span><span id="kernelLabel">Python 3 · browser runtime</span></div>
+            <div class="toolbar-actions">
+              <button id="resetCodeButton" type="button" class="ghost-button">Reset cell</button>
+              <button id="runCodeButton" type="button" class="run-button">▶ Run</button>
+            </div>
+          </div>
+
+          <section id="choicePanel" class="choice-panel hidden">
+            <div class="choice-kicker">CONCEPT CHECK · SELECT ONE OPTION</div>
+            <div id="choiceQuestion" class="choice-question"></div>
+            <pre id="choiceCode" class="choice-code hidden"></pre>
+            <div id="choiceOptions" class="choice-options"></div>
+          </section>
+
+          <div id="codeInstruction" class="cell-instruction"><div class="instruction-number">1</div><div><strong>Complete the Python cell.</strong><span>Replace <code>WRITE_HERE</code> when it appears, then run the full cell.</span></div></div>
+
+          <div id="codeCell" class="code-cell">
+            <div class="cell-gutter"><button id="runCellButton" class="cell-run" type="button" aria-label="Run cell">▶</button><span id="executionCount">[ ]</span></div>
+            <div class="editor-wrap"><textarea id="codeEditor" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Python code editor"></textarea></div>
+          </div>
+
+          <div id="outputInstruction" class="cell-instruction compact-instruction"><div class="instruction-number">2</div><div><strong>Run, read, and explain the output.</strong><span>A Python syntax/runtime error does not cost points.</span></div></div>
+
+          <section id="terminalCard" class="terminal-card">
+            <div class="terminal-head"><span>Python console · cell output</span><button id="clearTerminalButton" type="button">Clear</button></div>
+            <pre id="terminalOutput" class="terminal-output"><span class="terminal-muted">Initializing Python runtime…</span></pre>
+            <form id="terminalForm" class="terminal-input-row hidden" aria-hidden="true"><span class="terminal-prompt">&gt;&gt;&gt;</span><input id="terminalCommand" type="text" autocomplete="off" spellcheck="false" disabled><button type="submit" disabled>Run</button></form>
+          </section>
+
+          <section id="solutionPanel" class="solution-panel hidden">
+            <div class="solution-head"><div><span>SOLUTION REVEALED</span><strong>Study why this works before continuing.</strong></div><span id="solutionCredit" class="credit-pill">25% of stage</span></div>
+            <pre id="solutionCode"></pre>
+            <div class="solution-output"><span>Correct answer/output:</span><code id="solutionOutput"></code></div>
+            <button id="continueAfterRevealButton" type="button" class="primary-action">We understand · continue</button>
+          </section>
+
+          <div class="validation-bar">
+            <div class="validation-copy"><div id="activityStatus" class="validation-status">Loading stage…</div><div id="penaltyStatus" class="validation-help">Only recorded help, incorrect validations, reveal, or skip affect the projection.</div></div>
+            <div class="validation-actions"><button id="revealButton" type="button" class="text-action">Reveal solution</button><button id="skipButton" type="button" class="danger-outline">Skip stage</button><button id="validateButton" type="button" class="validate-button" disabled>Validate answer</button></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="finishPanel" class="finish-screen hidden">
+      <div class="finish-card">
+        <div class="finish-icon">✓</div><div class="setup-kicker">OOP LAB COMPLETED</div><h2>Object model understood through Python.</h2>
+        <p>Your team completed the first OOP reasoning sequence: class/object, constructor, <code>self</code>, state, methods, references, encapsulation, inheritance, polymorphism and composition.</p>
+        <div class="finish-metrics"><div><span>Stages</span><strong id="finishPoints">12 / 12</strong></div><div><span>Final grade</span><strong id="finishGrade">5.00</strong></div><div><span>Helps used</span><strong id="finishHelps">0 / 3</strong></div><div><span>Time</span><strong id="finishTime">00:00</strong></div></div>
+        <a class="primary-action link-action" href="../">Back to Seminar T3</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
