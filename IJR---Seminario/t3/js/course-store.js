@@ -131,8 +131,13 @@ export class CourseStore{
         this._saveLocal(attempt);
         return this.current();
       }catch(err){
-        console.warn('Supabase start unavailable; switching to local classroom mode.',err);
+        console.error('Official roster registration failed.',err);
+        throw new Error(err?.message || 'No fue posible verificar el registro oficial en Supabase.');
       }
+    }
+
+    if(this.cfg.backendMode!=='local'){
+      throw new Error('El registro oficial requiere conexión con Supabase. Intenta de nuevo cuando haya conexión.');
     }
 
     const previous=this._loadLocal();
@@ -170,8 +175,7 @@ export class CourseStore{
         const updated=this._fromBackend(data.snapshot,local.token);
         this._saveLocal(updated);
       }catch(err){
-        console.warn('Module saved locally; backend sync failed.',err);
-        local.backend='local';
+        console.warn('Module cached locally; backend sync will be retried.',err);
         this._saveLocal(local);
       }
     }

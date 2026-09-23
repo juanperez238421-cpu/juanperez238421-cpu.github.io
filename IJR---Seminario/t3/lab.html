@@ -45,12 +45,12 @@
         <fieldset>
           <legend>Integrantes</legend>
           <div class="member-grid">
-            <label>Estudiante 1<input id="studentName1" required autocomplete="off" placeholder="Nombre completo"></label>
-            <label id="student2Wrap">Estudiante 2<input id="studentName2" required autocomplete="off" placeholder="Nombre completo"></label>
-            <label id="student3Wrap" class="hidden">Estudiante 3<input id="studentName3" autocomplete="off" placeholder="Nombre completo"></label>
+            <label>Estudiante 1<input id="studentName1" required autocomplete="off" placeholder="Nombre completo según lista oficial"></label>
+            <label id="student2Wrap">Estudiante 2<input id="studentName2" required autocomplete="off" placeholder="Nombre completo según lista oficial"></label>
+            <label id="student3Wrap" class="hidden">Estudiante 3<input id="studentName3" autocomplete="off" placeholder="Nombre completo según lista oficial"></label>
           </div>
         </fieldset>
-        <div class="registration-foot"><p>El equipo conservará un solo progreso y una sola nota para esta ruta. Los nombres pueden escribirse libremente.</p><button class="primary" id="startButton">Entrar al laboratorio</button></div>
+        <div class="registration-foot"><p><strong>Registro oficial:</strong> cada nombre debe coincidir con la lista institucional del grupo. Supabase verifica a cada integrante antes de crear la sesión; un nombre no reconocido no genera registro local alterno.</p><button class="primary" id="startButton">Verificar e ingresar</button></div>
       </form>
       <div id="setupStatus" class="status-line"></div>
     </div>
