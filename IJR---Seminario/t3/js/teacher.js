@@ -1,6 +1,6 @@
 const cfg=window.IJR_SEMINAR_T3_CONFIG,$=id=>document.getElementById(id);
 const sb=globalThis.supabase?globalThis.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}}):null;
-let token=sessionStorage.getItem(cfg.teacherSessionKey)||'',snapshot=null,timer=null,loading=false,lastSuccessAt=0;
+let token=sessionStorage.getItem(cfg.teacherSessionKey)||'',snapshot=null,timer=null,loading=false,lastSuccessAt=0,activeView='oop';
 const VISIBLE_MS=12000,HIDDEN_MS=45000;
 function esc(v=''){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function fmt(v,d=2){const n=Number(v);return Number.isFinite(n)?n.toFixed(d):'—';}
@@ -13,17 +13,72 @@ function setLive(mode,text){const el=$('liveStatus');if(!el)return;el.className=
 function schedule(){clearTimeout(timer);if(token)timer=setTimeout(load,document.hidden?HIDDEN_MS:VISIBLE_MS)}
 function isAuthError(err){return /sesión docente|session|invalid|expired|expirada/i.test(String(err?.message||err))}
 async function rpc(name,args={}){const {data,error}=await sb.rpc(name,args);if(error)throw new Error(error.message||'Backend error');return data}
+function sessionRecord(s,key){return (s.oop_uml||[]).find(x=>x.session_key===key)||null}
+function oopEvidence(record){
+  const e=record?.evidence||{};
+  return {
+    has:!!record,
+    uml:e.uml_mastery===true&&e.uml_visual_mastery===true,
+    code:e.run_success===true&&e.implement_success===true&&e.test_success===true&&Number(e.successful_run_count||0)>0,
+    umlScore:Number(e.uml_classification_score||0),
+    umlTotal:Number(e.uml_classification_total||0),
+    visualScore:Number(e.uml_visual_score||0),
+    visualTotal:Number(e.uml_visual_total||0),
+    runs:Number(e.run_count||0),
+    successfulRuns:Number(e.successful_run_count||0)
+  }
+}
+function latestOopSession(s){
+  return [...(s.oop_uml||[])].sort((a,b)=>Number(String(b.session_key||'').replace(/\D/g,''))-Number(String(a.session_key||'').replace(/\D/g,'')))[0]||null
+}
+function projectHasEvidence(s){
+  const x=s.studio;if(!x)return false;
+  return !!(x.project_title||x.repo_full_name||x.uml_url||x.next_goal||Number(x.progress_percent||0)>0||Number(x.sprint_current||1)>1)
+}
+function viewLastActivity(s){
+  let vals=[];
+  if(activeView==='oop') vals=[...(s.oop_uml||[]).map(x=>x.updated_at||x.completed_at),...(s.oop_labs||[]).map(x=>x.last_activity_at)];
+  else if(activeView==='topics') vals=[s.studio?.last_student_activity_at,s.diagnostic?.completed_at,s.diagnostic?.updated_at];
+  else vals=[s.studio?.last_student_activity_at,s.studio?.updated_at];
+  const ts=vals.filter(Boolean).map(x=>new Date(x).getTime()).filter(Number.isFinite);
+  return ts.length?new Date(Math.max(...ts)).toISOString():null
+}
+function viewHasRecord(s){
+  if(activeView==='oop')return (s.oop_uml||[]).length>0||(s.oop_labs||[]).length>0;
+  if(activeView==='topics')return !!(s.studio||s.diagnostic);
+  return !!s.studio;
+}
 function filteredStudents(){
-  const group=$('groupFilter').value,q=$('searchInput').value.trim().toLowerCase(),state=$('stateFilter').value,track=$('trackFilter').value;
+  const group=$('groupFilter').value,q=$('searchInput').value.trim().toLowerCase(),state=$('stateFilter').value;
   return (snapshot?.students||[]).filter(s=>{
-    const last=lastActivity(s),digital=hasDigital(s);
-    return (!group||s.group_code===group)
-      &&(!q||[s.display_name,s.internal_key].some(x=>String(x||'').toLowerCase().includes(q)))
-      &&(!track||s.studio?.track_slug===track||s.diagnostic?.track_slug===track)
-      &&(!state||(state==='today'&&isToday(last))||(state==='registered'&&digital)||(state==='missing'&&!digital));
+    const last=viewLastActivity(s),digital=viewHasRecord(s);
+    if(group&&s.group_code!==group)return false;
+    if(q&&![s.display_name,s.internal_key,s.institutional_email].some(x=>String(x||'').toLowerCase().includes(q)))return false;
+    if(state&& !((state==='today'&&isToday(last))||(state==='registered'&&digital)||(state==='missing'&&!digital)))return false;
+    if(activeView==='oop'){
+      const f=$('oopStageFilter').value,r=sessionRecord(s,'s01'),ev=oopEvidence(r);
+      if(f==='s01'&&!r)return false;
+      if(f==='uml'&&!ev.uml)return false;
+      if(f==='code'&&!ev.code)return false;
+      if(f==='missing'&&(s.oop_uml||[]).length)return false;
+    }else if(activeView==='topics'){
+      const track=$('trackFilter').value,diag=$('diagnosticFilter').value;
+      if(track&&s.studio?.track_slug!==track&&s.diagnostic?.track_slug!==track)return false;
+      if(diag==='started'&&!s.diagnostic)return false;
+      if(diag==='completed'&&s.diagnostic?.status!=='completed')return false;
+      if(diag==='missing'&&s.diagnostic)return false;
+    }else{
+      const ps=$('projectStateFilter').value,sprint=$('sprintFilter').value;
+      if(ps==='profile'&&!s.studio)return false;
+      if(ps==='evidence'&&!projectHasEvidence(s))return false;
+      if(ps==='repo'&&!s.studio?.repo_full_name)return false;
+      if(ps==='missing'&&s.studio)return false;
+      if(sprint&&String(s.studio?.sprint_current||'')!==sprint)return false;
+    }
+    return true;
   });
 }
-function courseCell(s){const c=s.course;if(!c)return'<span class="pill none">No course record</span>';const grade=c.final_grade??c.projected_grade;const pct=Math.min(100,Number(c.completed_count||0)/16*100);return '<span class="cell-main">'+esc((c.language||'').toUpperCase())+' · '+esc(c.completed_count||0)+'/16</span><span class="cell-sub">'+esc(c.team_label||'')+' · grade '+esc(fmt(grade))+'</span><div class="progress-mini"><i style="width:'+pct+'%"></i></div>'}
+function courseCell(s)function courseCell(s){const c=s.course;if(!c)return'<span class="pill none">No course record</span>';const grade=c.final_grade??c.projected_grade;const pct=Math.min(100,Number(c.completed_count||0)/16*100);return '<span class="cell-main">'+esc((c.language||'').toUpperCase())+' · '+esc(c.completed_count||0)+'/16</span><span class="cell-sub">'+esc(c.team_label||'')+' · grade '+esc(fmt(grade))+'</span><div class="progress-mini"><i style="width:'+pct+'%"></i></div>'}
 function oopCell(s){
   const list=s.oop_uml||[];if(!list.length)return'<span class="pill none">0 sessions</span>';
   const latest=list[0]||{},e=latest.evidence||{};
@@ -36,20 +91,40 @@ function studioCell(s){const x=s.studio;if(!x)return'<span class="pill none">No 
 function diagCell(s){const d=s.diagnostic;if(!d)return'<span class="pill none">Not taken</span>';return'<span class="pill '+(d.status==='completed'?'done':'active')+'">'+esc(d.status)+'</span><span class="cell-sub">'+esc(fmt(d.knowledge_percent,0))+'% · '+esc(d.level||'—')+'</span>'}
 function labsCell(s){const a=s.oop_labs||[];if(!a.length)return'<span class="pill none">0</span>';const done=a.filter(x=>x.status==='submitted').length;return'<span class="pill blue">'+a.length+' lab'+(a.length===1?'':'s')+'</span><span class="cell-sub">'+done+' submitted</span>'}
 function renderMetrics(){
-  const all=snapshot?.students||[],digital=all.filter(hasDigital).length,today=all.filter(s=>isToday(lastActivity(s))).length;
-  const vals=[
-    ['Official roster',snapshot?.roster_count||all.length],
-    ['Digital record',digital],
-    ['Activity today',today],
-    ['T3 course',all.filter(s=>s.course).length],
-    ['OOP + UML evidence',all.filter(s=>(s.oop_uml||[]).length).length],
-    ['Studio',all.filter(s=>s.studio).length],
-    ['Diagnostic',all.filter(s=>s.diagnostic).length],
-    ['No digital record',all.length-digital]
-  ];
+  const all=snapshot?.students||[];
+  let vals=[];
+  if(activeView==='oop'){
+    const s01=all.filter(s=>sessionRecord(s,'s01'));
+    vals=[
+      ['Official roster',snapshot?.roster_count||all.length],
+      ['Stage 1 evidence',s01.length],
+      ['UML verified',s01.filter(s=>oopEvidence(sessionRecord(s,'s01')).uml).length],
+      ['Code validated',s01.filter(s=>oopEvidence(sessionRecord(s,'s01')).code).length],
+      ['Runtime pending',s01.filter(s=>!oopEvidence(sessionRecord(s,'s01')).code).length],
+      ['No POO evidence',all.filter(s=>!(s.oop_uml||[]).length).length]
+    ];
+  }else if(activeView==='topics'){
+    vals=[
+      ['Official roster',snapshot?.roster_count||all.length],
+      ['Track selected',all.filter(s=>s.studio?.track_slug).length],
+      ['Diagnostic started',all.filter(s=>s.diagnostic).length],
+      ['Diagnostic completed',all.filter(s=>s.diagnostic?.status==='completed').length],
+      ['Web',all.filter(s=>s.studio?.track_slug==='web').length],
+      ['No topic record',all.filter(s=>!s.studio&&!s.diagnostic).length]
+    ];
+  }else{
+    vals=[
+      ['Official roster',snapshot?.roster_count||all.length],
+      ['Project profiles',all.filter(s=>s.studio).length],
+      ['Project evidence',all.filter(projectHasEvidence).length],
+      ['GitHub repos',all.filter(s=>s.studio?.repo_full_name).length],
+      ['UML links',all.filter(s=>s.studio?.uml_url).length],
+      ['Progress > 0%',all.filter(s=>Number(s.studio?.progress_percent||0)>0).length]
+    ];
+  }
   $('metrics').innerHTML=vals.map(([k,v])=>'<div class="metric"><span>'+esc(k)+'</span><strong>'+esc(v)+'</strong></div>').join('');
 }
-function renderQuality(){
+function renderQuality(){function renderQuality(){
   const q=snapshot?.data_quality||{},items=[
     ['course members unmatched',q.unmatched_course_members||0],
     ['studio primary unmatched',q.unmatched_studio_primary||0],
@@ -73,31 +148,79 @@ function renderLegacy(){
     block('Project Studio',studio,x=>'<div class="legacy-row"><div><strong>'+esc(x.full_name||'—')+'</strong><span>'+esc(x.group_code||'')+' · '+esc(x.track_slug||'')+(x.partner_name?' · partner '+esc(x.partner_name):'')+'</span></div><time>'+esc(fmtTime(x.updated_at))+'</time></div>')+
     block('Diagnostics',diag,x=>'<div class="legacy-row"><div><strong>'+esc(x.full_name||'—')+'</strong><span>'+esc(x.group_code||'')+' · '+esc(x.track_slug||'')+'</span></div><time>'+esc(fmtTime(x.updated_at))+'</time></div>');
 }
+function setViewUi(){
+  document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===activeView));
+  $('oopPageFilters').classList.toggle('hidden',activeView!=='oop');
+  $('topicsPageFilters').classList.toggle('hidden',activeView!=='topics');
+  $('projectPageFilters').classList.toggle('hidden',activeView!=='project');
+  const meta={
+    oop:['POO + UML · Registro maestro','Common Core por workshop stage. Se conserva la evidencia real y se separa UML verificado de ejecución de código validada.'],
+    topics:['Specific Topics · Registro maestro','Selección de track y diagnóstico especializado. Un registro iniciado no se muestra como diagnóstico completado.'],
+    project:['Project · Registro maestro','Evidencia real del proyecto: título, sprint, progreso, repositorio, UML y siguiente meta. Perfil creado no equivale a proyecto avanzado.']
+  }[activeView];
+  $('registerTitle').textContent=meta[0];$('registerDescription').textContent=meta[1];
+}
+function baseCells(s){return '<td><strong>'+esc(s.group_code)+'</strong></td>'+
+  '<td>'+esc(s.source_position)+'</td>'+
+  '<td><span class="student-name">'+esc(s.display_name)+'</span><span class="student-key">'+esc(s.internal_key)+(s.institutional_email?' · '+esc(s.institutional_email):'')+'</span></td>'+
+  '<td><span class="pill verified">✓ Roster verified</span></td>'}
+function oopRow(s){
+  const r=sessionRecord(s,'s01'),ev=oopEvidence(r),latest=latestOopSession(s),last=viewLastActivity(s);
+  const stage=r?'<span class="pill partial">S01 evidence</span><span class="cell-sub">'+esc(fmtTime(r.completed_at||r.updated_at))+'</span>':'<span class="pill none">No S01 evidence</span>';
+  const uml=r?'<span class="pill '+(ev.uml?'done':'partial')+'">'+(ev.uml?'Verified':'Pending')+'</span><span class="cell-sub">'+ev.umlScore+'/'+ev.umlTotal+' classification · '+ev.visualScore+'/'+ev.visualTotal+' visual</span>':'<span class="pill none">—</span>';
+  const code=r?'<span class="pill '+(ev.code?'done':'active')+'">'+(ev.code?'Validated':'Runtime pending')+'</span><span class="cell-sub">'+ev.successfulRuns+'/'+ev.runs+' successful runs</span>':'<span class="pill none">—</span>';
+  const labs=s.oop_labs||[];
+  return '<tr>'+baseCells(s)+
+    '<td>'+stage+'</td>'+
+    '<td>'+(latest?'<span class="cell-main">'+esc((latest.session_key||'').toUpperCase())+'</span><span class="cell-sub">'+esc(latest.status||'evidence')+'</span>':'<span class="pill none">None</span>')+'</td>'+
+    '<td>'+uml+'</td><td>'+code+'</td>'+
+    '<td>'+(labs.length?'<span class="pill blue">'+labs.length+' lab(s)</span>':'<span class="pill none">0</span>')+'</td>'+
+    '<td class="time">'+esc(fmtTime(last))+'</td>'+
+    '<td><span class="pill '+(r?'partial':'none')+'">'+(r?'Evidence recorded':'No activity')+'</span></td>'+
+    '<td><button class="inspect" data-student="'+esc(s.student_registry_id)+'">Inspect</button></td></tr>';
+}
+function topicsRow(s){
+  const st=s.studio,d=s.diagnostic,last=viewLastActivity(s);
+  const track=st?.track_slug||d?.track_slug;
+  const diag=d?'<span class="pill '+(d.status==='completed'?'done':'active')+'">'+esc(d.status)+'</span><span class="cell-sub">'+(d.status==='completed'?esc(fmt(d.knowledge_percent,1))+'% · '+esc(d.level||'—'):'Started · no result yet')+'</span>':'<span class="pill none">Not started</span>';
+  return '<tr>'+baseCells(s)+
+    '<td>'+(track?'<span class="pill blue">'+esc(track)+'</span>':'<span class="pill none">No track</span>')+'</td>'+
+    '<td>'+(st?'<span class="cell-main">'+esc(st.first_choice||st.track_slug||'Selected')+'</span><span class="cell-sub">'+esc(st.work_mode||'')+'</span>':'<span class="pill none">No profile</span>')+'</td>'+
+    '<td>'+diag+'</td>'+
+    '<td>'+(d&&d.status==='completed'?'<span class="cell-main">Stage '+esc(d.highest_mastered_stage??0)+'</span><span class="cell-sub">recommended '+esc(d.recommended_stage??'—')+'</span>':'<span class="pill none">No completed score</span>')+'</td>'+
+    '<td class="time">'+esc(fmtTime(last))+'</td>'+
+    '<td><span class="pill '+(st||d?'partial':'none')+'">'+(st||d?'Recorded':'No activity')+'</span></td>'+
+    '<td><button class="inspect" data-student="'+esc(s.student_registry_id)+'">Inspect</button></td></tr>';
+}
+function projectRow(s){
+  const st=s.studio,last=viewLastActivity(s),evidence=projectHasEvidence(s);
+  return '<tr>'+baseCells(s)+
+    '<td>'+(st?'<span class="cell-main">'+esc(st.project_title||'Not defined')+'</span><span class="cell-sub">'+esc(st.track_slug||st.first_choice||'')+'</span>':'<span class="pill none">No profile</span>')+'</td>'+
+    '<td>'+(st?'<span class="pill '+(Number(st.sprint_current||1)>1?'partial':'none')+'">Sprint '+esc(st.sprint_current||1)+'/8</span>':'<span class="pill none">—</span>')+'</td>'+
+    '<td>'+(st?'<span class="cell-main">'+esc(st.progress_percent||0)+'%</span><div class="progress-mini"><i style="width:'+Math.max(0,Math.min(100,Number(st.progress_percent||0)))+'%"></i></div>':'<span class="pill none">—</span>')+'</td>'+
+    '<td>'+(st?.repo_full_name?'<span class="pill done">GitHub linked</span>':'<span class="pill none">No repo</span>')+'</td>'+
+    '<td>'+(st?.uml_url?'<span class="pill done">UML linked</span>':'<span class="pill none">No UML</span>')+'</td>'+
+    '<td>'+(st?.next_goal?'<span class="cell-sub">'+esc(st.next_goal)+'</span>':'<span class="pill none">No next goal</span>')+'</td>'+
+    '<td class="time">'+esc(fmtTime(last))+'</td>'+
+    '<td><span class="pill '+(evidence?'partial':st?'active':'none')+'">'+(evidence?'Evidence started':st?'Profile only':'No activity')+'</span></td>'+
+    '<td><button class="inspect" data-student="'+esc(s.student_registry_id)+'">Inspect</button></td></tr>';
+}
 function render(){
   if(!snapshot)return;
-  renderMetrics();renderQuality();
+  setViewUi();renderMetrics();renderQuality();
   const rows=filteredStudents();$('shownCount').textContent=rows.length;
-  $('studentBody').innerHTML=rows.map(s=>{
-    const last=lastActivity(s),digital=hasDigital(s),today=isToday(last);
-    return '<tr>'+
-      '<td><strong>'+esc(s.group_code)+'</strong></td>'+
-      '<td>'+esc(s.source_position)+'</td>'+
-      '<td><span class="student-name">'+esc(s.display_name)+'</span><span class="student-key">'+esc(s.internal_key)+(s.institutional_email?' · '+esc(s.institutional_email):'')+'</span></td>'+
-      '<td><span class="pill verified">✓ Roster verified</span>'+(s.institutional_email?'<span class="cell-sub">Institutional email linked</span>':'<span class="cell-sub">No email link yet</span>')+'</td>'+
-      '<td>'+courseCell(s)+'</td>'+
-      '<td>'+oopCell(s)+'</td>'+
-      '<td>'+studioCell(s)+'</td>'+
-      '<td>'+diagCell(s)+'</td>'+
-      '<td>'+labsCell(s)+'</td>'+
-      '<td class="time">'+esc(fmtTime(last))+'</td>'+
-      '<td><span class="pill '+(today?'today':digital?'partial':'none')+'">'+(today?'Today':digital?'Recorded':'No activity')+'</span></td>'+
-      '<td><button class="inspect" data-student="'+esc(s.student_registry_id)+'">Inspect</button></td>'+
-    '</tr>';
-  }).join('')||'<tr><td colspan="12">No students match this filter.</td></tr>';
+  const heads={
+    oop:['Grupo','#','Estudiante','Identidad','Workshop Stage 1','Último stage','UML evidence','Code runtime','OOP labs','Última actividad','Estado',''],
+    topics:['Grupo','#','Estudiante','Identidad','Track','Selección','Diagnóstico','Resultado','Última actividad','Estado',''],
+    project:['Grupo','#','Estudiante','Identidad','Proyecto','Sprint','Avance','Repositorio','UML','Siguiente meta','Última actividad','Estado','']
+  }[activeView];
+  $('studentHead').innerHTML=heads.map(x=>'<th>'+esc(x)+'</th>').join('');
+  $('studentBody').innerHTML=rows.map(s=>activeView==='oop'?oopRow(s):activeView==='topics'?topicsRow(s):projectRow(s)).join('')
+    ||'<tr><td colspan="'+heads.length+'">No students match this filter.</td></tr>';
   document.querySelectorAll('[data-student]').forEach(b=>b.addEventListener('click',()=>openDetail(b.dataset.student)));
   $('updatedAt').textContent='Updated '+fmtTime(snapshot.generated_at);
 }
-function detailEmpty(text){return'<div class="detail-empty">'+esc(text)+'</div>'}
+function detailEmpty(text)function detailEmpty(text){return'<div class="detail-empty">'+esc(text)+'</div>'}
 function openDetail(id){
   const s=(snapshot?.students||[]).find(x=>x.student_registry_id===id);if(!s)return;
   $('dialogTitle').textContent=s.display_name;$('dialogSubtitle').textContent=s.group_code+' · '+s.internal_key+' · roster position '+s.source_position;
@@ -175,7 +298,8 @@ $('logoutButton').addEventListener('click',async()=>{
   $('loginStatus').textContent='';setLive('syncing','Disconnected');
 });
 $('refreshButton').addEventListener('click',()=>load(true));
-['groupFilter','stateFilter','trackFilter'].forEach(id=>$(id).addEventListener('change',render));
+['groupFilter','stateFilter','oopStageFilter','trackFilter','diagnosticFilter','projectStateFilter','sprintFilter'].forEach(id=>$(id).addEventListener('change',render));
+document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{activeView=btn.dataset.view;render()}));
 $('searchInput').addEventListener('input',render);
 $('closeDialog').addEventListener('click',()=>$('studentDialog').close());
 $('toggleLegacy').addEventListener('click',()=>{const box=$('legacyContent'),hidden=box.classList.toggle('hidden');$('toggleLegacy').textContent=hidden?'Mostrar detalle':'Ocultar detalle'});

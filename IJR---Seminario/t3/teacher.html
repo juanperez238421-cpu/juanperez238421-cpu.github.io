@@ -7,10 +7,10 @@
   <meta name="color-scheme" content="light">
   <title>Seminario 11 · Master panel</title>
   <link rel="preconnect" href="https://rlfxnjbqxbozjdzkbwlz.supabase.co" crossorigin>
-  <link rel="stylesheet" href="css/teacher.css?v=20260923-code-only-v3">
+  <link rel="stylesheet" href="css/teacher.css?v=20260923-page-views-v5">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="config.js?v=20260923-code-only-v3"></script>
-  <script type="module" src="js/teacher.js?v=20260923-oop-reconciled-v4"></script>
+  <script type="module" src="js/teacher.js?v=20260923-page-views-v5"></script>
 </head>
 <body>
 <main class="shell">
@@ -54,9 +54,40 @@
         <select id="stateFilter" aria-label="Filtrar estado">
           <option value="">Todos</option>
           <option value="today">Actividad hoy</option>
-          <option value="registered">Con registro digital</option>
-          <option value="missing">Sin registro digital</option>
+          <option value="registered">Con registro en esta página</option>
+          <option value="missing">Sin registro en esta página</option>
         </select>
+        <input id="searchInput" type="search" placeholder="Buscar estudiante">
+        <button id="refreshButton" class="secondary" type="button">Actualizar</button>
+        <button id="logoutButton" class="secondary" type="button">Salir</button>
+      </div>
+    </section>
+
+    <section class="panel view-switcher" aria-label="Página académica">
+      <button class="view-tab active" type="button" data-view="oop">
+        <span>PAGE 01</span><strong>POO + UML</strong><small>Common Core · Workshop stages</small>
+      </button>
+      <button class="view-tab" type="button" data-view="topics">
+        <span>PAGE 02</span><strong>Specific Topics</strong><small>Track selection · diagnostic</small>
+      </button>
+      <button class="view-tab" type="button" data-view="project">
+        <span>PAGE 03</span><strong>Project</strong><small>Project evidence · sprint · repository</small>
+      </button>
+    </section>
+
+    <section class="panel page-filter-row">
+      <div id="oopPageFilters" class="page-filters">
+        <strong>POO filters</strong>
+        <select id="oopStageFilter" aria-label="Filtrar avance POO">
+          <option value="">Todos</option>
+          <option value="s01">Workshop Stage 1 · evidence</option>
+          <option value="uml">UML verificado</option>
+          <option value="code">Código validado</option>
+          <option value="missing">Sin evidencia POO</option>
+        </select>
+      </div>
+      <div id="topicsPageFilters" class="page-filters hidden">
+        <strong>Specific Topics filters</strong>
         <select id="trackFilter" aria-label="Filtrar track">
           <option value="">Todos los tracks</option>
           <option value="web">Web Development</option>
@@ -65,9 +96,26 @@
           <option value="3d-programming">3D + Programming</option>
           <option value="robotics">Robotics</option>
         </select>
-        <input id="searchInput" type="search" placeholder="Buscar estudiante">
-        <button id="refreshButton" class="secondary" type="button">Actualizar</button>
-        <button id="logoutButton" class="secondary" type="button">Salir</button>
+        <select id="diagnosticFilter" aria-label="Filtrar diagnóstico">
+          <option value="">Cualquier diagnóstico</option>
+          <option value="started">Diagnóstico iniciado</option>
+          <option value="completed">Diagnóstico completado</option>
+          <option value="missing">Sin diagnóstico</option>
+        </select>
+      </div>
+      <div id="projectPageFilters" class="page-filters hidden">
+        <strong>Project filters</strong>
+        <select id="projectStateFilter" aria-label="Filtrar estado de proyecto">
+          <option value="">Cualquier estado</option>
+          <option value="profile">Perfil de proyecto creado</option>
+          <option value="evidence">Con evidencia de proyecto</option>
+          <option value="repo">Repositorio registrado</option>
+          <option value="missing">Sin perfil de proyecto</option>
+        </select>
+        <select id="sprintFilter" aria-label="Filtrar sprint">
+          <option value="">Todos los sprints</option>
+          <option value="1">Sprint 1</option><option value="2">Sprint 2</option><option value="3">Sprint 3</option><option value="4">Sprint 4</option><option value="5">Sprint 5</option><option value="6">Sprint 6</option><option value="7">Sprint 7</option><option value="8">Sprint 8</option>
+        </select>
       </div>
     </section>
 
@@ -86,30 +134,15 @@
       <div class="register-head">
         <div>
           <span class="eyebrow">OFFICIAL ROSTER · ONE ROW PER STUDENT</span>
-          <h2>Registro maestro de Seminario 11</h2>
-          <p>La tabla parte de la lista oficial, no de sesiones del navegador. Por eso también aparecen quienes aún no han realizado ninguna actividad digital.</p>
+          <h2 id="registerTitle">POO + UML · Registro maestro</h2>
+          <p id="registerDescription">Workshop stages y evidencia POO contrastados contra el roster oficial. “Evidence” no equivale automáticamente a código validado.</p>
         </div>
         <div class="register-summary"><strong id="shownCount">0</strong><span>estudiantes mostrados</span></div>
       </div>
 
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>Grupo</th>
-              <th>#</th>
-              <th>Estudiante</th>
-              <th>Identidad</th>
-              <th>T3 Course</th>
-              <th>OOP + UML</th>
-              <th>Project Studio</th>
-              <th>Diagnóstico</th>
-              <th>OOP labs</th>
-              <th>Última actividad</th>
-              <th>Estado</th>
-              <th></th>
-            </tr>
-          </thead>
+          <thead><tr id="studentHead"></tr></thead>
           <tbody id="studentBody"></tbody>
         </table>
       </div>
