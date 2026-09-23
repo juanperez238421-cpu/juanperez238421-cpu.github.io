@@ -6,6 +6,9 @@
   <meta name="color-scheme" content="light">
   <meta name="description" content="Seminar 11 OOP + UML Learning Hub with Supabase-backed classroom progress and dedicated theory/workshop routes.">
   <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Seminar 11 · OOP + UML Learning Hub</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://rlfxnjbqxbozjdzkbwlz.supabase.co" crossorigin>
@@ -13,9 +16,9 @@
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="../config.js?v=20260824-1"></script>
   <script defer src="course-data.js?v=20260831-v1"></script>
-  <script type="module" src="hub.js?v=20260831-v1"></script>
+  <script type="module" src="hub.js?v=20260923-email-v13"></script>
 </head>
-<body>
+<body data-oop-uml-build="20260923-email-v13">
   <header class="topbar">
     <a class="brand" href="../" aria-label="Back to Seminar T3">
       <span class="brand-mark">IJR</span>
@@ -31,43 +34,29 @@
   <section id="registrationPanel" class="registration-screen">
     <div class="registration-card">
       <p class="eyebrow">SOFTWARE ENGINEERING STUDIO · COMMON CORE</p>
-      <h1>Model first. Code second.</h1>
-      <p class="registration-lead">Register the student or exact classroom team using this computer. The Common Core connects <strong>Object-Oriented Programming</strong> with <strong>UML class diagrams</strong> and reuses the live Seminar T3 Supabase progress backend.</p>
+      <h1>Sign in with your institutional email.</h1>
+      <p class="registration-lead">Enter only your <strong>@ijr.edu.co institutional email</strong>. Supabase resolves your official name and Grade 11 group automatically. No password, student name, group, language, registration mode or team field is requested.</p>
 
       <div class="sequence-rule">
         <strong>10-session progression</strong>
         <span>Objects → State → Constructors → Encapsulation → Relationships → Inheritance → Polymorphism → Architecture → Refactoring → Defense</span>
-        <small>Every session has a dedicated Theory page and a Workshop route. Python and Java share the same design language.</small>
+        <small>Every session has a dedicated Theory page and Workshop. Python opens automatically for this Common Core route.</small>
       </div>
 
-      <form id="registrationForm" class="hub-registration-form">
+      <form id="registrationForm" class="hub-registration-form" novalidate>
         <div class="registration-grid">
-          <label>Language <small>· Lenguaje</small>
-            <select id="language" required><option value="python">Python</option><option value="java">Java</option></select>
-          </label>
-          <label>Registration mode <small>· Modalidad</small>
-            <select id="registrationMode" required><option value="individual">Individual · 1 student</option><option value="team">Team · 2–3 students</option></select>
-          </label>
-          <label>Group <small>· Grupo</small>
-            <select id="groupCode" required><option value="">Select…</option><option>11-A</option><option>11-B</option><option>11-C</option></select>
-          </label>
-          <label id="teamSizeWrap" class="hidden">Students at this computer
-            <select id="teamSize"><option value="2">2 students</option><option value="3">3 students</option></select>
+          <label>Institutional email <small>· Correo institucional</small>
+            <input id="institutionalEmail" name="institutionalEmail" type="email" inputmode="email"
+                   autocomplete="email" placeholder="nombre.apellido@ijr.edu.co" required>
           </label>
         </div>
-        <fieldset class="member-fieldset">
-          <legend>Students <small>· Integrantes</small></legend>
-          <div class="member-grid">
-            <label>Student 1<input id="memberName1" required autocomplete="name" placeholder="Full name"></label>
-            <label id="member2Wrap" class="hidden">Student 2<input id="memberName2" autocomplete="name" placeholder="Full name"></label>
-            <label id="member3Wrap" class="hidden">Student 3<input id="memberName3" autocomplete="name" placeholder="Full name"></label>
-          </div>
-        </fieldset>
+
         <div class="sequence-rule">
-          <strong>Automatic saving</strong>
-          <span>Workshop/module completion is synchronized through the existing Seminar T3 Supabase RPC backend when available.</span>
-          <small>The browser keeps a local recovery copy. A different team should always use <strong>Switch registration</strong> before working.</small>
+          <strong>Automatic identity resolution</strong>
+          <span>Your email is matched server-side against the official Grade 11 Seminar roster.</span>
+          <small>After validation, your official name and group are attached to the tracked OOP + UML session automatically.</small>
         </div>
+
         <div class="registration-actions">
           <div><strong>Common Core rule</strong><span>predict → model → implement → test → explain. A program that only runs is not sufficient evidence of mastery.</span></div>
           <button id="registerButton" class="button button-dark" type="submit">Enter OOP + UML Hub</button>
