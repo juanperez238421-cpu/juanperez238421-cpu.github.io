@@ -136,6 +136,7 @@ async function submitRegistration(ev){
 }
 
 function bindRegistration(){
+  if(repairLegacyMarkup())return;
   ensureEmailOnlyRegistration();
   const form=$('registrationForm');
   if(!form)return;

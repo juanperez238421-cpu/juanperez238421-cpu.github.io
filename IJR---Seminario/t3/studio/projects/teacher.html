@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Project Definition Board · Seminario 11</title>
+  <link rel="stylesheet" href="../styles.css?v=20260923-2">
+  <link rel="stylesheet" href="styles.css?v=20260923-1">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="teacher.js?v=20260923-1"></script>
+</head>
+<body>
+<main class="shell">
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">Instituto Jorge Robledo · Seminario 11</div>
+      <h1>Project Definition Board</h1>
+      <p class="muted">Propuestas específicas por estudiante para definir hoy.</p>
+    </div>
+    <div class="actions">
+      <a class="button secondary" href="../teacher.html">Teacher Studio</a>
+      <a class="button ghost" href="../index.html">Student Studio</a>
+    </div>
+  </header>
+
+  <section id="loginPanel" class="panel">
+    <div class="kicker">PRIVATE TEACHER ACCESS</div>
+    <h2>Institutional account + MFA</h2>
+    <form id="loginForm">
+      <input id="teacherEmail" type="email" autocomplete="username" placeholder="teacher@ijr.edu.co" required>
+      <input id="teacherPassword" type="password" autocomplete="current-password" placeholder="Password" required>
+      <button>Continue</button>
+    </form>
+    <div id="mfaPanel" class="hidden">
+      <p id="mfaHelp" class="muted"></p>
+      <img id="mfaQr" class="hidden" alt="MFA QR">
+      <div class="actions">
+        <input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit code">
+        <button id="mfaButton" type="button">Verify MFA</button>
+      </div>
+    </div>
+    <div id="loginStatus" class="status"></div>
+  </section>
+
+  <section id="boardPanel" class="hidden">
+    <section class="panel">
+      <div class="toolbar">
+        <div>
+          <div class="kicker">TODAY · PROJECT DEFINITION</div>
+          <h2>12 propuestas individuales</h2>
+          <p id="updatedAt" class="muted"></p>
+        </div>
+        <div class="filters">
+          <select id="groupFilter"><option value="">Todos</option><option value="11A">11A</option><option value="11B">11B</option><option value="11C">11C</option></select>
+          <select id="trackFilter"><option value="">Todos los tracks</option><option value="cybersecurity">Cybersecurity</option><option value="web">Web</option><option value="data-science">AI / Data</option><option value="3d-programming">3D</option><option value="robotics">Robotics</option></select>
+          <input id="searchInput" placeholder="Estudiante o proyecto">
+          <button id="refreshButton" class="secondary">Refresh</button>
+          <button id="logoutButton" class="ghost">Sign out</button>
+        </div>
+      </div>
+      <div id="metrics" class="metrics"></div>
+    </section>
+    <div id="projectBoard"></div>
+  </section>
+</main>
+</body>
+</html>

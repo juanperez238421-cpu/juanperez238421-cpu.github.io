@@ -10,6 +10,26 @@ function now(){return new Date().toISOString();}
 function normalizeName(v){return String(v||'').trim().replace(/\s+/g,' ');}
 function teamLabel(names){return names.map(normalizeName).filter(Boolean).join(' · ');}
 
+function repairLegacyOopUmlRegistration(){
+  if(typeof window==='undefined'||typeof document==='undefined')return false;
+  const path=String(location.pathname||'');
+  if(!/\/oop-uml\/?(?:index\.html)?$/i.test(path))return false;
+  const legacy=Boolean(
+    document.getElementById('registrationMode')||
+    document.getElementById('groupCode')||
+    document.getElementById('memberName1')||
+    document.getElementById('language')
+  );
+  if(!legacy)return false;
+
+  const build='20260923-email-v14';
+  const canonical='https://rlfxnjbqxbozjdzkbwlz.supabase.co/functions/v1/seminar-t3-host/oop-uml/?v='+build+'&repair=legacy-registration';
+  if(location.href!==canonical) location.replace(canonical);
+  return true;
+}
+
+repairLegacyOopUmlRegistration();
+
 export class CourseStore{
   constructor(config){
     this.cfg=config;

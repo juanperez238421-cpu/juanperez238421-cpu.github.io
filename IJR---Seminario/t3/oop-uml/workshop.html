@@ -1,37 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="light"><meta name="robots" content="noindex,nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Seminar 11 OOP + UML workshop. State & Behavior uses a real browser Python runtime in a Colab-style notebook and Supabase-backed evidence.">
   <title>Seminar 11 · OOP + UML Workshop</title>
-  <link rel="stylesheet" href="styles.css?v=20260831-v1"><script defer src="course-data.js?v=20260831-v1"></script>
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://rlfxnjbqxbozjdzkbwlz.supabase.co" crossorigin>
+  <link rel="stylesheet" href="styles.css?v=20260831-v1">
+  <link rel="stylesheet" href="workshop-colab.css?v=20260923-state-v1">
+
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"></script>
+  <script defer src="../config.js?v=20260923-code-only-v3"></script>
+  <script defer src="course-data.js?v=20260831-v1"></script>
+  <script type="module" src="workshop-colab.js?v=20260923-state-v1"></script>
+  <script src="../access-gate.js?v=20260923-email-v12"></script>
 </head>
 <body>
-<header class="topbar"><a class="brand" href="./"><span class="brand-mark">IJR</span><span><small>Seminar 11 · Common Core</small><strong>OOP + UML Workshop</strong></span></a><div class="top-actions"><a id="theoryTop" class="button button-light" href="theory.html">Review Theory</a><a class="button button-dark" href="../oop-logic-01/">OOP Colab Lab</a></div></header>
-<main class="page-shell">
-  <div class="crumbs"><a href="./">OOP + UML Hub</a><span>→</span><span id="crumbTopic">Workshop</span></div>
-  <section class="page-hero"><p class="eyebrow" id="sessionLabel">COMMON CORE · WORKSHOP</p><h1 id="title">Loading…</h1><p id="lead"></p></section>
-  <section class="panel" style="margin-top:28px"><p class="eyebrow">WORKFLOW</p><h2>Do not jump directly to code.</h2><div class="workshop-steps"><div class="workshop-step"><span>STEP 01</span><strong>Predict</strong><p>State what objects, responsibilities and state you expect before running anything.</p></div><div class="workshop-step"><span>STEP 02</span><strong>Model</strong><p>Draw or update the UML class view before implementation.</p></div><div class="workshop-step"><span>STEP 03</span><strong>Implement</strong><p>Use the guided Seminar module and keep the code synchronized with the model.</p></div><div class="workshop-step"><span>STEP 04</span><strong>Test</strong><p>Create at least one concrete object scenario and verify behavior.</p></div><div class="workshop-step"><span>STEP 05</span><strong>Modify</strong><p>Change one requirement and propagate it through UML and code.</p></div><div class="workshop-step"><span>STEP 06</span><strong>Explain</strong><p>Defend why the class structure and relationships make sense.</p></div></div></section>
-  <section class="content-grid">
-    <article class="panel"><p class="eyebrow">GUIDED LAB ROUTE</p><h2>Open the tracked implementation module</h2><p>These modules use the existing Seminar T3 progress system. When Supabase is available, completion is synchronized by the current secure RPC backend.</p><div id="moduleLauncher" class="module-launcher"></div></article>
-    <aside class="panel soft"><p class="eyebrow">UML TARGET</p><div class="uml-card"><div id="umlName" class="uml-title">Class</div><div id="umlAttrs" class="uml-section"></div><div id="umlOps" class="uml-section"></div></div><p class="callout">Your diagram does not have to look identical to this example. It must express the same kind of responsibility accurately and match your implementation.</p></aside>
-  </section>
-  <section class="content-grid">
-    <article class="panel"><p class="eyebrow">STUDENT EVIDENCE</p><h2>Complete before you call the session finished</h2><div id="checklist" class="checklist"></div></article>
-    <aside class="panel"><p class="eyebrow">LIVE DEFENSE QUESTIONS</p><h2>Be ready to answer</h2><ol class="evidence-list"><li>Which object owns the state that changes?</li><li>Why is this behavior a method of this class?</li><li>What would break if this relationship changed?</li><li>Where is the same design decision visible in UML and code?</li><li>Can you make one small change without copying a finished solution?</li></ol></aside>
-  </section>
-  <div class="page-actions"><a class="button button-light" href="./">Back to Hub</a><a id="theoryBottom" class="button button-light" href="theory.html">Review Theory</a><a class="button button-dark" href="../studio/">Project Studio</a></div>
-</main>
-<script>
-window.addEventListener('DOMContentLoaded',()=>{
- const p=new URLSearchParams(location.search),slug=p.get('topic')||'object-model',lang=p.get('lang')==='java'?'java':'python';
- const t=(window.IJR_OOP_UML_DATA?.topics||[]).find(x=>x.slug===slug)||window.IJR_OOP_UML_DATA.topics[0];
- const $=id=>document.getElementById(id),esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- $('sessionLabel').textContent=`SESSION ${String(t.n).padStart(2,'0')} · WORKSHOP · ${lang.toUpperCase()}`;$('title').textContent=t.title;$('lead').textContent=t.lead;$('crumbTopic').textContent=t.title;
- $('umlName').textContent=t.uml.name;$('umlAttrs').innerHTML=t.uml.attrs.length?t.uml.attrs.map(x=>`<div>${esc(x)}</div>`).join(''):'<div><em>No attributes required in this abstraction.</em></div>';$('umlOps').innerHTML=t.uml.ops.map(x=>`<div>${esc(x)}</div>`).join('');
- $('checklist').innerHTML=t.evidence.map((x,i)=>`<label><input type="checkbox"><span><strong>Evidence ${i+1}</strong><br>${esc(x)}</span></label>`).join('');
- $('moduleLauncher').innerHTML=t.modules.map(m=>`<div class="module-row"><div><strong>${m.toUpperCase()} · ${esc(t.title)}</strong><p>Tracked ${lang==='python'?'Python':'Java'} laboratory module. Open it, complete the guided evidence, then return to the Hub.</p></div><a class="button button-dark" href="../lab.html?language=${lang}&module=${m}">Open ${m.toUpperCase()}</a></div>`).join('');
- if(t.n<=3)$('moduleLauncher').insertAdjacentHTML('beforeend','<div class="module-row"><div><strong>Python OOP Colab Lab 01</strong><p>12-stage browser Python lab focused on class/object reasoning, state, methods and OOP design.</p></div><a class="button button-light" href="../oop-logic-01/">Open Colab-style lab</a></div>');
- const q=`theory.html?topic=${encodeURIComponent(t.slug)}&lang=${lang}`;$('theoryTop').href=q;$('theoryBottom').href=q;
-});
-</script>
-</body></html>
+  <div id="stateBehaviorWorkshop" class="colab-app-shell hidden">
+    <header class="notebook-titlebar">
+      <a class="ijr-brand" href="./" aria-label="Back to OOP and UML Hub">
+        <span class="ijr-mark">IJR</span>
+        <span class="brand-copy">
+          <small>Seminar 11 · Common Core</small>
+          <strong>OOP + UML Workshop</strong>
+        </span>
+      </a>
+
+      <div class="notebook-file" aria-label="Notebook file">
+        <span class="notebook-icon" aria-hidden="true">▣</span>
+        <div>
+          <strong>02_State_and_Behavior.ipynb</strong>
+          <small>Python 3 · OOP · UML · tracked evidence</small>
+        </div>
+      </div>
+
+      <div class="titlebar-actions">
+        <span id="identityBadge" class="session-badge">Checking session…</span>
+        <a class="ghost-button" href="theory.html?topic=state-behavior&lang=python">Theory</a>
+        <a class="ghost-button" href="./">OOP + UML Hub</a>
+      </div>
+    </header>
+
+    <div class="colab-menubar" aria-label="Notebook toolbar">
+      <div class="menu-items" aria-hidden="true">
+        <span>File</span><span>Edit</span><span>View</span><span>Insert</span><span>Runtime</span><span>Tools</span><span>Help</span>
+      </div>
+      <div class="toolbar-actions">
+        <span id="syncBadge" class="sync-badge">Supabase: checking</span>
+        <button id="connectRuntimeButton" class="runtime-button" type="button">
+          <span id="runtimeDot" class="runtime-dot"></span>
+          <span id="runtimeLabel">Connect</span>
+        </button>
+      </div>
+    </div>
+
+    <main class="workspace-shell">
+      <aside class="stage-sidebar" aria-label="State and Behavior workshop stages">
+        <div class="sidebar-head">
+          <p class="eyebrow">SESSION 02 · WORKSHOP</p>
+          <h1>State &amp; Behavior</h1>
+          <p>Decide what an object knows and what an object does.</p>
+          <div class="mastery-row"><span>Mastery</span><strong id="masteryPercent">0%</strong></div>
+          <div class="mastery-track"><span id="masteryBar"></span></div>
+          <small id="masteryCount">0 / 6 validated</small>
+        </div>
+        <nav id="stageList" class="stage-list">
+          <button type="button" data-stage="predict"><span>01</span><strong>Predict</strong><small>Trace state</small></button>
+          <button type="button" data-stage="model"><span>02</span><strong>Model</strong><small>Read UML</small></button>
+          <button type="button" data-stage="implement"><span>03</span><strong>Implement</strong><small>Write methods</small></button>
+          <button type="button" data-stage="test"><span>04</span><strong>Test</strong><small>Verify mutation</small></button>
+          <button type="button" data-stage="modify"><span>05</span><strong>Modify</strong><small>Protect a rule</small></button>
+          <button type="button" data-stage="explain"><span>06</span><strong>Explain</strong><small>Defend design</small></button>
+        </nav>
+        <div class="sidebar-note">
+          <strong>Core idea</strong>
+          <span>Attributes hold state. Methods express behavior and protect object rules.</span>
+        </div>
+      </aside>
+
+      <section class="notebook-scroll" aria-label="State and Behavior Colab-style notebook">
+        <section id="sessionGate" class="session-gate hidden" role="status">
+          <div>
+            <strong>Official Seminar session required for tracked evidence.</strong>
+            <p>Return to the OOP + UML Hub, register the workstation, then reopen State &amp; Behavior. The notebook can still be inspected, but completion cannot be recorded without the active Seminar attempt token.</p>
+          </div>
+          <a class="primary-link" href="./">Open OOP + UML Hub</a>
+        </section>
+
+        <section class="notebook-hero text-cell">
+          <div>
+            <p class="eyebrow">SESSION 02 · PYTHON NOTEBOOK</p>
+            <h2>State &amp; Behavior</h2>
+            <p>Build one <strong>BankAccount</strong> object, trace how its <code>balance</code> changes, then move the business rule into the object itself. Every successful code cell runs in a real Python runtime in your browser.</p>
+          </div>
+          <div class="hero-progress">
+            <span>Evidence</span>
+            <strong id="heroStage">0 / 6</strong>
+          </div>
+        </section>
+
+        <article class="text-cell learning-cell">
+          <div class="cell-type-badge">Learning target</div>
+          <div class="concept-grid">
+            <div><span>STATE</span><strong>What the object knows</strong><p>Stored in attributes such as <code>owner</code> and <code>balance</code>.</p></div>
+            <div><span>BEHAVIOR</span><strong>What the object does</strong><p>Expressed with methods such as <code>deposit()</code> and <code>withdraw()</code>.</p></div>
+            <div><span>RULE</span><strong>What the object protects</strong><p>A method should preserve a meaningful invariant, not just change a number.</p></div>
+          </div>
+        </article>
+
+        <article id="stage-predict" class="notebook-stage text-cell" data-stage-card="predict">
+          <div class="stage-heading">
+            <div><span class="stage-number">01</span><div><p class="eyebrow">PREDICT · BEFORE CODE</p><h2>Trace the object state</h2></div></div>
+            <span class="stage-status" data-stage-status="predict">Not validated</span>
+          </div>
+          <p class="stage-prompt">A new account starts at <code>100</code>. It receives a deposit of <code>50</code>, then a withdrawal of <code>40</code>. Later, someone tries to withdraw <code>200</code>, which the final design must reject.</p>
+          <div class="prediction-grid">
+            <label>After <code>deposit(50)</code><input id="predictDeposit" type="number" inputmode="decimal" placeholder="?" aria-label="Balance after deposit"></label>
+            <label>After <code>withdraw(40)</code><input id="predictWithdraw" type="number" inputmode="decimal" placeholder="?" aria-label="Balance after valid withdrawal"></label>
+            <label>After rejected <code>withdraw(200)</code><input id="predictRejected" type="number" inputmode="decimal" placeholder="?" aria-label="Balance after rejected withdrawal"></label>
+          </div>
+          <div class="stage-footer"><span id="predictFeedback" class="stage-feedback">Predict first. Do not run code yet.</span><button id="validatePredict" class="validate-button" type="button">Validate prediction</button></div>
+        </article>
+
+        <article id="stage-model" class="notebook-stage text-cell" data-stage-card="model">
+          <div class="stage-heading">
+            <div><span class="stage-number">02</span><div><p class="eyebrow">MODEL · UML FIRST</p><h2>Separate state from behavior</h2></div></div>
+            <span class="stage-status" data-stage-status="model">Not validated</span>
+          </div>
+          <div class="model-grid">
+            <section>
+              <p class="stage-prompt">Classify each UML member. Then state the responsibility of the class in one sentence.</p>
+              <div class="classification-list">
+                <label><code>- owner: String</code><select id="classifyOwner"><option value="">Choose…</option><option value="attribute">Attribute / state</option><option value="method">Method / behavior</option></select></label>
+                <label><code>- balance: float</code><select id="classifyBalance"><option value="">Choose…</option><option value="attribute">Attribute / state</option><option value="method">Method / behavior</option></select></label>
+                <label><code>+ deposit(amount): void</code><select id="classifyDeposit"><option value="">Choose…</option><option value="attribute">Attribute / state</option><option value="method">Method / behavior</option></select></label>
+                <label><code>+ withdraw(amount): bool</code><select id="classifyWithdraw"><option value="">Choose…</option><option value="attribute">Attribute / state</option><option value="method">Method / behavior</option></select></label>
+                <label><code>-</code> visibility<select id="classifyPrivate"><option value="">Choose…</option><option value="private">Private</option><option value="public">Public</option></select></label>
+                <label><code>+</code> visibility<select id="classifyPublic"><option value="">Choose…</option><option value="private">Private</option><option value="public">Public</option></select></label>
+              </div>
+              <label class="wide-label">Class responsibility
+                <textarea id="modelResponsibility" rows="3" placeholder="BankAccount is responsible for…"></textarea>
+              </label>
+            </section>
+            <aside class="uml-card notebook-uml" aria-label="BankAccount UML class diagram">
+              <div class="uml-title">BankAccount</div>
+              <div class="uml-section"><div>- owner: String</div><div>- balance: float</div></div>
+              <div class="uml-section"><div>+ deposit(amount): void</div><div>+ withdraw(amount): bool</div></div>
+            </aside>
+          </div>
+          <div class="stage-footer"><span id="modelFeedback" class="stage-feedback">UML and code must describe the same responsibility.</span><button id="validateModel" class="validate-button" type="button">Validate UML model</button></div>
+        </article>
+
+        <article id="stage-implement" class="notebook-stage code-stage" data-stage-card="implement">
+          <div class="stage-heading text-cell-heading">
+            <div><span class="stage-number">03</span><div><p class="eyebrow">IMPLEMENT · PYTHON</p><h2>Make methods change state</h2></div></div>
+            <span class="stage-status" data-stage-status="implement">Not validated</span>
+          </div>
+          <div class="code-cell-shell">
+            <div class="cell-gutter">
+              <button id="runImplement" class="run-cell-button" type="button" aria-label="Run implementation cell">▶</button>
+              <span id="implementExecution" class="execution-count">[ ]</span>
+            </div>
+            <div class="cell-main">
+              <div class="cell-toolbar"><div><strong>Python 3 code cell</strong><small> · replace both WRITE_HERE markers</small></div><button id="resetImplement" class="small-action" type="button">Reset</button></div>
+              <textarea id="implementEditor" class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Implementation code editor"></textarea>
+              <section id="implementOutputPanel" class="output-panel hidden"><div class="output-head"><span>Output</span></div><pre id="implementOutput"></pre></section>
+            </div>
+          </div>
+          <div class="stage-footer"><span id="implementFeedback" class="stage-feedback">Run the cell. Then explain the state trace before validating.</span><button id="validateImplement" class="validate-button" type="button" disabled>Validate implementation</button></div>
+        </article>
+
+        <article id="stage-test" class="notebook-stage code-stage" data-stage-card="test">
+          <div class="stage-heading text-cell-heading">
+            <div><span class="stage-number">04</span><div><p class="eyebrow">TEST · OBSERVE STATE</p><h2>Prove the object changed correctly</h2></div></div>
+            <span class="stage-status" data-stage-status="test">Not validated</span>
+          </div>
+          <div class="code-cell-shell">
+            <div class="cell-gutter">
+              <button id="runTest" class="run-cell-button" type="button" aria-label="Run test cell">▶</button>
+              <span id="testExecution" class="execution-count">[ ]</span>
+            </div>
+            <div class="cell-main">
+              <div class="cell-toolbar"><div><strong>Python 3 test cell</strong><small> · independent objects + state trace</small></div><button id="resetTest" class="small-action" type="button">Reset</button></div>
+              <textarea id="testEditor" class="code-editor compact-editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Test code editor"></textarea>
+              <section id="testOutputPanel" class="output-panel hidden"><div class="output-head"><span>Output</span></div><pre id="testOutput"></pre></section>
+            </div>
+          </div>
+          <div class="stage-footer"><span id="testFeedback" class="stage-feedback">The test must show that two BankAccount objects keep independent state.</span><button id="validateTest" class="validate-button" type="button" disabled>Validate test</button></div>
+        </article>
+
+        <article id="stage-modify" class="notebook-stage code-stage" data-stage-card="modify">
+          <div class="stage-heading text-cell-heading">
+            <div><span class="stage-number">05</span><div><p class="eyebrow">MODIFY · BUSINESS RULE</p><h2>Protect the state inside the method</h2></div></div>
+            <span class="stage-status" data-stage-status="modify">Not validated</span>
+          </div>
+          <p class="stage-prompt text-cell-inline">Change <code>withdraw()</code> so an amount greater than the current balance is rejected. The method must return <code>False</code> and leave the balance unchanged.</p>
+          <div class="code-cell-shell">
+            <div class="cell-gutter">
+              <button id="runModify" class="run-cell-button" type="button" aria-label="Run modified class cell">▶</button>
+              <span id="modifyExecution" class="execution-count">[ ]</span>
+            </div>
+            <div class="cell-main">
+              <div class="cell-toolbar"><div><strong>Python 3 code cell</strong><small> · enforce the invariant</small></div><button id="resetModify" class="small-action" type="button">Reset</button></div>
+              <textarea id="modifyEditor" class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Modified implementation code editor"></textarea>
+              <section id="modifyOutputPanel" class="output-panel hidden"><div class="output-head"><span>Output</span></div><pre id="modifyOutput"></pre></section>
+            </div>
+          </div>
+          <div class="stage-footer"><span id="modifyFeedback" class="stage-feedback">A correct rule rejects the 200 withdrawal and keeps the balance at 110.</span><button id="validateModify" class="validate-button" type="button" disabled>Validate business rule</button></div>
+        </article>
+
+        <article id="stage-explain" class="notebook-stage text-cell" data-stage-card="explain">
+          <div class="stage-heading">
+            <div><span class="stage-number">06</span><div><p class="eyebrow">EXPLAIN · DESIGN DEFENSE</p><h2>Connect UML, state and code</h2></div></div>
+            <span class="stage-status" data-stage-status="explain">Not validated</span>
+          </div>
+          <div class="reflection-grid">
+            <label>Why are <code>owner</code> and <code>balance</code> state?
+              <textarea id="explainState" rows="4" placeholder="Explain using the idea of information remembered between method calls."></textarea>
+            </label>
+            <label>Why should <code>deposit()</code> and <code>withdraw()</code> be methods of <code>BankAccount</code>?
+              <textarea id="explainBehavior" rows="4" placeholder="Explain the responsibility of the object."></textarea>
+            </label>
+            <label>What invariant does the modified <code>withdraw()</code> protect?
+              <textarea id="explainRule" rows="4" placeholder="Explain what invalid state is prevented and why."></textarea>
+            </label>
+          </div>
+          <div class="stage-footer"><span id="explainFeedback" class="stage-feedback">Write your own explanation. Short labels are not enough evidence.</span><button id="validateExplain" class="validate-button" type="button">Validate explanation</button></div>
+        </article>
+
+        <section class="completion-cell text-cell">
+          <div>
+            <p class="eyebrow">SUPABASE EVIDENCE</p>
+            <h2>Finish Session 02</h2>
+            <p id="completionCopy">Validate all six stages. A completed record will store the UML check, successful Python runs, final code snapshot, test output and your design explanation.</p>
+          </div>
+          <button id="recordEvidenceButton" class="finish-button" type="button" disabled>Record Session 02 evidence</button>
+        </section>
+
+        <section id="receiptCell" class="receipt-cell text-cell hidden" role="status">
+          <div class="receipt-icon">✓</div>
+          <div><p class="eyebrow">RECORDED</p><h2>State &amp; Behavior evidence synchronized.</h2><p id="receiptText">Supabase has stored this workshop session.</p></div>
+          <a class="primary-link" href="./">Return to OOP + UML Hub</a>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="genericWorkshop" class="generic-workshop hidden">
+    <header class="topbar">
+      <a class="brand" href="./"><span class="brand-mark">IJR</span><span><small>Seminar 11 · Common Core</small><strong>OOP + UML Workshop</strong></span></a>
+      <div class="top-actions"><a id="genericTheoryTop" class="button button-light" href="theory.html">Review Theory</a><a class="button button-dark" href="../oop-logic-01/">OOP Colab Lab</a></div>
+    </header>
+    <main class="page-shell">
+      <div class="crumbs"><a href="./">OOP + UML Hub</a><span>→</span><span id="genericCrumbTopic">Workshop</span></div>
+      <section class="page-hero"><p class="eyebrow" id="genericSessionLabel">COMMON CORE · WORKSHOP</p><h1 id="genericTitle">Loading…</h1><p id="genericLead"></p></section>
+      <section class="panel" style="margin-top:28px"><p class="eyebrow">WORKFLOW</p><h2>Do not jump directly to code.</h2><div class="workshop-steps"><div class="workshop-step"><span>STEP 01</span><strong>Predict</strong><p>State what objects, responsibilities and state you expect before running anything.</p></div><div class="workshop-step"><span>STEP 02</span><strong>Model</strong><p>Draw or update the UML class view before implementation.</p></div><div class="workshop-step"><span>STEP 03</span><strong>Implement</strong><p>Use the guided Seminar module and keep the code synchronized with the model.</p></div><div class="workshop-step"><span>STEP 04</span><strong>Test</strong><p>Create at least one concrete object scenario and verify behavior.</p></div><div class="workshop-step"><span>STEP 05</span><strong>Modify</strong><p>Change one requirement and propagate it through UML and code.</p></div><div class="workshop-step"><span>STEP 06</span><strong>Explain</strong><p>Defend why the class structure and relationships make sense.</p></div></div></section>
+      <section class="content-grid">
+        <article class="panel"><p class="eyebrow">GUIDED LAB ROUTE</p><h2>Open the tracked implementation module</h2><p>These modules use the existing Seminar T3 progress system. When Supabase is available, completion is synchronized by the current secure RPC backend.</p><div id="genericModuleLauncher" class="module-launcher"></div></article>
+        <aside class="panel soft"><p class="eyebrow">UML TARGET</p><div class="uml-card"><div id="genericUmlName" class="uml-title">Class</div><div id="genericUmlAttrs" class="uml-section"></div><div id="genericUmlOps" class="uml-section"></div></div><p class="callout">Your diagram does not have to look identical to this example. It must express the same kind of responsibility accurately and match your implementation.</p></aside>
+      </section>
+      <section class="content-grid">
+        <article class="panel"><p class="eyebrow">STUDENT EVIDENCE</p><h2>Complete before you call the session finished</h2><div id="genericChecklist" class="checklist"></div></article>
+        <aside class="panel"><p class="eyebrow">LIVE DEFENSE QUESTIONS</p><h2>Be ready to answer</h2><ol class="evidence-list"><li>Which object owns the state that changes?</li><li>Why is this behavior a method of this class?</li><li>What would break if this relationship changed?</li><li>Where is the same design decision visible in UML and code?</li><li>Can you make one small change without copying a finished solution?</li></ol></aside>
+      </section>
+      <div class="page-actions"><a class="button button-light" href="./">Back to Hub</a><a id="genericTheoryBottom" class="button button-light" href="theory.html">Review Theory</a><a class="button button-dark" href="../studio/">Project Studio</a></div>
+    </main>
+  </div>
+</body>
+</html>
