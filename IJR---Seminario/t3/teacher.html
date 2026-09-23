@@ -81,6 +81,13 @@
     <section id="metrics" class="metrics" aria-label="Resumen en vivo"></section>
 
     <section id="qualityPanel" class="quality-panel" aria-live="polite"></section>
+    <section id="legacyPanel" class="panel legacy-panel hidden" aria-live="polite">
+      <div class="legacy-head">
+        <div><span class="eyebrow">LEGACY DATA QA · NEVER AUTO-ASSIGNED</span><h2>Registros anteriores pendientes de conciliación</h2><p>Se conservan para auditoría, pero no se asignan a un estudiante oficial mientras el nombre no permita una coincidencia segura.</p></div>
+        <button id="toggleLegacy" class="secondary" type="button">Mostrar detalle</button>
+      </div>
+      <div id="legacyContent" class="legacy-content hidden"></div>
+    </section>
 
     <section class="panel register-card">
       <div class="register-head">

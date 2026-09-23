@@ -61,6 +61,18 @@ function renderQuality(){
   $('qualityPanel').innerHTML=total
     ?'<div class="quality-warn"><strong>Data-quality review required · '+total+' issue(s)</strong><div class="quality-grid">'+items.map(([k,v])=>'<span>'+esc(k)+': <strong>'+esc(v)+'</strong></span>').join('')+'</div></div>'
     :'<div class="quality-ok"><strong>Identity QA PASS.</strong> Current Seminar records are linked to the official roster with no unmatched or duplicate-active identity flags.</div>';
+  renderLegacy();
+}
+function renderLegacy(){
+  const data=snapshot?.legacy_unmatched||{},course=data.course||[],studio=data.studio||[],diag=data.diagnostics||[];
+  const total=course.length+studio.length+diag.length;
+  $('legacyPanel').classList.toggle('hidden',!total);
+  if(!total){$('legacyContent').innerHTML='';return}
+  const block=(title,rows,render)=>rows.length?'<div class="legacy-block"><h3>'+esc(title)+' <span>'+rows.length+'</span></h3><div class="legacy-list">'+rows.map(render).join('')+'</div></div>':'';
+  $('legacyContent').innerHTML=
+    block('T3 Course',course,x=>'<div class="legacy-row"><div><strong>'+esc(x.display_name||'—')+'</strong><span>'+esc(x.group_code||'')+' · '+esc((x.language||'').toUpperCase())+' · '+esc(x.team_label||'')+'</span></div><time>'+esc(fmtTime(x.last_activity_at))+'</time></div>')+
+    block('Project Studio',studio,x=>'<div class="legacy-row"><div><strong>'+esc(x.full_name||'—')+'</strong><span>'+esc(x.group_code||'')+' · '+esc(x.track_slug||'')+(x.partner_name?' · partner '+esc(x.partner_name):'')+'</span></div><time>'+esc(fmtTime(x.updated_at))+'</time></div>')+
+    block('Diagnostics',diag,x=>'<div class="legacy-row"><div><strong>'+esc(x.full_name||'—')+'</strong><span>'+esc(x.group_code||'')+' · '+esc(x.track_slug||'')+'</span></div><time>'+esc(fmtTime(x.updated_at))+'</time></div>');
 }
 function render(){
   if(!snapshot)return;
@@ -71,8 +83,8 @@ function render(){
     return '<tr>'+
       '<td><strong>'+esc(s.group_code)+'</strong></td>'+
       '<td>'+esc(s.source_position)+'</td>'+
-      '<td><span class="student-name">'+esc(s.display_name)+'</span><span class="student-key">'+esc(s.internal_key)+'</span></td>'+
-      '<td><span class="pill verified">✓ Roster verified</span></td>'+
+      '<td><span class="student-name">'+esc(s.display_name)+'</span><span class="student-key">'+esc(s.internal_key)+(s.institutional_email?' · '+esc(s.institutional_email):'')+'</span></td>'+
+      '<td><span class="pill verified">✓ Roster verified</span>'+(s.institutional_email?'<span class="cell-sub">Institutional email linked</span>':'<span class="cell-sub">No email link yet</span>')+'</td>'+
       '<td>'+courseCell(s)+'</td>'+
       '<td>'+oopCell(s)+'</td>'+
       '<td>'+studioCell(s)+'</td>'+
@@ -120,6 +132,7 @@ $('loginForm').addEventListener('submit',async e=>{e.preventDefault();const emai
 $('mfaButton').addEventListener('click',async()=>{const code=$('mfaCode').value.trim();if(!pendingFactorId||!pendingChallengeId||!/^[0-9]{6}$/.test(code)){$('loginStatus').textContent='Escribe un código MFA válido.';return}try{const {error}=await sb.auth.mfa.verify({factorId:pendingFactorId,challengeId:pendingChallengeId,code});if(error)throw error;$('mfaCode').value='';await beginMfa()}catch(err){$('loginStatus').textContent='MFA no verificado: '+err.message}});
 $('logoutButton').addEventListener('click',async()=>{clearTimeout(timer);await sb.auth.signOut({scope:'local'});snapshot=null;$('dashboardPanel').classList.add('hidden');$('loginPanel').classList.remove('hidden');setLive('syncing','Disconnected')});
 $('refreshButton').addEventListener('click',()=>load(true));['groupFilter','stateFilter','trackFilter'].forEach(id=>$(id).addEventListener('change',render));$('searchInput').addEventListener('input',render);$('closeDialog').addEventListener('click',()=>$('studentDialog').close());
+$('toggleLegacy').addEventListener('click',()=>{const box=$('legacyContent'),hidden=box.classList.toggle('hidden');$('toggleLegacy').textContent=hidden?'Mostrar detalle':'Ocultar detalle'});
 document.addEventListener('visibilitychange',()=>{clearTimeout(timer);if(!document.hidden&&snapshot)load(true);else schedule()});
 window.addEventListener('online',()=>load(true));
 (async()=>{if(!sb){$('loginStatus').textContent='Supabase client unavailable.';return}const {data:{session}}=await sb.auth.getSession();if(session)try{await beginMfa()}catch(err){$('loginStatus').textContent='Acceso pendiente: '+err.message}})();
