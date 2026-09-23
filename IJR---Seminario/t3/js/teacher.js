@@ -78,7 +78,7 @@ function filteredStudents(){
     return true;
   });
 }
-function courseCell(s)function courseCell(s){const c=s.course;if(!c)return'<span class="pill none">No course record</span>';const grade=c.final_grade??c.projected_grade;const pct=Math.min(100,Number(c.completed_count||0)/16*100);return '<span class="cell-main">'+esc((c.language||'').toUpperCase())+' · '+esc(c.completed_count||0)+'/16</span><span class="cell-sub">'+esc(c.team_label||'')+' · grade '+esc(fmt(grade))+'</span><div class="progress-mini"><i style="width:'+pct+'%"></i></div>'}
+function courseCell(s){const c=s.course;if(!c)return'<span class="pill none">No course record</span>';const grade=c.final_grade??c.projected_grade;const pct=Math.min(100,Number(c.completed_count||0)/16*100);return '<span class="cell-main">'+esc((c.language||'').toUpperCase())+' · '+esc(c.completed_count||0)+'/16</span><span class="cell-sub">'+esc(c.team_label||'')+' · grade '+esc(fmt(grade))+'</span><div class="progress-mini"><i style="width:'+pct+'%"></i></div>'}
 function oopCell(s){
   const list=s.oop_uml||[];if(!list.length)return'<span class="pill none">0 sessions</span>';
   const latest=list[0]||{},e=latest.evidence||{};
@@ -124,7 +124,7 @@ function renderMetrics(){
   }
   $('metrics').innerHTML=vals.map(([k,v])=>'<div class="metric"><span>'+esc(k)+'</span><strong>'+esc(v)+'</strong></div>').join('');
 }
-function renderQuality(){function renderQuality(){
+function renderQuality(){
   const q=snapshot?.data_quality||{},items=[
     ['course members unmatched',q.unmatched_course_members||0],
     ['studio primary unmatched',q.unmatched_studio_primary||0],
@@ -220,7 +220,7 @@ function render(){
   document.querySelectorAll('[data-student]').forEach(b=>b.addEventListener('click',()=>openDetail(b.dataset.student)));
   $('updatedAt').textContent='Updated '+fmtTime(snapshot.generated_at);
 }
-function detailEmpty(text)function detailEmpty(text){return'<div class="detail-empty">'+esc(text)+'</div>'}
+function detailEmpty(text){return'<div class="detail-empty">'+esc(text)+'</div>'}
 function openDetail(id){
   const s=(snapshot?.students||[]).find(x=>x.student_registry_id===id);if(!s)return;
   $('dialogTitle').textContent=s.display_name;$('dialogSubtitle').textContent=s.group_code+' · '+s.internal_key+' · roster position '+s.source_position;
