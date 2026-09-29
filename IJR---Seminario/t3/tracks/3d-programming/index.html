@@ -1,2 +1,181 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="../track.css?v=20260824-1"><script type="module" src="../track.js?v=20260824-1"></script>  <script src="../../access-gate.js?v=20260923-email-v12"></script>
-</head><body data-track="3d-programming"><main class="shell"><header class="topbar"><div><div class="eyebrow">Specialized Project Studio</div><h1 id="trackTitle">Track</h1><p id="personal" class="muted">Loading…</p></div><div class="actions"><a class="button secondary" href="../../studio/">My Studio</a><a class="button ghost" href="../">All tracks</a></div></header><section class="track-hero"><div class="panel"><div class="kicker">RECOMMENDED PROJECT</div><h2 id="projectTitle"></h2><div id="stack" class="stack"></div></div><div class="panel"><h3>Project variants</h3><ul id="examples"></ul></div></section><section class="panel"><h2>8 project sprints</h2><div id="sprints" class="sprints"></div></section></main></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="../track.css?v=20260929-fusion-1">
+  <script type="module" src="../track.js?v=20260824-1"></script>
+  <script src="../../access-gate.js?v=20260923-email-v12"></script>
+</head>
+<body data-track="3d-programming">
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Specialized Project Studio</div>
+        <h1 id="trackTitle">Track</h1>
+        <p id="personal" class="muted">Loading…</p>
+      </div>
+      <div class="actions">
+        <a class="button secondary" href="../../studio/">My Studio</a>
+        <a class="button ghost" href="../">All tracks</a>
+      </div>
+    </header>
+
+    <section class="panel fusion-start" aria-labelledby="fusionStartTitle">
+      <div class="fusion-brand-row">
+        <div class="autodesk-logo-wrap">
+          <img
+            class="autodesk-logo"
+            src="https://brand.autodesk.com/wp-content/uploads/2025/02/logo-02-variations-primary-421x237%402x.png"
+            alt="Autodesk"
+            loading="eager"
+            referrerpolicy="no-referrer">
+        </div>
+
+        <div>
+          <div class="kicker">SPRINT 1 · PUNTO DE PARTIDA</div>
+          <h2 id="fusionStartTitle">Autodesk Fusion: registro, concepto, interfaz y primer modelo</h2>
+          <p class="fusion-intro">
+            Antes de empezar los sprints, debes poder entrar a Autodesk Fusion, reconocer la lógica del CAD paramétrico
+            y producir una pieza sencilla completamente dimensionada. Esta guía es el punto de partida del módulo de CAD
+            e impresión 3D.
+          </p>
+
+          <div class="fusion-actions">
+            <a class="button" href="https://www.autodesk.com/education/edu-software/fusion" target="_blank" rel="noopener noreferrer">
+              Acceso educativo a Fusion
+            </a>
+            <a class="button secondary" href="https://www.autodesk.com/support/account/education/students-educators/get-started" target="_blank" rel="noopener noreferrer">
+              Crear / verificar cuenta
+            </a>
+            <a class="button ghost" href="https://fusion.online.autodesk.com/" target="_blank" rel="noopener noreferrer">
+              Abrir Fusion en línea
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="fusion-note">
+        <strong>Objetivo de este paso:</strong> terminar con una cuenta funcional, acceso a Fusion y una primera pieza
+        paramétrica que pueda modificarse cambiando dimensiones, no dibujando de nuevo.
+      </div>
+
+      <div class="fusion-guide-grid">
+        <article class="guide-card">
+          <h3>1. Registro y acceso</h3>
+          <ol>
+            <li>Entra al portal educativo de Autodesk e inicia sesión o crea tu Autodesk Account.</li>
+            <li>Solicita acceso educativo a Fusion. Autodesk puede pedir confirmación de elegibilidad.</li>
+            <li>Usa tu propia cuenta: no compartas usuario ni contraseña con otros estudiantes.</li>
+            <li>Instala Autodesk Fusion o utiliza la versión web si tu cuenta educativa tiene acceso.</li>
+            <li>Abre Fusion e inicia sesión con la misma cuenta usada durante el registro.</li>
+          </ol>
+        </article>
+
+        <article class="guide-card">
+          <h3>2. ¿Qué es CAD paramétrico?</h3>
+          <p>
+            En Fusion no se busca solamente “dibujar una forma”. Se construye un modelo controlado por medidas,
+            restricciones y operaciones. Si cambia una dimensión, el modelo debe actualizarse de forma coherente.
+          </p>
+          <div class="fusion-terms">
+            <div class="fusion-term"><strong>Sketch</strong><span>Boceto 2D con geometría, cotas y restricciones.</span></div>
+            <div class="fusion-term"><strong>Body</strong><span>Cuerpo sólido continuo generado por operaciones 3D.</span></div>
+            <div class="fusion-term"><strong>Component</strong><span>Pieza con identidad propia dentro de un ensamble.</span></div>
+            <div class="fusion-term"><strong>Feature</strong><span>Operación como Extrude, Hole, Fillet, Shell o Pattern.</span></div>
+            <div class="fusion-term"><strong>Timeline</strong><span>Historial ordenado de operaciones paramétricas.</span></div>
+            <div class="fusion-term"><strong>Constraint</strong><span>Regla geométrica: horizontal, perpendicular, tangente, concéntrica, etc.</span></div>
+          </div>
+        </article>
+
+        <article class="guide-card">
+          <h3>3. Interfaz que debes reconocer</h3>
+          <table class="fusion-tool-table">
+            <thead>
+              <tr><th>Zona / herramienta</th><th>Para qué sirve</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Data Panel</td><td>Organiza proyectos, carpetas y archivos de diseño.</td></tr>
+              <tr><td>Browser</td><td>Muestra Origin, Bodies, Components, Sketches y construcción del modelo.</td></tr>
+              <tr><td>ViewCube</td><td>Cambia la orientación de la cámara y permite volver a vistas estándar.</td></tr>
+              <tr><td>Sketch</td><td>Crea geometría 2D sobre un plano o una cara.</td></tr>
+              <tr><td>Create</td><td>Genera sólidos con Extrude, Revolve, Sweep, Loft, Hole, entre otros.</td></tr>
+              <tr><td>Modify</td><td>Edita geometría con Fillet, Chamfer, Shell, Move/Copy, Combine y operaciones similares.</td></tr>
+              <tr><td>Construct</td><td>Crea planos, ejes y geometría auxiliar para modelado.</td></tr>
+              <tr><td>Inspect</td><td>Mide, revisa interferencias y analiza secciones o propiedades.</td></tr>
+              <tr><td>Assemble</td><td>Relaciona componentes y define movimiento mediante joints.</td></tr>
+              <tr><td>Timeline</td><td>Permite editar operaciones anteriores sin reconstruir todo el modelo.</td></tr>
+            </tbody>
+          </table>
+        </article>
+
+        <article class="guide-card">
+          <h3>4. Flujo correcto de modelado</h3>
+          <div class="fusion-check"><span>01</span><span>Crear un <strong>New Design</strong> y guardar el archivo con un nombre claro.</span></div>
+          <div class="fusion-check"><span>02</span><span>Crear un <strong>Sketch</strong> en un plano del Origin.</span></div>
+          <div class="fusion-check"><span>03</span><span>Dibujar geometría simple y agregar <strong>constraints</strong>.</span></div>
+          <div class="fusion-check"><span>04</span><span>Agregar <strong>dimensions</strong> hasta controlar completamente el boceto.</span></div>
+          <div class="fusion-check"><span>05</span><span>Usar <strong>Extrude</strong> para convertir el perfil en sólido.</span></div>
+          <div class="fusion-check"><span>06</span><span>Aplicar operaciones como <strong>Hole, Fillet, Chamfer, Shell</strong> o <strong>Pattern</strong>.</span></div>
+          <div class="fusion-check"><span>07</span><span>Revisar dimensiones con <strong>Inspect → Measure</strong>.</span></div>
+          <div class="fusion-check"><span>08</span><span>Editar una cota anterior y comprobar que el modelo se actualiza correctamente.</span></div>
+        </article>
+
+        <article class="guide-card">
+          <h3>5. Primer ejercicio obligatorio</h3>
+          <p><strong>Modela una placa paramétrica para llavero:</strong></p>
+          <ul>
+            <li>Rectángulo base: 60 mm × 30 mm.</li>
+            <li>Espesor: 4 mm.</li>
+            <li>Un agujero de Ø 6 mm.</li>
+            <li>Filetes exteriores de 3 mm en las esquinas.</li>
+            <li>El boceto debe quedar dimensionado y restringido.</li>
+            <li>Cambia el largo de 60 mm a 75 mm y verifica que el modelo se regenere sin errores.</li>
+          </ul>
+          <p><strong>Evidencia:</strong> captura del sketch con cotas + captura del sólido final + archivo de Fusion.</p>
+        </article>
+
+        <article class="guide-card">
+          <h3>6. Preparación para impresión 3D</h3>
+          <ol>
+            <li>Verifica que el objeto sea un sólido cerrado y tenga dimensiones reales en milímetros.</li>
+            <li>Evita detalles demasiado delgados y revisa que agujeros, paredes y uniones sean fabricables.</li>
+            <li>Selecciona el Body o Component que vas a fabricar.</li>
+            <li>Usa <strong>Save as Mesh</strong> para exportar STL o 3MF cuando el diseño esté listo.</li>
+            <li>El archivo exportado debe pasar después por un <em>slicer</em>; Fusion no reemplaza la preparación de impresión.</li>
+          </ol>
+        </article>
+      </div>
+
+      <div class="fusion-note">
+        <strong>Entrega del Sprint 1:</strong> acceso a Fusion verificado + placa paramétrica terminada + tres capturas
+        (sketch, sólido y cambio de parámetro). Con esta evidencia completas el Sprint 1 y continúas con el Sprint 2.
+      </div>
+
+      <p class="muted" style="margin-bottom:0">
+        Autodesk y el logotipo de Autodesk son marcas de Autodesk, Inc. El logotipo mostrado proviene del Autodesk Brand Hub
+        y se utiliza únicamente para identificar el software en esta guía educativa.
+        <a href="https://brand.autodesk.com/visual-system/logo/" target="_blank" rel="noopener noreferrer">Ver guía oficial de marca</a>.
+      </p>
+    </section>
+
+    <section class="track-hero">
+      <div class="panel">
+        <div class="kicker">RECOMMENDED PROJECT</div>
+        <h2 id="projectTitle"></h2>
+        <div id="stack" class="stack"></div>
+      </div>
+      <div class="panel">
+        <h3>Project variants</h3>
+        <ul id="examples"></ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>8 project sprints</h2>
+      <div id="sprints" class="sprints"></div>
+    </section>
+  </main>
+</body>
+</html>

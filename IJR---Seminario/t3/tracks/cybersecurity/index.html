@@ -1,2 +1,200 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="../track.css?v=20260824-1"><script type="module" src="../track.js?v=20260824-1"></script>  <script src="../../access-gate.js?v=20260923-email-v12"></script>
-</head><body data-track="cybersecurity"><main class="shell"><header class="topbar"><div><div class="eyebrow">Specialized Project Studio</div><h1 id="trackTitle">Track</h1><p id="personal" class="muted">Loading…</p></div><div class="actions"><a class="button secondary" href="../../studio/">My Studio</a><a class="button ghost" href="../">All tracks</a></div></header><section class="track-hero"><div class="panel"><div class="kicker">AUTHORIZED DEFENSIVE SCOPE</div><h2 id="projectTitle"></h2><div id="stack" class="stack"></div><p class="notice">This track is limited to defensive, authorized systems and simulations. No external target exploitation.</p></div><div class="panel"><h3>Project variants</h3><ul id="examples"></ul></div></section><section class="panel"><h2>8 project sprints</h2><div id="sprints" class="sprints"></div></section></main></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="../track.css?v=20260929-cyber-1">
+  <script type="module" src="../track.js?v=20260824-1"></script>
+  <script src="../../access-gate.js?v=20260923-email-v12"></script>
+</head>
+<body data-track="cybersecurity">
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Specialized Project Studio</div>
+        <h1 id="trackTitle">Track</h1>
+        <p id="personal" class="muted">Loading…</p>
+      </div>
+      <div class="actions">
+        <a class="button secondary" href="../../studio/">My Studio</a>
+        <a class="button ghost" href="../">All tracks</a>
+      </div>
+    </header>
+
+    <section class="panel cyber-lab" aria-labelledby="cyberLabTitle">
+      <div class="kicker">PROYECTO CENTRAL · BLUE TEAM</div>
+      <h2 id="cyberLabTitle">Web Defense Lab — defender una aplicación bajo ataque controlado</h2>
+      <p>
+        El proyecto consiste en construir una aplicación web funcional, desplegarla dentro de un laboratorio aislado y
+        someterla a tráfico hostil reproducible. El reto no es “hacer una demo de seguridad”: los estudiantes deben
+        observar degradación real del servicio, diagnosticarla con evidencia y aplicar defensas hasta recuperar
+        disponibilidad, estabilidad y trazabilidad.
+      </p>
+      <p class="notice">
+        El generador de tráfico hostil solo puede apuntar a servicios del laboratorio local/privado definidos por el docente.
+        No se permiten dominios públicos, IP externas ni objetivos ajenos al entorno del curso.
+      </p>
+
+      <div class="cyber-architecture" aria-label="Arquitectura del laboratorio">
+        <div class="cyber-node">
+          <strong>1 · Web app</strong>
+          <span>Aplicación construida por el equipo: frontend + backend + datos de prueba.</span>
+        </div>
+        <div class="cyber-node">
+          <strong>2 · Reverse proxy</strong>
+          <span>Capa de entrada para límites, timeouts, headers y reglas defensivas.</span>
+        </div>
+        <div class="cyber-node">
+          <strong>3 · Telemetría</strong>
+          <span>Logs, métricas de latencia, tasa de errores, solicitudes por segundo y uso de recursos.</span>
+        </div>
+        <div class="cyber-node">
+          <strong>4 · Attack simulator</strong>
+          <span>Runner cerrado con escenarios predefinidos de carga hostil dentro de la red del laboratorio.</span>
+        </div>
+        <div class="cyber-node">
+          <strong>5 · Blue team</strong>
+          <span>Analiza, decide, endurece, prueba y documenta cada defensa.</span>
+        </div>
+      </div>
+
+      <div class="cyber-grid">
+        <article class="cyber-card">
+          <h3>Escenario A · HTTP flood controlado</h3>
+          <p>
+            El simulador incrementa progresivamente las solicitudes hacia una ruta costosa de la aplicación hasta producir
+            saturación observable. Los estudiantes deben identificar el cuello de botella y defender el servicio.
+          </p>
+          <div class="cyber-metrics">
+            <div class="metric-box"><strong>RPS</strong><span>Solicitudes/s</span></div>
+            <div class="metric-box"><strong>p95</strong><span>Latencia</span></div>
+            <div class="metric-box"><strong>5xx</strong><span>Tasa de error</span></div>
+            <div class="metric-box"><strong>CPU/RAM</strong><span>Recursos</span></div>
+          </div>
+        </article>
+
+        <article class="cyber-card">
+          <h3>Escenario B · abuso de autenticación</h3>
+          <p>
+            El laboratorio genera múltiples intentos inválidos contra cuentas ficticias. El objetivo es detectar patrones,
+            reducir automatización abusiva y mantener el acceso legítimo disponible.
+          </p>
+          <ul>
+            <li>Rate limiting por identidad y origen.</li>
+            <li>Backoff temporal y bloqueo progresivo.</li>
+            <li>Logs diferenciados para éxito, fallo y bloqueo.</li>
+            <li>Mensajes de error que no revelen información sensible.</li>
+          </ul>
+        </article>
+
+        <article class="cyber-card">
+          <h3>Escenario C · entradas hostiles</h3>
+          <p>
+            El runner envía datos inesperados, tamaños límite y formatos inválidos contra endpoints de prueba. La defensa
+            debe demostrar validación estricta, manejo de errores y ausencia de caídas del proceso.
+          </p>
+          <ul>
+            <li>Allow-list de formatos y tamaños.</li>
+            <li>Validación server-side.</li>
+            <li>Timeouts y límites de payload.</li>
+            <li>Respuestas consistentes sin stack traces expuestos.</li>
+          </ul>
+        </article>
+
+        <article class="cyber-card">
+          <h3>Defensas que deben justificar</h3>
+          <ul>
+            <li>Rate limiting y cuotas.</li>
+            <li>Timeouts, límites de conexión y tamaño de solicitud.</li>
+            <li>Caching cuando sea técnicamente válido.</li>
+            <li>Separación de responsabilidades entre proxy y aplicación.</li>
+            <li>Validación y control de errores.</li>
+            <li>Logs estructurados y señales de alerta.</li>
+            <li>Principio de menor privilegio para servicios y credenciales.</li>
+          </ul>
+        </article>
+
+        <article class="cyber-card">
+          <h3>Prueba de defensa</h3>
+          <p>
+            Cada cambio debe compararse contra una línea base. Una defensa no se considera válida solo porque “parece
+            funcionar”; debe mostrar evidencia antes/después.
+          </p>
+          <ol>
+            <li>Ejecutar baseline sin ataque.</li>
+            <li>Ejecutar escenario hostil controlado.</li>
+            <li>Registrar degradación y causa probable.</li>
+            <li>Aplicar una defensa concreta.</li>
+            <li>Repetir exactamente el mismo escenario.</li>
+            <li>Comparar métricas y explicar el efecto observado.</li>
+          </ol>
+        </article>
+
+        <article class="cyber-card">
+          <h3>Arquitectura recomendada del laboratorio</h3>
+          <p>
+            El entorno debe ejecutarse en contenedores o máquinas locales del curso, con red interna y datos ficticios.
+            El simulador de ataque no recibe una URL libre; el objetivo está fijado por configuración del docente.
+          </p>
+          <span class="cyber-badge">web</span>
+          <span class="cyber-badge">reverse proxy</span>
+          <span class="cyber-badge">metrics</span>
+          <span class="cyber-badge">logs</span>
+          <span class="cyber-badge">attack-runner</span>
+          <span class="cyber-badge">internal network only</span>
+        </article>
+      </div>
+
+      <section class="cyber-rules">
+        <strong>Reglas técnicas del laboratorio</strong>
+        <span class="cyber-badge">objetivo autorizado</span>
+        <span class="cyber-badge">red aislada</span>
+        <span class="cyber-badge">datos ficticios</span>
+        <span class="cyber-badge">ataques reproducibles</span>
+        <span class="cyber-badge">sin objetivos externos</span>
+        <span class="cyber-badge">evidencia antes/después</span>
+        <p>
+          El docente conserva el control del perfil de carga y del objetivo. Los estudiantes trabajan sobre la defensa,
+          instrumentación, diagnóstico y hardening; no sobre herramientas para atacar sistemas de terceros.
+        </p>
+      </section>
+
+      <section class="cyber-rules">
+        <strong>Criterio de éxito del proyecto</strong>
+        <table class="cyber-score">
+          <thead>
+            <tr><th>Dimensión</th><th>Evidencia esperada</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Disponibilidad</td><td>La aplicación continúa respondiendo o se degrada de forma controlada bajo el escenario asignado.</td></tr>
+            <tr><td>Rendimiento</td><td>Mejora medible de latencia p95, errores y capacidad útil frente a la línea base.</td></tr>
+            <tr><td>Detección</td><td>Logs y métricas permiten identificar qué ocurrió, cuándo y sobre qué endpoint.</td></tr>
+            <tr><td>Mitigación</td><td>La defensa reduce el impacto sin bloquear innecesariamente tráfico legítimo.</td></tr>
+            <tr><td>Arquitectura</td><td>Responsabilidades, límites de confianza y controles aparecen en UML/diagrama técnico.</td></tr>
+            <tr><td>Defensa oral</td><td>El estudiante explica una caída, su hipótesis, el cambio aplicado y la evidencia de mejora.</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+
+    <section class="track-hero">
+      <div class="panel">
+        <div class="kicker">AUTHORIZED DEFENSIVE SCOPE</div>
+        <h2 id="projectTitle"></h2>
+        <div id="stack" class="stack"></div>
+        <p class="notice">The track uses only isolated, instructor-controlled targets. No external target exploitation.</p>
+      </div>
+      <div class="panel">
+        <h3>Attack scenarios</h3>
+        <ul id="examples"></ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>8 project sprints</h2>
+      <div id="sprints" class="sprints"></div>
+    </section>
+  </main>
+</body>
+</html>

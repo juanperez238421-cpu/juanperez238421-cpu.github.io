@@ -45,23 +45,23 @@
         ]
       },
       {
-        "slug":"cybersecurity","title":"Defensive Cybersecurity","stack":["Python/Web","input validation","authentication concepts","logging","threat modeling"],"project":"Secure Application / Security Audit Simulator","examples":["Role-based portal","Secure form","Audit log viewer","Password-policy simulator","Threat-model dashboard"],
+        "slug":"cybersecurity","title":"Defensive Cybersecurity","stack":["HTML/CSS/JavaScript","backend service","reverse proxy","rate limiting","logging","metrics","threat modeling"],"project":"Web Defense Lab — Blue Team vs Controlled Attack Traffic","examples":["Controlled HTTP flood","Authentication abuse simulation","Hostile input and payload limits","Recovery under load","Observability and incident diagnosis"],
         "sprints":[
-          {"n":1,"title":"Asset + threat scope","goal":"Define what is protected and only defensive, authorized scenarios.","deliverable":"Asset list + threat model"},
-          {"n":2,"title":"Security objects + UML V1","goal":"Model User, Role, Session, Validator and AuditLog.","deliverable":"UML V1 + trust boundaries"},
-          {"n":3,"title":"Validation layer","goal":"Implement allow-list validation and safe error handling.","deliverable":"Valid/invalid input tests"},
-          {"n":4,"title":"OOP security services","goal":"Separate authentication/authorization simulation from UI.","deliverable":"Service classes + policy rules"},
-          {"n":5,"title":"Logging + least privilege","goal":"Record security-relevant events and enforce role boundaries.","deliverable":"Audit trail + access matrix"},
-          {"n":6,"title":"Defensive testing","goal":"Test expected misuse without attacking external systems.","deliverable":"Authorized test cases + fixes"},
-          {"n":7,"title":"Hardening + refactor","goal":"Reduce exposed state, duplicate checks and ambiguous privileges.","deliverable":"Hardening commit + UML V2"},
-          {"n":8,"title":"Security review + defense","goal":"Explain risks, mitigations and residual limitations.","deliverable":"Security report + final UML + defense"}
+          {"n":1,"title":"Build the target web app","goal":"Create a functional web application with at least one public route, one authenticated route and one intentionally expensive test route inside the isolated lab.","deliverable":"Running local web app + architecture sketch + asset list"},
+          {"n":2,"title":"Instrument + baseline","goal":"Add structured logs and measure requests per second, p95 latency, error rate and resource use before hostile traffic begins.","deliverable":"Baseline report + UML V1 + trust boundaries"},
+          {"n":3,"title":"Controlled attack round 1","goal":"Run the instructor-controlled HTTP flood profile against the internal target, record degradation and identify the bottleneck without changing the attack runner.","deliverable":"Incident timeline + metrics + diagnosis"},
+          {"n":4,"title":"Availability defense","goal":"Apply rate limiting, timeouts, connection/request limits and other justified controls, then repeat the exact same load profile.","deliverable":"Defense commit + before/after evidence"},
+          {"n":5,"title":"Authentication + hostile inputs","goal":"Defend fictitious accounts and test endpoints against controlled authentication abuse and malformed/oversized inputs while preserving legitimate access.","deliverable":"Policy rules + validation tests + audit trail"},
+          {"n":6,"title":"Controlled attack round 2","goal":"Execute the full authorized scenario suite without attacking external systems, and verify that defenses improve availability, latency, error rate and detection quality.","deliverable":"Test matrix + comparative metrics + fixes"},
+          {"n":7,"title":"Hardening + recovery","goal":"Reduce exposed state, tighten least privilege, improve observability and document a repeatable recovery procedure.","deliverable":"Hardening commit + runbook + UML V2"},
+          {"n":8,"title":"Live blue-team defense","goal":"Defend the application live against an instructor-selected controlled profile, explain decisions from evidence and discuss residual risk.","deliverable":"Live defense + final security report + UML + incident postmortem"}
         ]
       },
       {
-        "slug":"3d-programming","title":"3D Design + Programming","stack":["Python/Three.js/CAD scripting","coordinates","parametric geometry","transformations","assemblies"],"project":"Parametric 3D Generator","examples":["Mechanical part","Room","Furniture","Structure","Geometric solid system"],
+        "slug":"3d-programming","title":"3D Design + Programming","stack":["Autodesk Fusion","parametric CAD","3D printing","Python/Three.js/CAD scripting","coordinates","transformations","assemblies"],"project":"Parametric 3D Generator","examples":["Mechanical part","Room","Furniture","Structure","Geometric solid system"],
         "sprints":[
-          {"n":1,"title":"Geometry requirement","goal":"Define dimensions, parameters and expected generated object.","deliverable":"Dimension sheet + MVP"},
-          {"n":2,"title":"Geometry objects + UML V1","goal":"Model Shape, Solid, Transform and Assembly.","deliverable":"UML V1 + coordinate convention"},
+          {"n":1,"title":"Fusion onboarding + design brief","goal":"Create/verify Autodesk access, identify the Fusion interface and parametric CAD concepts, complete the first dimension-driven part, then define the project dimensions and parameters.","deliverable":"Fusion access verified + parametric keychain plate evidence + dimension sheet + MVP"},
+          {"n":2,"title":"Geometry objects + UML V1","goal":"Model Shape, Solid, Transform and Assembly responsibilities and define the coordinate convention before expanding the CAD model.","deliverable":"UML V1 + coordinate convention"},
           {"n":3,"title":"Primitive generator","goal":"Create parameter-driven base geometry.","deliverable":"First generated model"},
           {"n":4,"title":"OOP transformations","goal":"Encapsulate translation, rotation, scale or extrusion behavior.","deliverable":"Reusable geometry classes"},
           {"n":5,"title":"Composition","goal":"Build a larger object from reusable parts.","deliverable":"Assembly model + UML relation"},
