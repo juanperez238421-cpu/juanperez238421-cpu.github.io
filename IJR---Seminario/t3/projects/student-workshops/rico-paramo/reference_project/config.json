@@ -1,0 +1,11 @@
+{
+  "width": 960,
+  "height": 540,
+  "fps": 60,
+  "background": [18, 22, 38],
+  "orbit_speed": 1.4,
+  "orbit_radius": 150,
+  "pulse_speed": 3.2,
+  "particle_count": 120,
+  "seed": 17
+}

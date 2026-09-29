@@ -1,0 +1,29 @@
+/* Rico project pages extend the Seminar 11 OOP/UML visual language. */
+.rico-project-id{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.rico-project-id span{display:inline-flex;padding:5px 8px;border:1px solid #d0d5dd;border-radius:999px;background:#fff;font-size:.72rem;font-weight:800;color:#475467}
+.rico-diagram{margin-top:18px;border:1px solid #d0d5dd;border-radius:14px;padding:16px;background:#fcfcfd}
+.rico-diagram-head{display:flex;justify-content:space-between;gap:18px;align-items:baseline;margin-bottom:13px}
+.rico-diagram-head span{font:850 .68rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em;color:#6938b8}
+.rico-diagram-head strong{font-size:.9rem}
+.rico-diagram-flow{display:flex;gap:8px;align-items:stretch;overflow-x:auto}
+.rico-diagram-node{flex:1;min-width:125px;padding:11px;border:1px solid #d0d5dd;border-radius:10px;background:#fff;text-align:center;font-size:.78rem;font-weight:800}
+.rico-diagram-arrow{display:grid;place-items:center;color:#98a2b3;font-weight:900}
+.rico-diagram-note{margin:10px 0 0;color:#667085;font-size:.78rem;line-height:1.5}
+.rico-theory-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.rico-class-switch{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.rico-class-switch a{display:inline-flex;min-height:34px;align-items:center;padding:0 10px;border-radius:8px;border:1px solid #d0d5dd;background:#fff;text-decoration:none;color:#344054;font-size:.74rem;font-weight:800}
+.rico-class-switch a.active{background:#111;color:#fff;border-color:#111}
+.rico-workshop-intro{padding:0 0 14px;color:#667085;font-size:.84rem;line-height:1.55}
+.rico-stage-command{margin-top:12px}
+.rico-stage-command pre{margin:7px 0 0;white-space:pre-wrap}
+.rico-stage-expected{margin-top:12px;border-left:4px solid #12b76a;padding:10px 12px;background:#f6fef9;color:#344054;font-size:.8rem;line-height:1.45}
+.rico-stage-tasks{display:grid;gap:7px;margin:12px 0 0;padding-left:20px}
+.rico-stage-tasks li{color:#475467;line-height:1.5;font-size:.84rem}
+.rico-audit-footer{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-top:18px;padding:15px;border:1px solid #d0d5dd;border-radius:12px;background:#f9fafb}
+.rico-audit-footer p{margin:0;color:#667085;font-size:.8rem;line-height:1.45}
+.rico-reference-link{white-space:nowrap}
+@media(max-width:760px){
+  .rico-diagram-flow{display:grid;grid-template-columns:1fr;overflow:visible}
+  .rico-diagram-arrow{transform:rotate(90deg)}
+  .rico-audit-footer{grid-template-columns:1fr}
+}

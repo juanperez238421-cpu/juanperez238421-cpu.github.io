@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Cyber Defense Case Library · Seminario 11</title>
+  <link rel="stylesheet" href="case.css?v=20260929-1">
+  <script src="../../access-gate.js?v=20260923-email-v12"></script>
+</head>
+<body>
+<main class="case-shell">
+  <section class="case-hero">
+    <div class="case-kicker">DEFENSIVE CYBERSECURITY · REAL CASE LIBRARY</div>
+    <h1>Casos reales, laboratorio aislado y evidencia técnica.</h1>
+    <p>Estos casos usan tráfico, peticiones HTTP, errores de control de acceso y manipulación del DOM que realmente afectan la aplicación del laboratorio. Todo ocurre sobre <strong>127.0.0.1</strong> y la red Docker interna del curso.</p>
+    <div class="case-badges">
+      <span>Terminal</span><span>Docker</span><span>DevTools</span><span>HTML / DOM</span><span>Python</span><span>Colab</span><span>Logs</span><span>Blue Team</span>
+    </div>
+  </section>
+
+  <section class="case-warning">
+    <strong>Alcance:</strong> las instrucciones y comandos de esta biblioteca están diseñados únicamente para el laboratorio del curso. No se deben adaptar a dominios, IP o servicios externos.
+  </section>
+
+  <section class="case-grid">
+    <article>
+      <div class="case-kicker">CASE 01 · AVAILABILITY</div>
+      <h3>HTTP Flood / Application-layer DoS</h3>
+      <p>Provocar degradación real de una ruta costosa, medir RPS, p95 y errores, y recuperar el servicio con controles de disponibilidad.</p>
+      <div class="case-nav"><a href="case-01-http-flood.html">Abrir caso →</a></div>
+    </article>
+    <article>
+      <div class="case-kicker">CASE 02 · AUTHENTICATION</div>
+      <h3>Credential Abuse / Login Defense</h3>
+      <p>Generar intentos inválidos reales contra cuentas ficticias, analizar logs y diseñar rate limiting, backoff y bloqueo progresivo.</p>
+      <div class="case-nav"><a href="case-02-auth-abuse.html">Abrir caso →</a></div>
+    </article>
+    <article>
+      <div class="case-kicker">CASE 03 · ACCESS CONTROL</div>
+      <h3>Broken Access Control / IDOR</h3>
+      <p>Inspeccionar una petición, modificar un identificador y demostrar acceso indebido a registros ficticios antes de corregir autorización por propietario.</p>
+      <div class="case-nav"><a href="case-03-broken-access-control.html">Abrir caso →</a></div>
+    </article>
+    <article>
+      <div class="case-kicker">CASE 04 · CLIENT-SIDE</div>
+      <h3>Stored HTML / XSS Defense</h3>
+      <p>Usar DevTools e inspección del DOM para demostrar salida no escapada en un tablero local y corregir renderizado y política de contenido.</p>
+      <div class="case-nav"><a href="case-04-stored-xss.html">Abrir caso →</a></div>
+    </article>
+  </section>
+
+  <section class="case-panel">
+    <h2>Herramientas y método</h2>
+    <div class="case-grid">
+      <article><h3>Terminal</h3><p>Levanta el entorno, ejecuta perfiles controlados, consulta endpoints y conserva evidencia.</p></article>
+      <article><h3>Chrome / Edge DevTools</h3><p>Network, Elements, Console y Response Headers para inspección del comportamiento real del navegador.</p></article>
+      <article><h3>Colab</h3><p>Se utiliza para analizar archivos exportados de métricas y logs; no para atacar servicios públicos.</p></article>
+      <article><h3>Git</h3><p>Cada defensa debe quedar en un commit identificable para poder comparar baseline vs hardening.</p></article>
+    </div>
+    <div class="case-nav">
+      <a class="primary" href="../../tracks/cybersecurity/lab/README.md">Guía del laboratorio</a>
+      <a href="../">Volver a proyectos</a>
+    </div>
+  </section>
+</main>
+</body>
+</html>

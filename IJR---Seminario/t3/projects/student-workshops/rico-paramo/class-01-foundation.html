@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Rico · Class 1 · Foundation</title>
+  <link rel="stylesheet" href="workshop.css?v=20260929-2">
+  <script src="../../../access-gate.js?v=20260923-email-v12"></script>
+</head>
+<body>
+<main class="workshop-shell">
+  <section class="class-hero">
+    <div class="workshop-kicker">CLASS 1 · FOUNDATION + ARCHITECTURE</div>
+    <h1>Project contract + animation architecture</h1>
+    <p>Today the idea becomes an engineering contract. The class finishes with a real repository, a runnable Python visual baseline, acceptance criteria, and an architecture that explains how the final USB project will be built.</p>
+    <div class="class-badges"><span>Storyboard</span><span>Acceptance criteria</span><span>Pygame</span><span>Event loop</span><span>UML</span><span>Git</span></div>
+  </section>
+
+  <section class="class-grid">
+    <article class="theory-card">
+      <div class="card-tag">THEORY 01</div>
+      <h3>Animation is a time-dependent system</h3>
+      <p>A frame is not the animation. The animation is a function of time. For an interactive visual show, each iteration reads events, updates state with elapsed time, and draws the current state.</p>
+      <pre><code>while running:
+    dt = clock.tick(60) / 1000.0
+    handle_events()
+    update(dt)
+    draw()</code></pre>
+      <p><span class="inline-code">dt</span> makes motion approximately independent of frame rate. Without it, a slower computer changes the speed of the animation.</p>
+    </article>
+
+    <article class="theory-card">
+      <div class="card-tag">THEORY 02</div>
+      <h3>Pygame vs Manim</h3>
+      <p>For this project, the reference construction uses <strong>Pygame</strong> because the final requirement includes a visible launcher, live parameter changes, real-time rendering and portable execution. Manim is excellent for pre-rendered mathematical video, but it is less natural for interactive runtime behavior.</p>
+      <p>The student must still record the decision and its justification in the project README.</p>
+    </article>
+
+    <article class="theory-card">
+      <div class="card-tag">THEORY 03</div>
+      <h3>Architecture before effects</h3>
+      <p>The minimum responsibilities are separated before adding visual complexity:</p>
+      <ul class="checklist">
+        <li><strong>App</strong>: window, event loop, shutdown.</li>
+        <li><strong>Scene</strong>: owns the current visual composition.</li>
+        <li><strong>Effect</strong>: reusable procedural behavior.</li>
+        <li><strong>Config</strong>: parameters that should not be hard-coded.</li>
+        <li><strong>Launcher</strong>: visible manual entry point for the portable build.</li>
+      </ul>
+    </article>
+
+    <article class="lab-card">
+      <div class="card-tag">WORKSHOP</div>
+      <h3>Define the product contract</h3>
+      <ol class="checklist">
+        <li>Create a 6–10 panel storyboard.</li>
+        <li>Define resolution, target FPS and expected duration/interaction.</li>
+        <li>List three visual effects that will exist in the final product.</li>
+        <li>Define one live parameter that can be changed during the final defense.</li>
+        <li>Write five acceptance criteria that can be tested.</li>
+      </ol>
+      <p>Example acceptance criterion: “The application starts offline from a portable folder and shows the first scene in under 5 seconds.”</p>
+    </article>
+  </section>
+
+  <figure class="senior-diagram">
+    <figcaption><span>ARCHITECTURE DIAGRAM</span><strong>Portable visual show responsibility flow</strong></figcaption>
+    <div class="diagram-chain">
+      <div class="diagram-box"><b>Launcher</b><small>Manual entry point. Starts the packaged application from its own folder.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>App</b><small>Owns window, clock, event loop and clean shutdown.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>Scene</b><small>Coordinates the active visual composition and delegates work.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>Effects</b><small>Reusable procedural behaviors with parameters and update/draw contracts.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>Surface</b><small>Final pixels displayed by Pygame every frame.</small></div>
+    </div>
+    <p class="diagram-note">Config is read by App/Scene but remains external data: changing a parameter should alter behavior without rewriting the effect algorithm.</p>
+  </figure>
+
+  <section class="class-panel">
+    <h2>Build 01 · Create the real repository baseline</h2>
+    <pre><code>mkdir portable-visual-show
+cd portable-visual-show
+
+python -m venv .venv
+
+# Windows
+.venv\Scripts\activate
+
+pip install pygame==2.6.1
+git init</code></pre>
+
+    <p>Create <span class="inline-code">main.py</span>:</p>
+    <pre><code>import pygame
+
+WIDTH, HEIGHT = 960, 540
+FPS = 60
+
+pygame.init()
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Portable Python Visual Show")
+clock = pygame.time.Clock()
+
+running = True
+time_s = 0.0
+
+while running:
+    dt = clock.tick(FPS) / 1000.0
+    time_s += dt
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    screen.fill((18, 22, 38))
+
+    x = WIDTH // 2 + int(180 * pygame.math.Vector2(1, 0).rotate(time_s * 70).x)
+    pygame.draw.circle(screen, (224, 91, 135), (x, HEIGHT // 2), 34)
+
+    pygame.display.flip()
+
+pygame.quit()</code></pre>
+
+    <p>Run it:</p>
+    <pre><code>python main.py</code></pre>
+
+    <div class="command-note">Do not continue if the window does not open, animate and close cleanly. Fix the runtime first.</div>
+  </section>
+
+  <section class="class-panel">
+    <h2>Build 02 · UML / responsibility map</h2>
+    <p>Create a diagram with these relationships:</p>
+    <pre><code>App
+ ├── Config
+ ├── Scene
+ │    ├── Effect[]
+ │    └── VisualElement[]
+ └── Launcher
+
+App.handle_events()
+App.update(dt)
+App.draw()
+
+Scene.update(dt)
+Scene.draw(surface)
+
+Effect.update(dt)
+Effect.draw(surface)</code></pre>
+    <p>The objective is not decorative UML. Each class shown here must eventually correspond to a real code responsibility.</p>
+  </section>
+
+  <section class="gate-panel">
+    <h2>Class 1 gate · must pass</h2>
+    <div class="evidence-grid">
+      <span>storyboard</span>
+      <span>5 acceptance criteria</span>
+      <span>library decision</span>
+      <span>UML / responsibility map</span>
+      <span>main.py runs</span>
+      <span>first Git commit</span>
+    </div>
+    <p><strong>Exit condition:</strong> the student can explain what the final product must do and can prove that a real Python visual loop already runs.</p>
+  </section>
+
+  <div class="workshop-nav">
+    <a href="index.html">← 4-class roadmap</a>
+    <a class="primary" href="class-02-engine.html">Class 2 →</a>
+  </div>
+</main>
+</body>
+</html>

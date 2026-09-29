@@ -1,0 +1,41 @@
+services:
+  web:
+    build:
+      context: ./app
+    environment:
+      PORT: "3000"
+      REPORT_COST_MS: "35"
+    expose:
+      - "3000"
+    networks:
+      - labnet
+    restart: unless-stopped
+
+  proxy:
+    image: nginx:1.27-alpine
+    depends_on:
+      - web
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - labnet
+    restart: unless-stopped
+
+  attack:
+    build:
+      context: ./attack-runner
+    profiles:
+      - attack
+    environment:
+      ATTACK_PROFILE: "${ATTACK_PROFILE:-flood}"
+    depends_on:
+      - proxy
+    networks:
+      - labnet
+    restart: "no"
+
+networks:
+  labnet:
+    internal: true

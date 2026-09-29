@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Case 03 · Broken Access Control</title><link rel="stylesheet" href="case.css?v=20260929-1"><script src="../../access-gate.js?v=20260923-email-v12"></script></head>
+<body><main class="case-shell">
+<section class="case-hero"><div class="case-kicker">CASE 03 · BROKEN ACCESS CONTROL / IDOR</div><h1>Autenticado no significa autorizado.</h1><p>El endpoint identifica un usuario ficticio pero, en la versión inicial, no verifica que el registro solicitado le pertenezca. El estudiante debe demostrar el fallo y corregir autorización por objeto.</p><div class="case-badges"><span>DevTools</span><span>curl</span><span>REST</span><span>Authorization</span><span>HTTP 403</span></div></section>
+<section class="case-warning"><strong>Información sintética:</strong> los registros de Ana, Bruno y Camila existen únicamente dentro de este laboratorio.</section>
+<section class="case-panel"><h2>1. Petición permitida</h2><pre><code>curl -i http://127.0.0.1:8080/api/records/1   -H "X-Lab-User: ana"</code></pre><p>La respuesta representa a Ana consultando su propio registro.</p></section>
+<section class="case-panel"><h2>2. Reproducción del fallo</h2><pre><code>curl -i http://127.0.0.1:8080/api/records/2   -H "X-Lab-User: ana"</code></pre><p>En el baseline, Ana recibe el registro ficticio de Bruno. El cambio de <span class="inline-code">1</span> a <span class="inline-code">2</span> demuestra el fallo de autorización.</p></section>
+<section class="case-panel"><h2>3. Repetir desde DevTools</h2><ol class="checklist"><li>Abre DevTools → Network.</li><li>Inspecciona la URL y headers.</li><li>Usa “Copy as fetch” o “Copy as cURL” únicamente sobre localhost.</li><li>Cambia solo el identificador del objeto.</li><li>Documenta por qué autenticación y autorización son controles distintos.</li></ol></section>
+<section class="case-panel"><h2>4. Defensa requerida</h2><p>En <span class="inline-code">app/server.js</span>, el endpoint debe verificar que <span class="inline-code">found.owner === user</span>. Si el registro existe pero no pertenece al usuario, responde con un resultado seguro y consistente; justifica si eliges 403 o 404.</p><p>Después agrega una prueba que garantice que Ana nunca obtiene un objeto de Bruno o Camila.</p></section>
+<section class="case-panel"><h2>5. Verificación</h2><pre><code># Debe seguir permitido
+curl -i http://127.0.0.1:8080/api/records/1 -H "X-Lab-User: ana"
+
+# Debe quedar denegado
+curl -i http://127.0.0.1:8080/api/records/2 -H "X-Lab-User: ana"</code></pre></section>
+<section class="case-panel"><h2>Evidencia</h2><div class="evidence"><span>request permitido</span><span>request indebido</span><span>captura DevTools</span><span>diff del fix</span><span>prueba automatizada</span><span>explicación 403/404</span></div><div class="case-nav"><a href="case-02-auth-abuse.html">← Caso 02</a><a href="case-04-stored-xss.html">Caso 04 →</a></div></section>
+</main></body></html>

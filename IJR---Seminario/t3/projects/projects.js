@@ -71,6 +71,134 @@ function updateSelectionUI(){
   $('selectionBadge').classList.toggle('active',Boolean(option));
   $('choiceKey').value=selectedKey;
 }
+function updateCyberCaseLibrary(trackSlug=''){
+  const panel=$('cyberCaseLibrary');
+  if(!panel)return;
+  panel.classList.toggle('hidden',trackSlug!=='cybersecurity');
+}
+
+function updatePythonAnimationProject(trackSlug=''){
+  const panel=$('pythonAnimationProject');
+  if(!panel)return;
+  panel.classList.toggle('hidden',trackSlug!=='data-science');
+}
+
+function updateTrackProjectLibraries(trackSlug=''){
+  updateCyberCaseLibrary(trackSlug);
+  updatePythonAnimationProject(trackSlug);
+}
+
+function isRicoProject(student,project){
+  const name=String(student?.name||'').trim().toUpperCase();
+  const title=String(project?.project_title||'').trim();
+  return name==='RICO PARAMO ALEJANDRO'
+    && title==='Portable Python Visual Show — USB Launcher & Procedural Animation';
+}
+
+function updateStudentWorkshop(student,project){
+  const panel=$('ricoWorkshopPanel');
+  if(!panel)return;
+  panel.classList.toggle('hidden',!isRicoProject(student,project));
+}
+
+function renderFlowDiagram(diagram){
+  if(!diagram||!Array.isArray(diagram.nodes)||diagram.nodes.length===0)return'';
+  const nodes=diagram.nodes.map((node,index)=>`
+    <div class="diagram-node">
+      <span class="diagram-index">${String(index+1).padStart(2,'0')}</span>
+      <strong>${esc(node)}</strong>
+    </div>
+    ${index<diagram.nodes.length-1?'<div class="diagram-arrow" aria-hidden="true">→</div>':''}
+  `).join('');
+  return `
+    <figure class="project-diagram">
+      <figcaption>
+        <span>${esc(diagram.kicker||'SYSTEM DIAGRAM')}</span>
+        <strong>${esc(diagram.title||'Technical flow')}</strong>
+      </figcaption>
+      <div class="diagram-flow">${nodes}</div>
+      ${diagram.note?`<p>${esc(diagram.note)}</p>`:''}
+    </figure>
+  `;
+}
+
+function ricoPageLinks(record,index){
+  const classN=Number(record?.class||record?.n||index+1)||index+1;
+  return {
+    classN,
+    theory: record?.theory_href || `student-workshops/rico-paramo/theory.html?class=${classN}`,
+    workshop: record?.workshop_href || `student-workshops/rico-paramo/workshop.html?class=${classN}`
+  };
+}
+
+function renderRicoContentSections(contentSections){
+  return contentSections.map((section,index)=>{
+    const links=ricoPageLinks(section,index);
+    return `
+    <article class="content-card senior-content-card">
+      <div class="content-step">C${esc(links.classN)}</div>
+      <div class="content-body">
+        <div class="content-kicker">${esc(section?.kicker||`CLASS ${index+1}`)}</div>
+        <h4><a class="class-title-link" href="${esc(links.theory)}">${esc(section?.title||'Construction class')}</a></h4>
+        ${section?.body?`<p>${esc(section.body)}</p>`:''}
+        <div class="theory-workshop-grid">
+          <section class="theory-block">
+            <div class="block-label">THEORY</div>
+            <p>${esc(section?.theory_intro||'Understand only the concepts required for the next construction step.')}</p>
+            ${Array.isArray(section?.theory)&&section.theory.length
+              ?`<ul>${section.theory.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>`
+              :''}
+          </section>
+          <section class="workshop-block">
+            <div class="block-label">WORKSHOP · BUILD</div>
+            <p>${esc(section?.workshop_intro||'Apply the theory immediately in the real project.')}</p>
+            ${Array.isArray(section?.workshop)&&section.workshop.length
+              ?`<ol>${section.workshop.map(item=>`<li>${esc(item)}</li>`).join('')}</ol>`
+              :''}
+          </section>
+        </div>
+        ${renderFlowDiagram(section?.diagram)}
+        ${Array.isArray(section?.evidence)&&section.evidence.length
+          ?`<div class="class-evidence"><strong>REQUIRED EVIDENCE</strong><div>${section.evidence.map(item=>`<span>${esc(item)}</span>`).join('')}</div></div>`
+          :''}
+        ${section?.gate?`<div class="class-gate"><strong>CLASS GATE</strong><span>${esc(section.gate)}</span></div>`:''}
+        <div class="class-page-actions">
+          <a class="class-open-link theory-page-link" href="${esc(links.theory)}">Open Class ${esc(links.classN)} Theory →</a>
+          <a class="class-open-link workshop-page-link" href="${esc(links.workshop)}">Open Class ${esc(links.classN)} Workshop →</a>
+        </div>
+      </div>
+    </article>
+  `;
+  }).join('');
+}
+
+function renderRicoRoadmap(sprints){
+  return sprints.map((step,index)=>{
+    const links=ricoPageLinks(step,index);
+    return `
+    <article class="sprint-card class-roadmap-card">
+      <div class="sprint-number">C${esc(links.classN)}</div>
+      <div>
+        <div class="class-roadmap-kicker">${esc(step.phase||`CLASS ${links.classN}`)}</div>
+        <h4><a class="class-title-link" href="${esc(links.theory)}">${esc(step.title)}</a></h4>
+        <p>${esc(step.goal)}</p>
+        <div class="mini-theory-workshop">
+          <div><strong>Theory</strong><span>${esc(step.theory||'Concepts required for this build step.')}</span></div>
+          <div><strong>Workshop</strong><span>${esc(step.workshop||'Implement and verify the project increment.')}</span></div>
+        </div>
+        ${renderFlowDiagram(step?.diagram)}
+        <div class="deliverable"><strong>Evidence</strong><span>${esc(step.deliverable)}</span></div>
+        ${step?.gate?`<div class="roadmap-gate"><strong>Gate</strong><span>${esc(step.gate)}</span></div>`:''}
+        <div class="class-page-actions">
+          <a class="class-open-link theory-page-link" href="${esc(links.theory)}">Theory →</a>
+          <a class="class-open-link workshop-page-link" href="${esc(links.workshop)}">Workshop →</a>
+        </div>
+      </div>
+    </article>
+  `;
+  }).join('');
+}
+
 function fillEditor(values,{clearNote=false}={}){
   $('projectTitleInput').value=values?.title??values?.project_title??'';
   $('projectSummaryInput').value=values?.summary??values?.project_summary??'';
@@ -90,6 +218,7 @@ function chooseOption(key,{silent=false}={}){
   if(option.track_slug)route.value=option.track_slug;
   else if(!route.value&&state.project?.track_slug)route.value=state.project.track_slug;
   route.disabled=Boolean(state.project?.is_defined)||option.kind!=='custom';
+  updateTrackProjectLibraries(option.track_slug||route.value||'');
 
   if(key==='custom'){
     $('projectTitleInput').focus();
@@ -115,6 +244,7 @@ function restoreCurrent(){
   const route=$('trackSlugInput');
   route.value=p.track_slug||'';
   route.disabled=Boolean(p.is_defined);
+  updateTrackProjectLibraries(route.value||'');
 
   $('studentNote').value=p.student_decision_note||'';
   setStatus('decisionStatus',p.is_defined?'Se recuperó la última versión guardada.':'Aún no hay proyecto guardado. Selecciona una opción para comenzar.','info');
@@ -146,8 +276,10 @@ function render(data){
 
   $('studentName').textContent=s.name;
   $('groupBadge').textContent=s.group_code;
+  updateStudentWorkshop(s,p);
   $('registeredEmailBadge').textContent=s.institutional_email||state.email;
   $('trackBadge').textContent=p.track_slug?(trackNames[p.track_slug]||p.track_slug):'Ruta por elegir';
+  updateTrackProjectLibraries(p.track_slug||'');
   $('modeBadge').textContent=!p.is_defined?'Proyecto por definir':(p.project_mode==='fixed'?'Proyecto específico':'Ruta flexible');
   $('modeBadge').dataset.mode=p.project_mode||'guided_definition';
   $('currentProjectLabel').textContent=p.is_defined?'CURRENT PROJECT':'PROJECT STATUS';
@@ -186,33 +318,54 @@ function render(data){
     $('safetyPanel').classList.add('hidden');
   }
 
+  const ricoProject=isRicoProject(s,p);
   const contentSections=Array.isArray(p.content_sections)?p.content_sections:[];
-  $('contentGrid').innerHTML=contentSections.map((section,index)=>`
-    <article class="content-card">
-      <div class="content-step">${String(index+1).padStart(2,'0')}</div>
-      <div class="content-body">
-        <div class="content-kicker">${esc(section?.kicker||'PROJECT')}</div>
-        <h4>${esc(section?.title||'Contenido del proyecto')}</h4>
-        ${section?.body?`<p>${esc(section.body)}</p>`:''}
-        ${Array.isArray(section?.items)&&section.items.length
-          ?`<ul>${section.items.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>`
-          :''}
-      </div>
-    </article>
-  `).join('');
+  if(ricoProject){
+    $('contentGrid').innerHTML=renderRicoContentSections(contentSections);
+    $('contentPanel').querySelector('.section-label').textContent='4-CLASS THEORY + WORKSHOP PLAYBOOK';
+    $('contentPanel').querySelector('h3').textContent='Build the final project during class';
+    $('contentPanel').querySelector('.roadmap-copy').textContent='Each class has a theory block, a real workshop, a technical diagram, required evidence and a gate. The project must advance during the session.';
+  }else{
+    $('contentGrid').innerHTML=contentSections.map((section,index)=>`
+      <article class="content-card">
+        <div class="content-step">${String(index+1).padStart(2,'0')}</div>
+        <div class="content-body">
+          <div class="content-kicker">${esc(section?.kicker||'PROJECT')}</div>
+          <h4>${esc(section?.title||'Contenido del proyecto')}</h4>
+          ${section?.body?`<p>${esc(section.body)}</p>`:''}
+          ${Array.isArray(section?.items)&&section.items.length
+            ?`<ul>${section.items.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>`
+            :''}
+        </div>
+      </article>
+    `).join('');
+    $('contentPanel').querySelector('.section-label').textContent='PROJECT PLAYBOOK';
+    $('contentPanel').querySelector('h3').textContent='Contenido para empezar a construir';
+    $('contentPanel').querySelector('.roadmap-copy').textContent='Este contenido es específico de tu ruta/proyecto. Úsalo como guía de trabajo: qué construir, qué probar y qué evidencia debes conservar.';
+  }
   $('contentPanel').classList.toggle('hidden',contentSections.length===0);
 
   const sprints=Array.isArray(p.sprints)?p.sprints:[];
-  $('sprintGrid').innerHTML=sprints.map(step=>`
-    <article class="sprint-card">
-      <div class="sprint-number">S${esc(step.n)}</div>
-      <div>
-        <h4>${esc(step.title)}</h4>
-        <p>${esc(step.goal)}</p>
-        <div class="deliverable"><strong>Evidencia</strong><span>${esc(step.deliverable)}</span></div>
-      </div>
-    </article>
-  `).join('');
+  if(ricoProject){
+    $('roadmapLabel').textContent='4 CONSTRUCTION CLASSES';
+    $('roadmapTitle').textContent='Four Theory + Workshop classes build the final product';
+    $('roadmapCopy').textContent='This fixed project uses exactly four construction classes. Each class moves from theory to a real implementation, verification evidence and a class gate; there is no separate eight-sprint roadmap for this student.';
+    $('sprintGrid').innerHTML=renderRicoRoadmap(sprints);
+  }else{
+    $('roadmapLabel').textContent='PROJECT ROADMAP';
+    $('roadmapTitle').textContent='Desarrollo paso a paso';
+    $('roadmapCopy').textContent='Esta es la ruta base del proyecto. Después de confirmar tu decisión, úsala para construir evidencias verificables y ajusta el detalle con el docente cuando el alcance lo requiera.';
+    $('sprintGrid').innerHTML=sprints.map(step=>`
+      <article class="sprint-card">
+        <div class="sprint-number">S${esc(step.n)}</div>
+        <div>
+          <h4>${esc(step.title)}</h4>
+          <p>${esc(step.goal)}</p>
+          <div class="deliverable"><strong>Evidencia</strong><span>${esc(step.deliverable)}</span></div>
+        </div>
+      </article>
+    `).join('');
+  }
   $('roadmapPanel').classList.toggle('hidden',sprints.length===0);
 
   renderOptions();
@@ -330,6 +483,7 @@ $('decisionForm').addEventListener('submit',async e=>{
   }
 });
 
+$('trackSlugInput').addEventListener('change',e=>updateTrackProjectLibraries(e.target.value));
 $('restoreCurrent').addEventListener('click',restoreCurrent);
 $('changeEmail').addEventListener('click',()=>{
   $('institutionalEmail').value='';

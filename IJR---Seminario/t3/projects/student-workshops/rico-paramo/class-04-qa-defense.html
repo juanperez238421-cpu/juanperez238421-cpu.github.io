@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Rico · Class 4 · QA & Defense</title>
+  <link rel="stylesheet" href="workshop.css?v=20260929-2">
+  <script src="../../../access-gate.js?v=20260923-email-v12"></script>
+</head>
+<body>
+<main class="workshop-shell">
+  <section class="class-hero">
+    <div class="workshop-kicker">CLASS 4 · QA + LIVE DEFENSE</div>
+    <h1>USB/offline QA + live project defense</h1>
+    <p>The project is now treated as a product. The student runs a controlled failure matrix, fixes portability defects, documents the final architecture and performs a live defense from portable media or a clean folder.</p>
+    <div class="class-badges"><span>QA matrix</span><span>fault injection</span><span>offline</span><span>USB</span><span>performance</span><span>live defense</span></div>
+  </section>
+
+  <section class="class-grid">
+    <article class="theory-card">
+      <div class="card-tag">THEORY 01</div>
+      <h3>Testing is a claim-evidence pair</h3>
+      <p>“It works” is not a test. A test defines initial conditions, an action, expected behavior and observed evidence.</p>
+      <pre><code>Condition: network disconnected
+Action: launch PORTABLE_BUILD
+Expected: scene opens and all local effects work
+Observed: PASS / FAIL + screenshot/log</code></pre>
+    </article>
+
+    <article class="theory-card">
+      <div class="card-tag">THEORY 02</div>
+      <h3>Fault injection</h3>
+      <p>Good QA intentionally creates failures before the final presentation. Remove or rename a resource, corrupt config, move the folder and close the application repeatedly. The purpose is to expose assumptions while they can still be fixed.</p>
+    </article>
+
+    <article class="theory-card">
+      <div class="card-tag">THEORY 03</div>
+      <h3>Live defense is reproducibility</h3>
+      <p>The student should be able to change one documented parameter, relaunch and predict the visual result. That demonstrates ownership of architecture rather than memorization.</p>
+    </article>
+
+    <article class="lab-card">
+      <div class="card-tag">WORKSHOP</div>
+      <h3>Final defense sequence</h3>
+      <ol class="checklist">
+        <li>Launch from clean/portable folder.</li>
+        <li>Explain App → Scene → Effect → Config → Launcher.</li>
+        <li>Show one effect class and its parameters.</li>
+        <li>Change one visual parameter live.</li>
+        <li>Relaunch and verify predicted behavior.</li>
+        <li>Show QA matrix and one defect that was fixed.</li>
+      </ol>
+    </article>
+  </section>
+
+  <figure class="senior-diagram">
+    <figcaption><span>QA FEEDBACK LOOP</span><strong>Evidence-driven final hardening cycle</strong></figcaption>
+    <div class="diagram-chain">
+      <div class="diagram-box"><b>Inject condition</b><small>Move folder, disconnect network, corrupt config or remove an optional asset.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>Observe</b><small>Capture output, FPS, error behavior and exact reproduction steps.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>Diagnose</b><small>Identify the violated assumption or failing component.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>Fix</b><small>Change code/configuration with the smallest justified correction.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>Retest</b><small>Repeat the same condition and record PASS/FAIL evidence.</small></div>
+    </div>
+    <p class="diagram-note">Final defense follows the same logic: make a controlled parameter change, predict the effect, relaunch and verify that the observed result matches the architecture explanation.</p>
+  </figure>
+
+  <section class="class-panel">
+    <h2>Mandatory QA matrix</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Test</th><th>Expected</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td>QA-01</td><td>Run from original folder</td><td>Visual show opens</td><td>screen/video</td></tr>
+        <tr><td>QA-02</td><td>Run from renamed clean folder</td><td>No path failure</td><td>screen + path</td></tr>
+        <tr><td>QA-03</td><td>Disconnect internet</td><td>Full offline operation</td><td>screen/video</td></tr>
+        <tr><td>QA-04</td><td>Malformed config</td><td>Documented fallback/error</td><td>log/screen</td></tr>
+        <tr><td>QA-05</td><td>Missing optional asset</td><td>Fallback or clear error</td><td>log/screen</td></tr>
+        <tr><td>QA-06</td><td>Close window repeatedly</td><td>Clean exit</td><td>observation</td></tr>
+        <tr><td>QA-07</td><td>Run from USB/removable drive</td><td>Manual launcher works</td><td>video</td></tr>
+        <tr><td>QA-08</td><td>Change live parameter</td><td>Predicted visual change</td><td>before/after</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="class-panel">
+    <h2>Performance check</h2>
+    <p>Add an FPS display during development and record whether the application stays close to its configured target on the presentation computer. If it drops significantly, identify the expensive effect before the final defense.</p>
+    <pre><code>fps = clock.get_fps()
+pygame.display.set_caption(
+    f"Portable Visual Show | FPS: {fps:5.1f}"
+)</code></pre>
+  </section>
+
+  <section class="class-panel">
+    <h2>Final portable folder</h2>
+    <pre><code>FINAL_RICO_VISUAL_SHOW/
+  PortableVisualShow.exe
+  config.json
+  launch.bat
+  README.md
+  QA_MATRIX.md
+  ARCHITECTURE.png
+  evidence/
+    clean-folder.png
+    offline-run.mp4
+    parameter-before.png
+    parameter-after.png</code></pre>
+  </section>
+
+  <section class="gate-panel">
+    <h2>Final project gate</h2>
+    <div class="evidence-grid">
+      <span>portable demo</span>
+      <span>8 QA cases</span>
+      <span>fixed defects</span>
+      <span>final UML</span>
+      <span>README</span>
+      <span>live parameter defense</span>
+    </div>
+    <p><strong>Completion condition:</strong> the final build launches manually from portable media/clean folder, works offline, survives the documented QA matrix and can be technically explained by the student.</p>
+  </section>
+
+  <div class="workshop-nav">
+    <a href="class-03-portable.html">← Class 3</a>
+    <a class="primary" href="index.html">4-class roadmap</a>
+  </div>
+</main>
+</body>
+</html>

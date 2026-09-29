@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Rico · Class 3 · Portable Build</title>
+  <link rel="stylesheet" href="workshop.css?v=20260929-2">
+  <script src="../../../access-gate.js?v=20260923-email-v12"></script>
+</head>
+<body>
+<main class="workshop-shell">
+  <section class="class-hero">
+    <div class="workshop-kicker">CLASS 3 · PORTABLE BUILD</div>
+    <h1>Relative paths + portable build + launcher</h1>
+    <p>Today the project stops depending on the development computer. Configuration and assets must resolve through relative project paths, then the visual show is packaged into a portable build with a visible manual launcher.</p>
+    <div class="class-badges"><span>pathlib</span><span>JSON config</span><span>relative paths</span><span>PyInstaller</span><span>launcher</span><span>portable folder</span></div>
+  </section>
+
+  <section class="class-grid">
+    <article class="theory-card">
+      <div class="card-tag">THEORY 01</div>
+      <h3>Portability means no machine assumptions</h3>
+      <p>Absolute paths such as <span class="inline-code">C:\Users\Alejandro\Desktop\...</span> are defects in a portable application. Runtime resources must resolve from the project/build location.</p>
+      <pre><code>from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+CONFIG_PATH = BASE_DIR / "config.json"</code></pre>
+    </article>
+
+    <article class="theory-card">
+      <div class="card-tag">THEORY 02</div>
+      <h3>Configuration is data, not code</h3>
+      <p>Parameters used during the final defense should live in a small config file. This makes the visual behavior inspectable and editable without touching algorithms.</p>
+      <pre><code>{
+  "width": 960,
+  "height": 540,
+  "fps": 60,
+  "particle_count": 120,
+  "orbit_speed": 1.4
+}</code></pre>
+    </article>
+
+    <article class="theory-card">
+      <div class="card-tag">THEORY 03</div>
+      <h3>Packaging changes runtime paths</h3>
+      <p>PyInstaller can bundle Python and dependencies into an executable. The application still needs a robust resource path function for both source mode and packaged mode.</p>
+      <pre><code>import sys
+from pathlib import Path
+
+def resource_path(relative):
+    if hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS) / relative
+    return Path(__file__).resolve().parent / relative</code></pre>
+    </article>
+
+    <article class="lab-card">
+      <div class="card-tag">WORKSHOP</div>
+      <h3>Portable structure</h3>
+      <pre><code>portable-visual-show/
+  main.py
+  config.json
+  visual_show/
+    app.py
+    scenes.py
+    effects.py
+    paths.py
+  assets/
+  launch.bat
+  README.md</code></pre>
+      <p>The application should run after the whole folder is moved to a different location.</p>
+    </article>
+  </section>
+
+  <figure class="senior-diagram">
+    <figcaption><span>PORTABILITY DIAGRAM</span><strong>Development source to clean offline runtime</strong></figcaption>
+    <div class="diagram-chain">
+      <div class="diagram-box"><b>Source project</b><small>Python package, config and optional local assets.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>PyInstaller</b><small>Bundles interpreter and Python dependencies into the Windows build.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>Portable folder</b><small>EXE + config + launcher + README using relative resources only.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>USB / clean path</b><small>Folder is moved or renamed; no developer path may be assumed.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>Offline run</b><small>Manual launch succeeds without network access.</small></div>
+    </div>
+    <p class="diagram-note">A successful build is not yet a portable product. Portability is demonstrated only after moving the folder and executing it in a clean/offline condition.</p>
+  </figure>
+
+  <section class="class-panel">
+    <h2>Build 01 · Load config safely</h2>
+    <pre><code>import json
+from pathlib import Path
+
+def load_config(path: Path):
+    defaults = {
+        "width": 960,
+        "height": 540,
+        "fps": 60,
+        "particle_count": 120,
+        "orbit_speed": 1.4,
+    }
+
+    if not path.exists():
+        return defaults
+
+    try:
+        user = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return defaults
+
+    return {**defaults, **user}</code></pre>
+    <p>Test three states: valid config, missing config, malformed JSON. The application must fail gracefully or use documented defaults.</p>
+  </section>
+
+  <section class="class-panel">
+    <h2>Build 02 · Visible launcher</h2>
+    <p>Create <span class="inline-code">launch.bat</span>:</p>
+    <pre><code>@echo off
+cd /d "%~dp0"
+echo Starting Portable Python Visual Show...
+start "" "PortableVisualShow.exe"</code></pre>
+    <p>The launcher is intentionally visible and manual. No autorun, hidden tasks or permanent system changes are required.</p>
+  </section>
+
+  <section class="class-panel">
+    <h2>Build 03 · Package</h2>
+    <pre><code>pip install pyinstaller==6.16.0
+
+pyinstaller ^
+  --noconfirm ^
+  --clean ^
+  --onefile ^
+  --name PortableVisualShow ^
+  main.py</code></pre>
+    <p>Copy the executable, config, launcher and README into a new folder named <span class="inline-code">PORTABLE_BUILD</span>. If external assets are introduced, include them explicitly and verify their relative paths.</p>
+  </section>
+
+  <section class="class-panel">
+    <h2>Portability experiment</h2>
+    <table>
+      <thead><tr><th>Run</th><th>Location</th><th>Expected</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Original development folder</td><td>PASS</td></tr>
+        <tr><td>B</td><td>Copied to Desktop/TEST_A</td><td>PASS</td></tr>
+        <tr><td>C</td><td>Folder renamed</td><td>PASS</td></tr>
+        <tr><td>D</td><td>Network disconnected</td><td>PASS</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="gate-panel">
+    <h2>Class 3 gate · must pass</h2>
+    <div class="evidence-grid">
+      <span>config.json works</span>
+      <span>no absolute paths</span>
+      <span>portable build</span>
+      <span>visible launcher</span>
+      <span>clean-path test</span>
+      <span>offline test</span>
+    </div>
+    <p><strong>Exit condition:</strong> copy the build to a different folder, disconnect the network, launch manually and prove that the visual show still works.</p>
+  </section>
+
+  <div class="workshop-nav">
+    <a href="class-02-engine.html">← Class 2</a>
+    <a class="primary" href="class-04-qa-defense.html">Class 4 →</a>
+  </div>
+</main>
+</body>
+</html>

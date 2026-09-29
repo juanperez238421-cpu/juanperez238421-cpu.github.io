@@ -136,7 +136,9 @@ async function submitRegistration(ev){
 }
 
 function bindRegistration(){
-  if(repairLegacyMarkup())return;
+  // ensureEmailOnlyRegistration() already repairs stale/legacy markup in-place.
+  // Do not call the removed repairLegacyMarkup helper: that ReferenceError prevented
+  // the submit listener from being attached, making the email button appear dead.
   ensureEmailOnlyRegistration();
   const form=$('registrationForm');
   if(!form)return;

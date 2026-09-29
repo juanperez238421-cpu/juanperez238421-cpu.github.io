@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Python Animated Message · Seminario 11</title>
+  <link rel="stylesheet" href="project.css?v=20260929-1">
+  <script src="../../access-gate.js?v=20260923-email-v12"></script>
+</head>
+<body>
+<main class="anim-shell">
+  <section class="anim-hero">
+    <div class="anim-kicker">PYTHON · CREATIVE CODING · FINAL PROJECT</div>
+    <h1>Animated Message Studio</h1>
+    <p>Construye por código un mensaje animado completo: fondo dinámico, partículas, flores que crecen, corazón paramétrico, texto y render MP4. El proyecto está dividido en módulos reales para trabajar desde Terminal o Google Colab y termina con una entrega preparada para USB.</p>
+    <div class="anim-badges">
+      <span>Python</span><span>Pillow</span><span>NumPy</span><span>ImageIO</span><span>FFmpeg</span><span>Terminal</span><span>Colab</span><span>USB</span>
+    </div>
+    <div class="anim-nav">
+      <a class="primary" href="https://github.com/juanperez238421-cpu/IJR---Seminario/tree/main/t3/projects/python-message-animation" target="_blank" rel="noopener noreferrer">Código completo</a>
+      <a href="https://github.com/juanperez238421-cpu/IJR---Seminario/blob/main/t3/projects/python-message-animation/colab/Python_Animated_Message.ipynb" target="_blank" rel="noopener noreferrer">Notebook Colab</a>
+      <a href="../">Volver a Projects</a>
+    </div>
+  </section>
+
+  <section class="anim-warning">
+    <strong>Ejemplo base:</strong> “Para ti — Un mensaje hecho con Python”. El estudiante debe modificar diseño, timings y elementos; cambiar únicamente el texto no constituye un proyecto terminado.
+  </section>
+
+  <section class="anim-panel">
+    <h2>Arquitectura de trabajo</h2>
+    <div class="anim-flow">
+      <div>Config</div><div>Primitives</div><div>Scene</div><div>Frames</div><div>MP4 / GIF</div>
+    </div>
+    <p>Cada frame se calcula en Python. No es una grabación de pantalla: el programa genera píxeles, compone capas RGBA y entrega los frames al encoder de video.</p>
+  </section>
+
+  <section class="anim-grid">
+    <article class="anim-card">
+      <span class="anim-step">01</span>
+      <h3>Background + particles</h3>
+      <p>Gradiente RGB animado, tiempo normalizado y partículas determinísticas.</p>
+      <pre><code>python modules/01_background.py</code></pre>
+    </article>
+    <article class="anim-card">
+      <span class="anim-step">02</span>
+      <h3>Parametric heart</h3>
+      <p>Curva matemática, easing de entrada y pulso periódico.</p>
+      <pre><code>python modules/02_heart.py</code></pre>
+    </article>
+    <article class="anim-card">
+      <span class="anim-step">03</span>
+      <h3>Flowers</h3>
+      <p>Tallo, hojas, pétalos, bloom y movimiento de sway organizados como una función reutilizable.</p>
+      <pre><code>python modules/03_flowers.py</code></pre>
+    </article>
+    <article class="anim-card">
+      <span class="anim-step">04</span>
+      <h3>Typography</h3>
+      <p>Título, subtítulo, jerarquía tipográfica y fade por alpha.</p>
+      <pre><code>python modules/04_text.py</code></pre>
+    </article>
+  </section>
+
+  <section class="anim-panel">
+    <h2>Terminal · render definitivo</h2>
+    <pre><code>python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+
+python run.py --title "Para ti" --subtitle "Un mensaje hecho con Python" --out output/animated_message.mp4 --width 1280 --height 720 --fps 30 --seconds 8</code></pre>
+    <p>Salida esperada: video H.264 de 8 s a 30 fps. Para pruebas rápidas puede usarse una salida GIF pequeña.</p>
+  </section>
+
+  <section class="anim-panel">
+    <h2>Colab · misma arquitectura, entorno reproducible</h2>
+    <p>El notebook instala dependencias, clona el repositorio, ejecuta cada módulo y reproduce el MP4 final dentro de Colab. No es una versión simplificada: utiliza el mismo paquete Python.</p>
+    <div class="anim-nav">
+      <a class="primary" href="https://colab.research.google.com/github/juanperez238421-cpu/IJR---Seminario/blob/main/t3/projects/python-message-animation/colab/Python_Animated_Message.ipynb" target="_blank" rel="noopener noreferrer">Abrir en Google Colab</a>
+    </div>
+  </section>
+
+  <section class="anim-panel">
+    <h2>Idea USB · entrega final</h2>
+    <p>El USB funciona como producto final y evidencia técnica. Se propone incluir el MP4 terminado, un ejecutable Windows generado con PyInstaller y un README. Windows moderno normalmente no permite autorun desde USB, por lo que la presentación correcta es mediante doble clic.</p>
+    <pre><code>usb\build_windows_usb.bat</code></pre>
+    <pre><code>USB_PACKAGE/
+  animated_message.mp4
+  AnimatedMessage.exe
+  README_USB.txt</code></pre>
+  </section>
+
+  <section class="anim-panel">
+    <h2>Rúbrica técnica del producto</h2>
+    <table class="anim-table">
+      <thead><tr><th>Componente</th><th>Evidencia</th></tr></thead>
+      <tbody>
+        <tr><td>Modularidad</td><td>Config, drawing primitives, scene y renderer separados.</td></tr>
+        <tr><td>Matemática</td><td>Uso y explicación de curva paramétrica/easing/tiempo normalizado.</td></tr>
+        <tr><td>Animación</td><td>Al menos cuatro elementos con timing independiente.</td></tr>
+        <tr><td>Personalización</td><td>Paleta, composición, mensaje y comportamiento modificados.</td></tr>
+        <tr><td>Render</td><td>MP4 funcional + módulos GIF o capturas intermedias.</td></tr>
+        <tr><td>Entrega</td><td>Repositorio + Colab/Terminal + USB_PACKAGE.</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+</body>
+</html>

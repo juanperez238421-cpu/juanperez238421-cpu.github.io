@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Rico · Class 2 · Animation Engine</title>
+  <link rel="stylesheet" href="workshop.css?v=20260929-2">
+  <script src="../../../access-gate.js?v=20260923-email-v12"></script>
+</head>
+<body>
+<main class="workshop-shell">
+  <section class="class-hero">
+    <div class="workshop-kicker">CLASS 2 · PROCEDURAL ENGINE</div>
+    <h1>First animation loop + reusable effects</h1>
+    <p>Today the baseline becomes a small procedural animation engine. The student must finish with a real scene containing at least three reusable effects controlled by parameters instead of copied code.</p>
+    <div class="class-badges"><span>delta time</span><span>scene graph</span><span>procedural motion</span><span>classes</span><span>parameters</span><span>determinism</span></div>
+  </section>
+
+  <section class="class-grid">
+    <article class="theory-card">
+      <div class="card-tag">THEORY 01</div>
+      <h3>Frame-rate independence</h3>
+      <p>Movement should be expressed in units per second, not units per frame.</p>
+      <pre><code># wrong
+x += 3
+
+# correct
+x += velocity_px_per_s * dt</code></pre>
+      <p>At 30 FPS and 120 FPS, the second form preserves approximately the same physical speed.</p>
+    </article>
+
+    <article class="theory-card">
+      <div class="card-tag">THEORY 02</div>
+      <h3>Procedural animation</h3>
+      <p>Instead of playing a pre-made asset, the visual state is generated from equations and parameters. Useful building blocks include sine waves, polar motion, interpolation, random fields and deterministic seeds.</p>
+      <pre><code>x = cx + radius * cos(omega * t + phase)
+y = cy + radius * sin(omega * t + phase)</code></pre>
+    </article>
+
+    <article class="theory-card">
+      <div class="card-tag">THEORY 03</div>
+      <h3>Reusable effect contract</h3>
+      <p>Each effect should expose a stable interface. That lets one scene combine different implementations without knowing their internal equations.</p>
+      <pre><code>class Effect:
+    def update(self, dt: float) -> None:
+        ...
+
+    def draw(self, surface) -> None:
+        ...</code></pre>
+    </article>
+
+    <article class="lab-card">
+      <div class="card-tag">WORKSHOP</div>
+      <h3>Three effects, three responsibilities</h3>
+      <ol class="checklist">
+        <li><strong>OrbitEffect</strong>: circular/polar motion.</li>
+        <li><strong>PulseEffect</strong>: radius/alpha driven by sine.</li>
+        <li><strong>ParticleField</strong>: multiple generated elements with deterministic seed.</li>
+        <li>Expose speed, amplitude, color and count as parameters.</li>
+        <li>Change one parameter without editing the effect algorithm.</li>
+      </ol>
+    </article>
+  </section>
+
+  <figure class="senior-diagram">
+    <figcaption><span>FRAME PIPELINE</span><strong>One deterministic real-time iteration</strong></figcaption>
+    <div class="diagram-chain">
+      <div class="diagram-box"><b>1. Poll events</b><small>Keyboard, close window and future interaction signals.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>2. Measure dt</b><small>Elapsed seconds since the previous frame.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>3. Update state</b><small>Integrate motion and effect state using dt.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>4. Draw scene</b><small>Render background and every effect to the surface.</small></div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box"><b>5. Flip</b><small>Present the completed frame and begin the next cycle.</small></div>
+    </div>
+    <p class="diagram-note">The update contract is time-based; render frequency may vary, but visual speed should remain approximately invariant.</p>
+  </figure>
+
+  <section class="class-panel">
+    <h2>Build 01 · Convert the loop into App + Scene</h2>
+    <pre><code>class Scene:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.time_s = 0.0
+
+    def update(self, dt):
+        self.time_s += dt
+
+    def draw(self, surface):
+        surface.fill((18, 22, 38))
+
+
+class App:
+    def __init__(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((960, 540))
+        self.clock = pygame.time.Clock()
+        self.scene = Scene(960, 540)
+        self.running = True
+
+    def run(self):
+        while self.running:
+            dt = self.clock.tick(60) / 1000.0
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+
+            self.scene.update(dt)
+            self.scene.draw(self.screen)
+            pygame.display.flip()
+
+        pygame.quit()</code></pre>
+  </section>
+
+  <section class="class-panel">
+    <h2>Build 02 · First reusable effect</h2>
+    <pre><code>import math
+import pygame
+
+class OrbitEffect:
+    def __init__(self, center, radius=150, speed=1.2, color=(235, 90, 140)):
+        self.center = pygame.Vector2(center)
+        self.radius = radius
+        self.speed = speed
+        self.color = color
+        self.t = 0.0
+
+    def update(self, dt):
+        self.t += dt
+
+    def draw(self, surface):
+        x = self.center.x + self.radius * math.cos(self.speed * self.t)
+        y = self.center.y + self.radius * math.sin(self.speed * self.t)
+        pygame.draw.circle(surface, self.color, (int(x), int(y)), 22)</code></pre>
+
+    <p>Now implement two more effects following the same interface. At least one must use multiple generated elements and a fixed random seed.</p>
+  </section>
+
+  <section class="class-panel">
+    <h2>Verification experiment</h2>
+    <table>
+      <thead><tr><th>Test</th><th>Action</th><th>Expected result</th></tr></thead>
+      <tbody>
+        <tr><td>Speed</td><td>Change orbit speed 1.2 → 2.4</td><td>Approximately twice the angular speed</td></tr>
+        <tr><td>FPS</td><td>Run at 30 then 120 FPS</td><td>Visual motion rate remains similar</td></tr>
+        <tr><td>Seed</td><td>Restart with same seed</td><td>Particle layout starts reproducibly</td></tr>
+        <tr><td>Reuse</td><td>Create two OrbitEffect instances</td><td>Both run with different parameters</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="gate-panel">
+    <h2>Class 2 gate · must pass</h2>
+    <div class="evidence-grid">
+      <span>App class</span>
+      <span>Scene class</span>
+      <span>3 reusable effects</span>
+      <span>dt-based motion</span>
+      <span>parameter comparison</span>
+      <span>runnable visual demo</span>
+    </div>
+    <p><strong>Exit condition:</strong> the student can change behavior through parameters and explain why the same effect class can be reused in multiple visual roles.</p>
+  </section>
+
+  <div class="workshop-nav">
+    <a href="class-01-foundation.html">← Class 1</a>
+    <a class="primary" href="class-03-portable.html">Class 3 →</a>
+  </div>
+</main>
+</body>
+</html>

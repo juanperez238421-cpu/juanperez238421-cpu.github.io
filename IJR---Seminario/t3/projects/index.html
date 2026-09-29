@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="robots" content="noindex,nofollow">
+  <meta name="robots" content="noindex,nofollow"><meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
   <title>Elige tu Proyecto · Seminario 11</title>
   <link rel="stylesheet" href="../css/course.css?v=20260923-2">
-  <link rel="stylesheet" href="projects.css?v=20260923-4">
+  <link rel="stylesheet" href="projects.css?v=20260929-rico-class-v5">
   <script defer src="../config.js?v=20260824-1"></script>
-  <script type="module" src="projects.js?v=20260923-4"></script>
-  <script src="../access-gate.js?v=20260923-email-v12"></script>
+  <script type="module" src="projects.js?v=20260929-rico-class-v5"></script>
+  <script src="../access-gate.js?v=20260923-email-v14"></script>
 </head>
 <body>
 <header class="topbar">
@@ -78,6 +78,79 @@
         <span id="selectionBadge" class="selection-badge">Sin seleccionar</span>
       </div>
       <div id="optionGrid" class="option-grid" role="radiogroup" aria-label="Opciones de proyecto"></div>
+    </section>
+
+    <section id="cyberCaseLibrary" class="cyber-case-library hidden">
+      <div class="cyber-case-heading">
+        <div>
+          <div class="section-label">DEFENSIVE CYBERSECURITY · REAL LAB CASES</div>
+          <h3>Casos reales que debes reproducir, medir y defender</h3>
+          <p>Estos casos ejecutan peticiones y fallos reales sobre el laboratorio local del curso. Usa Terminal para ejecutar, DevTools para inspeccionar HTML/HTTP y Colab para comparar evidencia antes/después.</p>
+        </div>
+        <a class="button ghost small" href="cyber-cases/">Abrir biblioteca completa</a>
+      </div>
+      <div class="cyber-case-grid">
+        <a class="cyber-case-card" href="cyber-cases/case-01-http-flood.html">
+          <span class="cyber-case-id">CASE 01</span>
+          <strong>HTTP Flood / Application-layer DoS</strong>
+          <p>Degradación real, RPS, p95, Nginx y recuperación del servicio.</p>
+          <small>Terminal · Docker · Colab</small>
+        </a>
+        <a class="cyber-case-card" href="cyber-cases/case-02-auth-abuse.html">
+          <span class="cyber-case-id">CASE 02</span>
+          <strong>Credential Abuse / Login Defense</strong>
+          <p>Intentos inválidos reales contra cuentas ficticias y controles de autenticación.</p>
+          <small>HTTP · Logs · DevTools</small>
+        </a>
+        <a class="cyber-case-card" href="cyber-cases/case-03-broken-access-control.html">
+          <span class="cyber-case-id">CASE 03</span>
+          <strong>Broken Access Control / IDOR</strong>
+          <p>Modificar un identificador de objeto y corregir autorización server-side.</p>
+          <small>curl · Network · REST</small>
+        </a>
+        <a class="cyber-case-card" href="cyber-cases/case-04-stored-xss.html">
+          <span class="cyber-case-id">CASE 04</span>
+          <strong>Stored HTML / XSS Defense</strong>
+          <p>Inspección DOM, salida no escapada, encoding y CSP en localhost.</p>
+          <small>HTML · Elements · CSP</small>
+        </a>
+      </div>
+    </section>
+
+    <section id="pythonAnimationProject" class="python-animation-library hidden">
+      <div class="python-animation-heading">
+        <div>
+          <div class="section-label">PYTHON · CREATIVE CODING · ANIMATION PROJECT</div>
+          <h3>Animated Message Studio</h3>
+          <p>Proyecto modular real para crear un mensaje animado con fondo, flores, corazón paramétrico y texto. Incluye Terminal, Google Colab, render MP4/GIF, pruebas y paquete final para USB.</p>
+        </div>
+        <a class="button ghost small" href="python-message-animation/">Abrir proyecto completo</a>
+      </div>
+      <div class="python-animation-grid">
+        <div><strong>01 · Background</strong><span>Gradiente + partículas</span></div>
+        <div><strong>02 · Heart</strong><span>Curva paramétrica + easing</span></div>
+        <div><strong>03 · Flowers</strong><span>Bloom + sway + composición</span></div>
+        <div><strong>04 · Text</strong><span>Alpha + tipografía + timing</span></div>
+        <div><strong>05 · Final render</strong><span>MP4 H.264 / GIF</span></div>
+        <div><strong>06 · USB package</strong><span>MP4 + EXE + README</span></div>
+      </div>
+    </section>
+
+    <section id="ricoWorkshopPanel" class="rico-workshop-panel hidden">
+      <div class="rico-workshop-heading">
+        <div>
+          <div class="section-label">PERSONAL PROJECT BUILD · 4 CONSTRUCTION CLASSES</div>
+          <h3>Portable Python Visual Show — class-by-class build</h3>
+          <p>This fixed personal project is organized into exactly four construction classes. Every class has its own Theory page, real Workshop, executable increment, verification evidence and a gate that must pass before the next class.</p>
+        </div>
+        <a class="button primary small" href="student-workshops/rico-paramo/index.html">Open 4-class build route</a>
+      </div>
+      <div class="rico-workshop-grid rico-stage-preview">
+        <article><span>C1</span><strong>Project contract + animation architecture</strong><small>acceptance criteria · UML responsibilities · runnable Pygame baseline · first commit</small><div><a href="student-workshops/rico-paramo/theory.html?class=1">Theory C1</a><a href="student-workshops/rico-paramo/workshop.html?class=1">Workshop C1</a></div></article>
+        <article><span>C2</span><strong>Animation engine + reusable effects</strong><small>delta time · update/draw · reusable effects · FPS and seed verification</small><div><a href="student-workshops/rico-paramo/theory.html?class=2">Theory C2</a><a href="student-workshops/rico-paramo/workshop.html?class=2">Workshop C2</a></div></article>
+        <article><span>C3</span><strong>Relative paths + portable build + launcher</strong><small>JSON config · relative resources · PyInstaller · visible launcher · offline moved-folder test</small><div><a href="student-workshops/rico-paramo/theory.html?class=3">Theory C3</a><a href="student-workshops/rico-paramo/workshop.html?class=3">Workshop C3</a></div></article>
+        <article><span>C4</span><strong>Offline QA + live project defense</strong><small>8-case QA matrix · regression evidence · final UML/README · portable demo · live change</small><div><a href="student-workshops/rico-paramo/theory.html?class=4">Theory C4</a><a href="student-workshops/rico-paramo/workshop.html?class=4">Workshop C4</a></div></article>
+      </div>
     </section>
 
     <section class="editor-card">
@@ -196,9 +269,9 @@
     </section>
 
     <section id="roadmapPanel" class="roadmap-panel">
-      <div class="section-label">8-SPRINT ROADMAP</div>
-      <h3>Desarrollo paso a paso</h3>
-      <p class="roadmap-copy">Esta es la ruta base del proyecto. Después de confirmar tu decisión, úsala para construir evidencias verificables y ajusta el detalle con el docente cuando el alcance lo requiera.</p>
+      <div id="roadmapLabel" class="section-label">PROJECT ROADMAP</div>
+      <h3 id="roadmapTitle">Desarrollo paso a paso</h3>
+      <p id="roadmapCopy" class="roadmap-copy">Esta es la ruta base del proyecto. Después de confirmar tu decisión, úsala para construir evidencias verificables y ajusta el detalle con el docente cuando el alcance lo requiera.</p>
       <div id="sprintGrid" class="sprint-grid"></div>
     </section>
 
