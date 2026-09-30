@@ -54,12 +54,28 @@ jobs:
           <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width,initial-scale=1">
-          <meta http-equiv="refresh" content="0; url=t3/">
-          <link rel="canonical" href="t3/">
+          <meta http-equiv="refresh" content="0; url=https://juanperez238421-cpu.github.io/ijr-estadistica-11-2026/seminario/">
+          <link rel="canonical" href="https://juanperez238421-cpu.github.io/ijr-estadistica-11-2026/seminario/">
           <title>Seminario 11 · Instituto Jorge Robledo</title>
           </head>
           <body>
-          <p>Abriendo <a href="t3/">Seminario 11 · Third Period Coding Studio</a>…</p>
+          <p>Abriendo la versión consolidada de <a href="https://juanperez238421-cpu.github.io/ijr-estadistica-11-2026/seminario/">Seminario 11</a>…</p>
+          </body>
+          </html>
+          HTML
+
+          cat > site/IJR---Seminario/t3/index.html <<'HTML'
+          <!doctype html>
+          <html lang="es">
+          <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <meta http-equiv="refresh" content="0; url=https://juanperez238421-cpu.github.io/ijr-estadistica-11-2026/seminario/">
+          <link rel="canonical" href="https://juanperez238421-cpu.github.io/ijr-estadistica-11-2026/seminario/">
+          <title>Seminario 11 · Instituto Jorge Robledo</title>
+          </head>
+          <body>
+          <p>Abriendo la versión consolidada de <a href="https://juanperez238421-cpu.github.io/ijr-estadistica-11-2026/seminario/">Seminario 11</a>…</p>
           </body>
           </html>
           HTML
