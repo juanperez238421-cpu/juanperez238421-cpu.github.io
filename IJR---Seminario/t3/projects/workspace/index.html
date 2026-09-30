@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <title>Seminario 11 · Proyecto Específico</title>
+  <link rel="stylesheet" href="../../css/course.css?v=20260923-2">
+  <link rel="stylesheet" href="workspace.css?v=20260930-v1">
+  <script defer src="../../config.js?v=20260824-1"></script>
+  <script type="module" src="workspace.js?v=20260930-v1"></script>
+  <script src="../../access-gate.js?v=20260923-email-v14"></script>
+</head>
+<body data-project-workspace-page="hub">
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">P</div><div><div class="eyebrow">Instituto Jorge Robledo · Seminario 11°</div><h1>Specific Project Workspace</h1></div></div>
+  <nav class="top-actions"><a href="../../index.html" class="button ghost">Seminar Home</a><a href="../" class="button ghost">Project Decision Center</a></nav>
+</header>
+
+<main class="specific-shell">
+  <section id="bootPanel" class="specific-card boot-card">
+    <div class="eyebrow">TRACKED PROJECT SESSION</div>
+    <h2>Restaurando tu proyecto específico…</h2>
+    <p id="bootStatus">Validando identidad institucional y cargando proyecto, unidades y progreso desde Supabase.</p>
+  </section>
+
+  <section id="noProjectPanel" class="specific-card hidden">
+    <div class="eyebrow">PROJECT REQUIRED</div>
+    <h2>Aún no tienes un proyecto específico definido.</h2>
+    <p>Primero confirma una propuesta en el Project Decision Center. Después esta página se convierte en tu espacio de construcción y progreso.</p>
+    <a class="button primary" href="../">Definir mi proyecto</a>
+  </section>
+
+  <section id="workspacePanel" class="hidden">
+    <section class="specific-hero">
+      <div>
+        <div class="badge-row"><span id="groupBadge" class="pill"></span><span id="trackBadge" class="pill soft"></span><span id="modeBadge" class="pill soft"></span></div>
+        <p class="eyebrow">YOUR SPECIFIC PROJECT</p>
+        <h2 id="projectTitle"></h2>
+        <p id="projectSummary" class="lead"></p>
+        <div id="stackList" class="stack-row"></div>
+      </div>
+      <aside class="progress-card">
+        <span>PROJECT PROGRESS</span>
+        <strong id="progressPercent">0%</strong>
+        <div class="progress-line"><i id="progressBar"></i></div>
+        <p id="progressCopy">0 / 0 units completed</p>
+        <small id="identityLine"></small>
+      </aside>
+    </section>
+
+    <section class="specific-grid two">
+      <article class="specific-card"><div class="eyebrow">OBJECTIVE</div><h3>What must be demonstrable</h3><p id="objective"></p></article>
+      <article id="safetyCard" class="specific-card"><div class="eyebrow">SCOPE / SAFETY</div><h3>Project boundary</h3><p id="safetyScope"></p></article>
+    </section>
+
+    <section class="specific-card">
+      <div class="section-head"><div><div class="eyebrow">CONSTRUCTION ROUTE</div><h3 id="routeTitle">Tracked project units</h3><p>Each unit follows the same engineering loop: theory → build → test → evidence → gate. Progress is stored in Supabase and appears in the teacher Master panel.</p></div><span id="currentUnitBadge" class="unit-badge"></span></div>
+      <div id="unitGrid" class="unit-grid"></div>
+    </section>
+
+    <section class="specific-card">
+      <div class="section-head"><div><div class="eyebrow">PROJECT PLAYBOOK</div><h3>Guidance specific to this project/track</h3></div></div>
+      <div id="playbookGrid" class="playbook-grid"></div>
+    </section>
+
+    <section id="specialResources" class="specific-card hidden">
+      <div class="section-head"><div><div class="eyebrow">SPECIALIZED RESOURCES</div><h3>Resources linked to this individual project</h3></div></div>
+      <div id="resourceLinks" class="resource-links"></div>
+    </section>
+  </section>
+</main>
+</body>
+</html>

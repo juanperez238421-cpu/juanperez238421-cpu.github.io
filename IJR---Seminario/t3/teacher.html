@@ -11,7 +11,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="config.js?v=20260923-code-only-v3"></script>
   <script defer src="oop-uml/course-data.js?v=20260831-v1"></script>
-  <script type="module" src="js/teacher.js?v=20260923-session-filters-v6"></script>
+  <script type="module" src="js/teacher.js?v=20260930-specific-project-v8"></script>
 </head>
 <body>
 <main class="shell">
@@ -116,9 +116,9 @@
           <option value="repo">Repositorio registrado</option>
           <option value="missing">Sin perfil de proyecto</option>
         </select>
-        <select id="sprintFilter" aria-label="Filtrar sprint">
-          <option value="">Todos los sprints</option>
-          <option value="1">Sprint 1</option><option value="2">Sprint 2</option><option value="3">Sprint 3</option><option value="4">Sprint 4</option><option value="5">Sprint 5</option><option value="6">Sprint 6</option><option value="7">Sprint 7</option><option value="8">Sprint 8</option>
+        <select id="sprintFilter" aria-label="Filtrar unidad del proyecto">
+          <option value="">Todas las unidades</option>
+          <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option><option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option><option value="7">Unit 7</option><option value="8">Unit 8</option>
         </select>
       </div>
     </section>
@@ -139,7 +139,7 @@
         <div>
           <span class="eyebrow">OFFICIAL ROSTER · ONE ROW PER STUDENT</span>
           <h2 id="registerTitle">POO + UML · Registro maestro</h2>
-          <p id="registerDescription">Workshop stages y evidencia POO contrastados contra el roster oficial. “Evidence” no equivale automáticamente a código validado.</p>
+          <p id="registerDescription">Workshop stages y evidencia POO contrastados contra el roster oficial. El panel conserva la sesión registrada original con progreso real, aunque exista un acceso directo posterior vacío. “Evidence” no equivale automáticamente a código validado.</p>
         </div>
         <div class="register-summary"><strong id="shownCount">0</strong><span>estudiantes mostrados</span></div>
       </div>
@@ -164,7 +164,7 @@
     <div id="detailIdentity" class="detail-identity"></div>
     <section class="detail-section"><h3>T3 Course · 16 modules</h3><div id="detailCourse"></div></section>
     <section class="detail-section"><h3>Common Core · OOP + UML</h3><div id="detailOop"></div></section>
-    <section class="detail-section"><h3>Software Engineering Studio</h3><div id="detailStudio"></div></section>
+    <section class="detail-section"><h3>Specific Project Workspace</h3><div id="detailSpecificProject"></div></section>\n    <section class="detail-section"><h3>Software Engineering Studio</h3><div id="detailStudio"></div></section>
     <section class="detail-section"><h3>Track diagnostic</h3><div id="detailDiagnostic"></div></section>
     <section class="detail-section"><h3>OOP labs</h3><div id="detailLabs"></div></section>
   </div>

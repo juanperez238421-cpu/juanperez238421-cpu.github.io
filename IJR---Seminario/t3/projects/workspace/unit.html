@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <title>Seminario 11 · Project Unit</title>
+  <link rel="stylesheet" href="../../css/course.css?v=20260923-2">
+  <link rel="stylesheet" href="workspace.css?v=20260930-v1">
+  <script defer src="../../config.js?v=20260824-1"></script>
+  <script type="module" src="workspace.js?v=20260930-v1"></script>
+  <script src="../../access-gate.js?v=20260923-email-v14"></script>
+</head>
+<body data-project-workspace-page="unit">
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">P</div><div><div class="eyebrow">Instituto Jorge Robledo · Seminario 11°</div><h1 id="pageTitleTop">Specific Project Unit</h1></div></div>
+  <nav class="top-actions"><a href="./" class="button ghost">Project Hub</a><a href="../../index.html" class="button ghost">Seminar Home</a></nav>
+</header>
+
+<main class="specific-shell">
+  <section id="bootPanel" class="specific-card boot-card"><div class="eyebrow">TRACKED PROJECT SESSION</div><h2>Loading unit…</h2><p id="bootStatus">Restoring project and progress from Supabase.</p></section>
+  <section id="noProjectPanel" class="specific-card hidden"><h2>Project unavailable.</h2><p>Return to the Project Decision Center and confirm a project first.</p><a class="button primary" href="../">Project Decision Center</a></section>
+
+  <section id="unitPanel" class="hidden">
+    <section class="unit-hero">
+      <div>
+        <div class="badge-row"><span id="groupBadge" class="pill"></span><span id="trackBadge" class="pill soft"></span><span id="unitLabel" class="pill"></span></div>
+        <p class="eyebrow" id="modeKicker">PROJECT UNIT</p>
+        <h2 id="unitTitle"></h2>
+        <p id="unitGoal" class="lead"></p>
+      </div>
+      <aside class="unit-status-card"><span>UNIT STATUS</span><strong id="unitStatus">Not started</strong><small id="projectNameMini"></small></aside>
+    </section>
+
+    <section id="theoryPanel" class="hidden">
+      <div class="specific-grid two">
+        <article class="specific-card"><div class="eyebrow">WHY THIS UNIT EXISTS</div><h3>Engineering objective</h3><p id="theoryObjective"></p><div class="deliverable-box"><strong>Required deliverable</strong><span id="theoryDeliverable"></span></div></article>
+        <article class="specific-card"><div class="eyebrow">IMPLEMENTATION BRIDGE</div><h3 id="trackTheoryTitle"></h3><ul id="trackTheoryList" class="clean-list"></ul></article>
+      </div>
+      <section class="specific-card"><div class="eyebrow">PROJECT PLAYBOOK</div><h3>Read these project-specific rules before building</h3><div id="theoryPlaybook" class="playbook-grid"></div></section>
+      <section class="specific-card action-card"><div><div class="eyebrow">THEORY EVIDENCE</div><h3>Mark theory as reviewed</h3><p>This does not complete the unit. It records that the conceptual preparation was reviewed before the Workshop.</p></div><button id="markTheory" class="button primary" type="button">Mark theory reviewed</button><span id="theoryStatus" class="save-status"></span></section>
+      <div class="page-actions"><a id="toWorkshop" class="button primary" href="#">Continue to Workshop →</a><a class="button ghost" href="./">Back to Project Hub</a></div>
+    </section>
+
+    <section id="workshopPanel" class="hidden">
+      <section class="specific-card">
+        <div class="eyebrow">REAL PROJECT WORKSHOP</div>
+        <h3>Build, verify and preserve evidence</h3>
+        <p id="workshopInstruction"></p>
+        <div class="deliverable-box"><strong>Unit deliverable</strong><span id="workshopDeliverable"></span></div>
+      </section>
+
+      <section class="specific-card">
+        <div class="eyebrow">GATE CHECKLIST</div>
+        <h3>All four engineering checks are required</h3>
+        <div class="check-grid">
+          <label><input type="checkbox" data-check="defined"><span><strong>1 · Define</strong><small>Scope/design for this unit is explicit and matches the project objective.</small></span></label>
+          <label><input type="checkbox" data-check="built"><span><strong>2 · Build</strong><small>The requested functional increment/model/analysis exists.</small></span></label>
+          <label><input type="checkbox" data-check="tested"><span><strong>3 · Test</strong><small>You ran a relevant verification, test case, measurement or QA condition.</small></span></label>
+          <label><input type="checkbox" data-check="evidence"><span><strong>4 · Evidence</strong><small>You preserved reproducible evidence of the result.</small></span></label>
+        </div>
+      </section>
+
+      <section class="specific-card">
+        <div class="eyebrow">EVIDENCE RECORD</div>
+        <h3>What can the teacher independently verify?</h3>
+        <div class="form-grid">
+          <label class="full"><span>Evidence note</span><textarea id="evidenceNote" rows="4" maxlength="2000" placeholder="What did you build/test? What passed or failed?"></textarea></label>
+          <label><span>Evidence URL <small>(optional)</small></span><input id="evidenceUrl" type="url" maxlength="1000" placeholder="https://..."></label>
+          <label><span>Git commit / file reference <small>(optional)</small></span><input id="repoRef" maxlength="300" placeholder="commit SHA, branch, notebook, STL, file..."></label>
+        </div>
+        <div class="save-row"><button id="saveProgress" class="button ghost" type="button">Save partial progress</button><button id="passGate" class="button primary" type="button">Pass unit gate</button><span id="workshopStatus" class="save-status"></span></div>
+      </section>
+
+      <section id="gateLock" class="specific-card warning-card hidden"><strong>Previous unit required.</strong><span>Complete the previous unit gate before this unit can be marked complete. You may still read and prepare work here.</span></section>
+      <div class="page-actions"><a id="toTheory" class="button ghost" href="#">Back to Theory</a><a class="button ghost" href="./">Project Hub</a></div>
+    </section>
+  </section>
+</main>
+</body>
+</html>

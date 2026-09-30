@@ -66,6 +66,8 @@ function latestOopSession(s){
   return [...(s.oop_uml||[])].sort((a,b)=>Number(String(b.session_key||'').replace(/\D/g,''))-Number(String(a.session_key||'').replace(/\D/g,'')))[0]||null
 }
 function projectHasEvidence(s){
+  const p=s.specific_project;
+  if(p&&(Number(p.started_units||0)>0||Number(p.completed_units||0)>0))return true;
   const x=s.studio;if(!x)return false;
   return !!(x.project_title||x.repo_full_name||x.uml_url||x.next_goal||Number(x.progress_percent||0)>0||Number(x.sprint_current||1)>1)
 }
@@ -73,14 +75,14 @@ function viewLastActivity(s){
   let vals=[];
   if(activeView==='oop') vals=[...(s.oop_uml||[]).map(x=>x.updated_at||x.completed_at),...(s.oop_labs||[]).map(x=>x.last_activity_at)];
   else if(activeView==='topics') vals=[s.studio?.last_student_activity_at,s.diagnostic?.completed_at,s.diagnostic?.updated_at];
-  else vals=[s.studio?.last_student_activity_at,s.studio?.updated_at];
+  else vals=[s.specific_project?.last_activity_at,s.studio?.last_student_activity_at,s.studio?.updated_at];
   const ts=vals.filter(Boolean).map(x=>new Date(x).getTime()).filter(Number.isFinite);
   return ts.length?new Date(Math.max(...ts)).toISOString():null
 }
 function viewHasRecord(s){
   if(activeView==='oop')return (s.oop_uml||[]).length>0||(s.oop_labs||[]).length>0;
   if(activeView==='topics')return !!(s.studio||s.diagnostic);
-  return !!s.studio;
+  return !!(s.specific_project||s.studio);
 }
 function filteredStudents(){
   const group=$('groupFilter').value,q=$('searchInput').value.trim().toLowerCase(),state=$('stateFilter').value;
@@ -110,16 +112,16 @@ function filteredStudents(){
       if(diag==='missing'&&s.diagnostic)return false;
     }else{
       const ps=$('projectStateFilter').value,sprint=$('sprintFilter').value;
-      if(ps==='profile'&&!s.studio)return false;
+      if(ps==='profile'&&!s.specific_project&&!s.studio)return false;
       if(ps==='evidence'&&!projectHasEvidence(s))return false;
       if(ps==='repo'&&!s.studio?.repo_full_name)return false;
-      if(ps==='missing'&&s.studio)return false;
-      if(sprint&&String(s.studio?.sprint_current||'')!==sprint)return false;
+      if(ps==='missing'&&(s.specific_project||s.studio))return false;
+      if(sprint&&String(s.specific_project?.current_unit||s.studio?.sprint_current||'')!==sprint)return false;
     }
     return true;
   });
 }
-function courseCell(s){const c=s.course;if(!c)return'<span class="pill none">No course record</span>';const grade=c.final_grade??c.projected_grade;const pct=Math.min(100,Number(c.completed_count||0)/16*100);return '<span class="cell-main">'+esc((c.language||'').toUpperCase())+' · '+esc(c.completed_count||0)+'/16</span><span class="cell-sub">'+esc(c.team_label||'')+' · grade '+esc(fmt(grade))+'</span><div class="progress-mini"><i style="width:'+pct+'%"></i></div>'}
+function courseCell(s){const c=s.course;if(!c)return'<span class="pill none">No course record</span>';const grade=c.final_grade??c.projected_grade;const pct=Math.min(100,Number(c.completed_count||0)/16*100),canonical=c.selection_mode==='canonical_progress_preserved'?'canonical progress · ':'';return '<span class="cell-main">'+esc((c.language||'').toUpperCase())+' · '+esc(c.completed_count||0)+'/16</span><span class="cell-sub">'+esc(canonical)+esc(c.team_label||'')+' · grade '+esc(fmt(grade))+'</span><div class="progress-mini"><i style="width:'+pct+'%"></i></div>'}
 function oopCell(s){
   const list=s.oop_uml||[];if(!list.length)return'<span class="pill none">0 sessions</span>';
   const latest=list[0]||{},e=latest.evidence||{};
@@ -158,17 +160,17 @@ function renderMetrics(){
   }else{
     vals=[
       ['Official roster',snapshot?.roster_count||all.length],
-      ['Project profiles',all.filter(s=>s.studio).length],
+      ['Specific projects',all.filter(s=>s.specific_project).length],
       ['Project evidence',all.filter(projectHasEvidence).length],
+      ['Unit gates passed',all.reduce((n,s)=>n+Number(s.specific_project?.completed_units||0),0)],
       ['GitHub repos',all.filter(s=>s.studio?.repo_full_name).length],
-      ['UML links',all.filter(s=>s.studio?.uml_url).length],
-      ['Progress > 0%',all.filter(s=>Number(s.studio?.progress_percent||0)>0).length]
+      ['Progress > 0%',all.filter(s=>Number(s.specific_project?.progress_percent||s.studio?.progress_percent||0)>0).length]
     ];
   }
   $('metrics').innerHTML=vals.map(([k,v])=>'<div class="metric"><span>'+esc(k)+'</span><strong>'+esc(v)+'</strong></div>').join('');
 }
 function renderQuality(){
-  const q=snapshot?.data_quality||{},items=[
+  const q=snapshot?.data_quality||{},shadow=Number(q.empty_shadow_course_attempts||0),items=[
     ['course members unmatched',q.unmatched_course_members||0],
     ['studio primary unmatched',q.unmatched_studio_primary||0],
     ['studio partners unmatched',q.unmatched_studio_partner||0],
@@ -177,7 +179,7 @@ function renderQuality(){
   ],total=items.reduce((n,x)=>n+Number(x[1]||0),0);
   $('qualityPanel').innerHTML=total
     ?'<div class="quality-warn"><strong>Data-quality review required · '+total+' issue(s)</strong><div class="quality-grid">'+items.map(([k,v])=>'<span>'+esc(k)+': <strong>'+esc(v)+'</strong></span>').join('')+'</div></div>'
-    :'<div class="quality-ok"><strong>Identity QA PASS.</strong> Current Seminar records are linked to the official roster with no unmatched or duplicate-active identity flags.</div>';
+    :'<div class="quality-ok"><strong>Identity QA PASS.</strong> Current Seminar records are linked to the official roster with no unmatched or duplicate-active identity flags.'+(shadow?' <span>'+esc(shadow)+' empty direct-entry shell'+(shadow===1?' is':'s are')+' ignored; canonical recorded progress is preserved.</span>':'')+'</div>';
   renderLegacy();
 }
 function renderLegacy(){
@@ -238,16 +240,17 @@ function topicsRow(s){
     '<td><button class="inspect" data-student="'+esc(s.student_registry_id)+'">Inspect</button></td></tr>';
 }
 function projectRow(s){
-  const st=s.studio,last=viewLastActivity(s),evidence=projectHasEvidence(s);
+  const p=s.specific_project,st=s.studio,last=viewLastActivity(s),evidence=projectHasEvidence(s);
+  const unitCount=Number(p?.unit_count||0),current=Number(p?.current_unit||0),progress=Number(p?.progress_percent??st?.progress_percent??0);
   return '<tr>'+baseCells(s)+
-    '<td>'+(st?'<span class="cell-main">'+esc(st.project_title||'Not defined')+'</span><span class="cell-sub">'+esc(st.track_slug||st.first_choice||'')+'</span>':'<span class="pill none">No profile</span>')+'</td>'+
-    '<td>'+(st?'<span class="pill '+(Number(st.sprint_current||1)>1?'partial':'none')+'">Sprint '+esc(st.sprint_current||1)+'/8</span>':'<span class="pill none">—</span>')+'</td>'+
-    '<td>'+(st?'<span class="cell-main">'+esc(st.progress_percent||0)+'%</span><div class="progress-mini"><i style="width:'+Math.max(0,Math.min(100,Number(st.progress_percent||0)))+'%"></i></div>':'<span class="pill none">—</span>')+'</td>'+
+    '<td>'+(p?'<span class="cell-main">'+esc(p.project_title||'Not defined')+'</span><span class="cell-sub">'+esc(p.track_slug||'')+' · '+esc(p.project_mode||'')+'</span>':st?'<span class="cell-main">'+esc(st.project_title||'Studio profile')+'</span><span class="cell-sub">'+esc(st.track_slug||st.first_choice||'')+'</span>':'<span class="pill none">No project</span>')+'</td>'+
+    '<td>'+(p?'<span class="pill '+(Number(p.completed_units||0)>0?'partial':'none')+'">Unit '+esc(current||1)+'/'+esc(unitCount)+'</span>':st?'<span class="pill none">Sprint '+esc(st.sprint_current||1)+'</span>':'<span class="pill none">—</span>')+'</td>'+
+    '<td>'+(p||st?'<span class="cell-main">'+esc(progress)+'%</span><div class="progress-mini"><i style="width:'+Math.max(0,Math.min(100,progress))+'%"></i></div>':'<span class="pill none">—</span>')+'</td>'+
+    '<td>'+(p?'<span class="pill '+(Number(p.completed_units||0)>0?'done':Number(p.started_units||0)>0?'partial':'none')+'">'+esc(p.completed_units||0)+'/'+esc(unitCount)+' gates</span>':'<span class="pill none">No gates</span>')+'</td>'+
     '<td>'+(st?.repo_full_name?'<span class="pill done">GitHub linked</span>':'<span class="pill none">No repo</span>')+'</td>'+
-    '<td>'+(st?.uml_url?'<span class="pill done">UML linked</span>':'<span class="pill none">No UML</span>')+'</td>'+
-    '<td>'+(st?.next_goal?'<span class="cell-sub">'+esc(st.next_goal)+'</span>':'<span class="pill none">No next goal</span>')+'</td>'+
+    '<td>'+(p?'<span class="cell-sub">'+esc(p.decision_status||p.assignment_status||'assigned')+'</span>':st?.next_goal?'<span class="cell-sub">'+esc(st.next_goal)+'</span>':'<span class="pill none">No state</span>')+'</td>'+
     '<td class="time">'+esc(fmtTime(last))+'</td>'+
-    '<td><span class="pill '+(evidence?'partial':st?'active':'none')+'">'+(evidence?'Evidence started':st?'Profile only':'No activity')+'</span></td>'+
+    '<td><span class="pill '+(evidence?'partial':p||st?'active':'none')+'">'+(evidence?'Evidence started':p?'Project assigned':st?'Profile only':'No activity')+'</span></td>'+
     '<td><button class="inspect" data-student="'+esc(s.student_registry_id)+'">Inspect</button></td></tr>';
 }
 function render(){
@@ -257,7 +260,7 @@ function render(){
   const heads={
     oop:['Grupo','#','Estudiante','Identidad','Workshop session','Última sesión','UML evidence','Code runtime','OOP labs','Última actividad','Estado',''],
     topics:['Grupo','#','Estudiante','Identidad','Track','Selección','Diagnóstico','Resultado','Última actividad','Estado',''],
-    project:['Grupo','#','Estudiante','Identidad','Proyecto','Sprint','Avance','Repositorio','UML','Siguiente meta','Última actividad','Estado','']
+    project:['Grupo','#','Estudiante','Identidad','Proyecto específico','Unidad','Avance','Gates','Repositorio','Estado proyecto','Última actividad','Estado','']
   }[activeView];
   $('studentHead').innerHTML=heads.map(x=>'<th>'+esc(x)+'</th>').join('');
   $('studentBody').innerHTML=rows.map(s=>activeView==='oop'?oopRow(s):activeView==='topics'?topicsRow(s):projectRow(s)).join('')
@@ -276,7 +279,7 @@ function openDetail(id){
   if(!c)$('detailCourse').innerHTML=detailEmpty('No T3 Course registration yet.');
   else{
     const modules=c.modules||[];
-    $('detailCourse').innerHTML='<div class="detail-card"><span class="label">Latest team session</span><strong>'+esc((c.language||'').toUpperCase())+' · '+esc(c.completed_count||0)+'/16 · '+esc(c.team_label||'')+'</strong><div class="cell-sub">Projected/final grade: '+esc(fmt(c.final_grade??c.projected_grade))+' · Last activity '+esc(fmtTime(c.last_activity_at))+'</div></div><div class="module-grid">'+
+    $('detailCourse').innerHTML='<div class="detail-card"><span class="label">Canonical registered session</span><strong>'+esc((c.language||'').toUpperCase())+' · '+esc(c.completed_count||0)+'/16 · '+esc(c.team_label||'')+'</strong><div class="cell-sub">Original registration preserved · '+esc(c.oop_session_count||0)+' OOP/UML session(s) linked · Projected/final grade: '+esc(fmt(c.final_grade??c.projected_grade))+' · Last activity '+esc(fmtTime(c.last_activity_at))+'</div></div><div class="module-grid">'+
       Array.from({length:16},(_,i)=>{const key='m'+String(i+1).padStart(2,'0'),m=modules.find(x=>x.module_key===key),mode=m?.completion_mode||'pending';return'<div class="module-item '+(mode==='solved'?'done':mode==='revealed'?'revealed':'')+'"><strong>'+key+' · '+esc(mode)+'</strong><span>help '+esc(m?.help_count||0)+' · wrong '+esc(m?.wrong_count||0)+'</span></div>'}).join('')+'</div>';
   }
   const oop=s.oop_uml||[];$('detailOop').innerHTML=oop.length?'<div class="detail-list">'+oop.map(x=>{
@@ -287,6 +290,13 @@ function openDetail(id){
     const runtime=Number(e.successful_run_count||0)+'/'+Number(e.run_count||0)+' successful runs';
     return '<div class="detail-row"><div><strong>'+esc((x.session_key||'').toUpperCase())+' · evidence recorded</strong><span class="cell-sub">UML '+esc(umlScore)+' · visual '+esc(visualScore)+' · '+esc(runtime)+'</span></div><span>'+(uml?'UML ✓':'UML pending')+' · '+(code?'code ✓':'code pending')+' · '+esc(fmtTime(x.completed_at||x.updated_at))+'</span></div>';
   }).join('')+'</div>':detailEmpty('No Common Core OOP/UML session recorded.');
+  const sp=s.specific_project;
+  if(!sp)$('detailSpecificProject').innerHTML=detailEmpty('No specific project assigned.');
+  else{
+    const units=sp.units||[];
+    $('detailSpecificProject').innerHTML='<div class="detail-card"><span class="label">'+esc(sp.track_slug||'Project')+' · '+esc(sp.project_mode||'')+'</span><strong>'+esc(sp.project_title||'Specific project')+'</strong><div class="cell-sub">Progress '+esc(sp.progress_percent||0)+'% · '+esc(sp.completed_units||0)+'/'+esc(sp.unit_count||0)+' gates passed · current unit '+esc(sp.current_unit||'—')+' · '+esc(sp.decision_status||sp.assignment_status||'')+'</div></div>'+
+      (units.length?'<div class="detail-list">'+units.map(u=>'<div class="detail-row"><div><strong>Unit '+esc(u.unit_no)+' · '+esc(u.status||'not_started')+'</strong><span class="cell-sub">Theory '+(u.theory_viewed?'✓':'—')+' · Workshop '+(u.workshop_started?'✓':'—')+' · Gate '+(u.gate_passed?'✓':'—')+'</span></div><span>'+esc(fmtTime(u.updated_at))+'</span></div>').join('')+'</div>':'<div class="detail-empty">No unit evidence recorded yet.</div>');
+  }
   const st=s.studio;if(!st)$('detailStudio').innerHTML=detailEmpty('No Software Engineering Studio profile.');
   else{let links='';if(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(st.repo_full_name||''))links+='<a target="_blank" rel="noopener" href="https://github.com/'+esc(st.repo_full_name)+'">GitHub repository</a>';if(/^https:\/\//i.test(st.uml_url||''))links+='<a target="_blank" rel="noopener" href="'+esc(st.uml_url)+'">UML evidence</a>';$('detailStudio').innerHTML='<div class="detail-card"><span class="label">Track</span><strong>'+esc(st.track_slug||st.first_choice)+'</strong><div class="cell-sub">'+esc(st.role)+' · '+esc(st.work_mode)+' · Sprint '+esc(st.sprint_current)+' · '+esc(st.progress_percent)+'%</div><div class="cell-sub">Project: '+esc(st.project_title||'—')+' · Next goal: '+esc(st.next_goal||'—')+'</div><div class="detail-links">'+links+'</div></div>'}
   const d=s.diagnostic;$('detailDiagnostic').innerHTML=d?'<div class="detail-card"><span class="label">'+esc(d.track_slug)+' · '+esc(d.bank_version)+'</span><strong>'+esc(d.status)+' · '+esc(fmt(d.knowledge_percent,0))+'% knowledge · '+esc(fmt(d.confidence_percent,0))+'% confidence</strong><div class="cell-sub">Level '+esc(d.level||'—')+' · mastered stage '+esc(d.highest_mastered_stage??'—')+' · recommended '+esc(d.recommended_stage??'—')+'</div></div>':detailEmpty('No track diagnostic linked to this roster student.');
