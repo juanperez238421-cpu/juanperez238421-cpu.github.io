@@ -4,6 +4,8 @@ let token=sessionStorage.getItem(cfg.teacherSessionKey)||'',snapshot=null,timer=
 const VISIBLE_MS=12000,HIDDEN_MS=45000;
 function esc(v=''){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function fmt(v,d=2){const n=Number(v);return Number.isFinite(n)?n.toFixed(d):'—';}
+function pct(v){return Math.max(0,Math.min(100,Math.round(Number(v)||0)))}
+function progressBar(value,label='Progress'){const p=pct(value);return '<div class="progress-mini" role="progressbar" aria-label="'+esc(label)+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+p+'"><i style="width:'+p+'%"></i></div>'}
 function fmtTime(v){if(!v)return'—';try{return new Date(v).toLocaleString('es-CO',{timeZone:'America/Bogota',dateStyle:'short',timeStyle:'short'})}catch{return'—'}}
 function bogotaDay(v){if(!v)return'';try{return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Bogota',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(v))}catch{return''}}
 function isToday(v){return !!v&&bogotaDay(v)===bogotaDay(new Date().toISOString())}
@@ -64,6 +66,23 @@ function oopEvidence(record){
 }
 function latestOopSession(s){
   return [...(s.oop_uml||[])].sort((a,b)=>Number(String(b.session_key||'').replace(/\D/g,''))-Number(String(a.session_key||'').replace(/\D/g,'')))[0]||null
+}
+function oopProgress(s){
+  const p=s.oop_progress||{};
+  const records=s.oop_uml||[];
+  const completed=Number.isFinite(Number(p.completed_sessions))?Number(p.completed_sessions):records.filter(x=>x.status==='completed').length;
+  const total=Math.max(1,Number(p.total_sessions||10));
+  const teamSize=Math.max(1,Number(p.team_size||s.course?.team_size||1));
+  return {
+    percent:pct(p.progress_percent??(completed/total*100)),
+    completed,total,
+    assignmentMode:p.assignment_mode||(teamSize>1?'team':'individual'),
+    teamSize,
+    teamLabel:String(p.team_label||s.course?.team_label||''),
+    umlVerified:Number(p.uml_verified_sessions||0),
+    codeValidated:Number(p.code_validated_sessions||0),
+    lastProgressAt:p.last_progress_at||null
+  };
 }
 function projectHasEvidence(s){
   const p=s.specific_project;
@@ -137,13 +156,17 @@ function renderMetrics(){
   const all=snapshot?.students||[];
   let vals=[];
   if(activeView==='oop'){
-    const key=selectedOopSessionKey(),meta=selectedOopSession();
+    const key=selectedOopSessionKey(),meta=selectedOopSession(),quality=snapshot?.data_quality||{};
     const withAny=all.filter(s=>(s.oop_uml||[]).length);
     const scope=key?all.filter(s=>sessionRecord(s,key)):withAny;
+    const activeProgress=all.map(oopProgress).filter(p=>p.percent>0);
+    const avgProgress=activeProgress.length?Math.round(activeProgress.reduce((n,p)=>n+p.percent,0)/activeProgress.length):0;
     vals=[
       ['Official roster',snapshot?.roster_count||all.length],
       ['Any workshop evidence',withAny.length],
-      [meta?'Session '+String(meta.n).padStart(2,'0')+' evidence':'Sessions evidenced',scope.length],
+      ['Students with progress',activeProgress.length],
+      ['Team-projected students',Number(quality.students_receiving_team_progress||0)],
+      ['Average active progress',avgProgress+'%'],
       ['UML verified',scope.filter(s=>oopEvidence(key?sessionRecord(s,key):latestOopSession(s)).uml).length],
       ['Code validated',scope.filter(s=>oopEvidence(key?sessionRecord(s,key):latestOopSession(s)).code).length],
       [meta?'No Session '+String(meta.n).padStart(2,'0'):'No POO evidence',meta?all.length-scope.length:all.length-withAny.length]
@@ -177,9 +200,12 @@ function renderQuality(){
     ['diagnostics unmatched',q.unmatched_diagnostics||0],
     ['duplicate active course links',q.duplicate_active_course_students||0]
   ],total=items.reduce((n,x)=>n+Number(x[1]||0),0);
-  $('qualityPanel').innerHTML=total
+  const base=total
     ?'<div class="quality-warn"><strong>Data-quality review required · '+total+' issue(s)</strong><div class="quality-grid">'+items.map(([k,v])=>'<span>'+esc(k)+': <strong>'+esc(v)+'</strong></span>').join('')+'</div></div>'
     :'<div class="quality-ok"><strong>Identity QA PASS.</strong> Current Seminar records are linked to the official roster with no unmatched or duplicate-active identity flags.'+(shadow?' <span>'+esc(shadow)+' empty direct-entry shell'+(shadow===1?' is':'s are')+' ignored; canonical recorded progress is preserved.</span>':'')+'</div>';
+  const teamStudents=Number(q.students_receiving_team_progress||0),teamAttempts=Number(q.team_attempts_with_oop_evidence||0),unmatchedTeam=Number(q.unmatched_team_members_with_progress||0),crossGroup=Number(q.cross_group_team_members_with_progress||0);
+  const teamQa='<div class="'+(unmatchedTeam?'quality-warn':'quality-team')+'"><strong>Team progress projection · '+esc(teamAttempts)+' team attempt'+(teamAttempts===1?'':'s')+' · '+esc(teamStudents)+' student'+(teamStudents===1?'':'s')+'</strong><span> Progress follows the previously stored team membership and is projected to every roster-matched member without duplicating evidence.'+(crossGroup?' '+esc(crossGroup)+' stored cross-group membership'+(crossGroup===1?' is':'s are')+' preserved exactly as registered.':'')+(unmatchedTeam?' '+esc(unmatchedTeam)+' team member'+(unmatchedTeam===1?' is':'s are')+' unmatched and requires manual review.':'')+'</span></div>';
+  $('qualityPanel').innerHTML=base+teamQa;
   renderLegacy();
 }
 function renderLegacy(){
@@ -210,16 +236,21 @@ function baseCells(s){return '<td><strong>'+esc(s.group_code)+'</strong></td>'+
   '<td><span class="student-name">'+esc(s.display_name)+'</span><span class="student-key">'+esc(s.internal_key)+(s.institutional_email?' · '+esc(s.institutional_email):'')+'</span></td>'+
   '<td><span class="pill verified">✓ Roster verified</span></td>'}
 function oopRow(s){
-  const key=selectedOopSessionKey(),meta=selectedOopSession(),latest=latestOopSession(s);
+  const key=selectedOopSessionKey(),meta=selectedOopSession(),latest=latestOopSession(s),progress=oopProgress(s);
   const r=key?sessionRecord(s,key):latest,ev=oopEvidence(r),last=viewLastActivity(s);
   const sessionName=meta?'Session '+String(meta.n).padStart(2,'0')+' · '+meta.title:(r?String(r.session_key||'').toUpperCase():'Workshop');
   const stage=r?'<span class="pill partial">'+esc(sessionName)+'</span><span class="cell-sub">Supabase evidence · '+esc(fmtTime(r.completed_at||r.updated_at))+'</span>':'<span class="pill none">No evidence for '+esc(sessionName)+'</span>';
   const uml=r?'<span class="pill '+(ev.uml?'done':'partial')+'">'+(ev.uml?'Verified':'Pending')+'</span><span class="cell-sub">'+ev.umlScore+'/'+ev.umlTotal+' classification · '+ev.visualScore+'/'+ev.visualTotal+' visual</span>':'<span class="pill none">—</span>';
   const code=r?'<span class="pill '+(ev.code?'done':'active')+'">'+(ev.code?'Validated':'Runtime pending')+'</span><span class="cell-sub">'+ev.successfulRuns+'/'+ev.runs+' successful runs</span>':'<span class="pill none">—</span>';
   const labs=s.oop_labs||[];
+  const assignment=progress.assignmentMode==='team'
+    ?'<span class="pill blue">Team ×'+esc(progress.teamSize)+'</span><span class="cell-sub">'+esc(progress.teamLabel)+'</span>'
+    :'<span class="pill none">Individual</span>';
+  const progressCell='<span class="progress-number">'+esc(progress.percent)+'%</span>'+progressBar(progress.percent,'OOP + UML progress for '+s.display_name)+'<span class="cell-sub">'+esc(progress.completed)+'/'+esc(progress.total)+' completed sessions</span>'+assignment;
   return '<tr>'+baseCells(s)+
     '<td>'+stage+'</td>'+
     '<td>'+(latest?'<span class="cell-main">'+esc((latest.session_key||'').toUpperCase())+'</span><span class="cell-sub">'+esc(latest.status||'evidence')+'</span>':'<span class="pill none">None</span>')+'</td>'+
+    '<td>'+progressCell+'</td>'+
     '<td>'+uml+'</td><td>'+code+'</td>'+
     '<td>'+(labs.length?'<span class="pill blue">'+labs.length+' lab(s)</span>':'<span class="pill none">0</span>')+'</td>'+
     '<td class="time">'+esc(fmtTime(last))+'</td>'+
@@ -258,7 +289,7 @@ function render(){
   setViewUi();populateOopSessionFilter();renderMetrics();renderQuality();
   const rows=filteredStudents();$('shownCount').textContent=rows.length;
   const heads={
-    oop:['Grupo','#','Estudiante','Identidad','Workshop session','Última sesión','UML evidence','Code runtime','OOP labs','Última actividad','Estado',''],
+    oop:['Grupo','#','Estudiante','Identidad','Workshop session','Última sesión','Avance','UML evidence','Code runtime','OOP labs','Última actividad','Estado',''],
     topics:['Grupo','#','Estudiante','Identidad','Track','Selección','Diagnóstico','Resultado','Última actividad','Estado',''],
     project:['Grupo','#','Estudiante','Identidad','Proyecto específico','Unidad','Avance','Gates','Repositorio','Estado proyecto','Última actividad','Estado','']
   }[activeView];
@@ -282,14 +313,16 @@ function openDetail(id){
     $('detailCourse').innerHTML='<div class="detail-card"><span class="label">Canonical registered session</span><strong>'+esc((c.language||'').toUpperCase())+' · '+esc(c.completed_count||0)+'/16 · '+esc(c.team_label||'')+'</strong><div class="cell-sub">Original registration preserved · '+esc(c.oop_session_count||0)+' OOP/UML session(s) linked · Projected/final grade: '+esc(fmt(c.final_grade??c.projected_grade))+' · Last activity '+esc(fmtTime(c.last_activity_at))+'</div></div><div class="module-grid">'+
       Array.from({length:16},(_,i)=>{const key='m'+String(i+1).padStart(2,'0'),m=modules.find(x=>x.module_key===key),mode=m?.completion_mode||'pending';return'<div class="module-item '+(mode==='solved'?'done':mode==='revealed'?'revealed':'')+'"><strong>'+key+' · '+esc(mode)+'</strong><span>help '+esc(m?.help_count||0)+' · wrong '+esc(m?.wrong_count||0)+'</span></div>'}).join('')+'</div>';
   }
-  const oop=s.oop_uml||[];$('detailOop').innerHTML=oop.length?'<div class="detail-list">'+oop.map(x=>{
+  const oop=s.oop_uml||[],op=oopProgress(s);
+  const oopSummary='<div class="detail-card progress-detail"><span class="label">Consolidated OOP + UML progress</span><strong>'+esc(op.percent)+'% · '+esc(op.completed)+'/'+esc(op.total)+' completed sessions</strong>'+progressBar(op.percent,'Consolidated OOP + UML progress')+'<div class="cell-sub">'+(op.assignmentMode==='team'?'Team ×'+esc(op.teamSize)+' · '+esc(op.teamLabel):'Individual progress')+' · UML verified '+esc(op.umlVerified)+' · code validated '+esc(op.codeValidated)+'</div></div>';
+  $('detailOop').innerHTML=oopSummary+(oop.length?'<div class="detail-list">'+oop.map(x=>{
     const e=x.evidence||{},uml=e.uml_mastery===true&&e.uml_visual_mastery===true;
     const code=e.run_success===true&&e.implement_success===true&&e.test_success===true&&Number(e.successful_run_count||0)>0;
     const umlScore=Number(e.uml_classification_score||0)+'/'+Number(e.uml_classification_total||0);
     const visualScore=Number(e.uml_visual_score||0)+'/'+Number(e.uml_visual_total||0);
     const runtime=Number(e.successful_run_count||0)+'/'+Number(e.run_count||0)+' successful runs';
     return '<div class="detail-row"><div><strong>'+esc((x.session_key||'').toUpperCase())+' · evidence recorded</strong><span class="cell-sub">UML '+esc(umlScore)+' · visual '+esc(visualScore)+' · '+esc(runtime)+'</span></div><span>'+(uml?'UML ✓':'UML pending')+' · '+(code?'code ✓':'code pending')+' · '+esc(fmtTime(x.completed_at||x.updated_at))+'</span></div>';
-  }).join('')+'</div>':detailEmpty('No Common Core OOP/UML session recorded.');
+  }).join('')+'</div>':detailEmpty('No Common Core OOP/UML session recorded.'));
   const sp=s.specific_project;
   if(!sp)$('detailSpecificProject').innerHTML=detailEmpty('No specific project assigned.');
   else{
