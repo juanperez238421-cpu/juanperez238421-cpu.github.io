@@ -5,7 +5,7 @@
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_rmVOQ3Orx49KpW_4uMqYew_c2HpcA87';
   const RPC_URL = SUPABASE_URL + '/rest/v1/rpc/seminar_email_access_v1';
   const STORAGE_KEY = 'ijr-seminario-email-access-v2';
-  const BUILD_ID = '20260923-email-v12';
+  const BUILD_ID = '20261028-public-lessons-v1';
   const MAX_AGE_MS = 8 * 60 * 60 * 1000;
 
   let activeEmail = '';
@@ -241,7 +241,33 @@
     requestAnimationFrame(() => input.focus());
   }
 
+  // Las paginas de contenido didactico son publicas. Nunca abre perfiles,
+  // progreso individual, evaluaciones ni rutas administrativas sin identificacion.
+  function isPublicLearningPage() {
+    const pathname = String(window.location.pathname || '').toLowerCase();
+    const marker = '/t3/';
+    const at = pathname.lastIndexOf(marker);
+    if (at < 0) return false;
+    const page = pathname.slice(at + marker.length).replace(/^\/+|\/+$/g, '');
+    if (/(^|\/)teacher(?:\/|\.|$)/.test(page)) return false;
+    return page === '' || page === 'index.html'
+      || /^common(?:\/index\.html)?$/.test(page)
+      || page === 'lab.html'
+      || /^oop-logic-01(?:\/index\.html)?$/.test(page)
+      || /^oop-uml(?:\/index\.html)?$/.test(page)
+      || /^oop-uml\/(?:theory|workshop)\.html$/.test(page)
+      || /^studio(?:\/index\.html)?$/.test(page)
+      || /^tracks(?:\/.*)?$/.test(page)
+      || /^projects\/(?:cyber-cases|python-message-animation|student-workshops)(?:\/.*)?$/.test(page);
+  }
+
   async function boot() {
+    // El material de clase se consulta sin correo ni codigo de estudiante.
+    if (isPublicLearningPage()) {
+      document.documentElement.classList.remove('ijr-seminar-access-pending');
+      resolveReady({ email: '', publicContent: true });
+      return;
+    }
     if (document.readyState === 'loading') {
       await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
     }
