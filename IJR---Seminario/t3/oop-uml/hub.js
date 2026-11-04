@@ -9,10 +9,20 @@ let attempt=null;
 
 function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function completeMode(mode){return ['solved','revealed','skipped'].includes(mode);}
-function topicDone(topic){return !!attempt&&topic.modules.every(m=>completeMode(attempt.records?.[m]?.mode));}
-function topicStarted(topic){return !!attempt&&topic.modules.some(m=>attempt.records?.[m]);}
+function sessionRecord(topic){return attempt?.oopSessions?.['s'+String(topic.n).padStart(2,'0')]||null;}
+function topicDone(topic){return !!attempt&&(sessionRecord(topic)?.status==='completed'||topic.modules.every(m=>completeMode(attempt.records?.[m]?.mode)));}
+function topicStarted(topic){return !!attempt&&(!!sessionRecord(topic)||topic.modules.some(m=>attempt.records?.[m]));}
 function language(){return attempt?.language||'python';}
-function status(topic){if(topicDone(topic))return {label:'Completed',cls:'done'};if(topicStarted(topic))return {label:'In progress',cls:''};return {label:'Available',cls:''};}
+function status(topic){
+  const record=sessionRecord(topic);
+  if(record?.status==='completed'){
+    const teacherApproved=record.evidence?.completion_source==='teacher_manual_validation';
+    return {label:teacherApproved?'Completed · teacher approved':'Completed',cls:'done'};
+  }
+  if(topicDone(topic))return {label:'Completed',cls:'done'};
+  if(topicStarted(topic))return {label:'In progress',cls:''};
+  return {label:'Available',cls:''};
+}
 function normalizeEmail(v){return String(v||'').trim().toLowerCase();}
 function institutionalEmail(v){return /^[^\s@]+@ijr\.edu\.co$/i.test(normalizeEmail(v));}
 
@@ -105,6 +115,20 @@ function render(){
   }).join('');
 }
 
+async function loadSessionEvidence(){
+  const attemptId=attempt?.id;
+  const token=attempt?.token;
+  if(!attemptId||!token||attempt?.backend!=='supabase')return;
+  try{
+    const snapshot=await store.rpc('seminar_oop_uml_snapshot',{p_attempt_id:attemptId,p_attempt_token:token});
+    if(attempt?.id!==attemptId)return;
+    attempt.oopSessions=Object.fromEntries((snapshot.sessions||[]).map(session=>[session.session_key,session]));
+    render();
+  }catch(err){
+    console.warn('OOP/UML session evidence could not be loaded.',err);
+  }
+}
+
 async function submitRegistration(ev){
   ev.preventDefault();
   const email=normalizeEmail($('institutionalEmail')?.value);
@@ -121,10 +145,11 @@ async function submitRegistration(ev){
   registrationMessage('Validating your institutional email…');
 
   try{
-    attempt=await store.startWithEmail({email,language:'python'});
+    attempt=await store.startWithEmail({email,language:'python',registrationRpc:'seminar_oop_uml_start_email_v11'});
     attempt={...attempt,email};
     saveAccessEmail(email);
     render();
+    void loadSessionEvidence();
   }catch(err){
     attempt=null;
     render();
@@ -162,7 +187,16 @@ $('switchButton').addEventListener('click',()=>{
 });
 
 bindRegistration();
-store.restore().then(a=>{
+store.restore().then(async a=>{
+  const remembered=savedAccessEmail();
+  const email=a&&institutionalEmail(a.email)?a.email:(a&&institutionalEmail(remembered)?remembered:'');
+  if(a&&email){
+    try{
+      a=await store.startWithEmail({email,language:'python',registrationRpc:'seminar_oop_uml_start_email_v11'});
+    }catch(err){
+      console.warn('Canonical OOP/UML session resume unavailable; preserving existing session.',err);
+    }
+  }
   if(a?.email&&institutionalEmail(a.email)){
     attempt=a;
     saveAccessEmail(a.email);
@@ -171,6 +205,7 @@ store.restore().then(a=>{
     attempt=null;
   }
   render();
+  void loadSessionEvidence();
 }).catch(()=>{
   attempt=null;
   render();

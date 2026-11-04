@@ -128,13 +128,13 @@ export class CourseStore{
     };
   }
 
-  async startWithEmail({email,language='python'}){
+  async startWithEmail({email,language='python',registrationRpc='seminar_oop_uml_start_email_v8'}){
     email=String(email||'').trim().toLowerCase();
     if(!/^[^\\s@]+@ijr\\.edu\\.co$/i.test(email))throw new Error('institutional_email_required');
     if(!['python','java'].includes(language))throw new Error('invalid_language');
     if(!this.sb || this.cfg.backendMode==='local')throw new Error('El registro institucional requiere conexión con Supabase.');
 
-    const data=await this.rpc('seminar_oop_uml_start_email_v8',{
+    const data=await this.rpc(registrationRpc,{
       p_institutional_email:email,
       p_language:language,
       p_session_id:uuid(),
